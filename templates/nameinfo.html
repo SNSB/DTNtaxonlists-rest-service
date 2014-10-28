@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block body %}
+  <ul class=entries>
+  {# nameinfo:        NameID, TaxonNameCache, Version, TaxonomicRank, ReferenceTitle, ReferenceURI, RevisionLevel 
+     namehierarchies: baseNameID, NameID, NameParentID, level, TaxonNameCache, TaxonomicRank, ProjectURI 
+     acceptedNames:   ProjectID, NameID, ConceptSuffix, ConceptNotes, RefURI, RefText, RefDetail, TypistNotes, ProjectURI
+     commonNames:     NameID, CommonName, LanguageCode, CountryCode, ReferenceTitle, ReferenceURI, ReferenceDetails, SubjectContext, Notes
+     namelists:       NameID, ProjectID, Notes, ProjectURI
+  #}
+  {% for name in nameinfo %}
+    <li><h2>{{ name.TaxonNameCache }}</h2></li>
+    <ul>
+       {% for key, value in name.iteritems() %}
+           <li>{{ key }}: {{ value }} </li>
+       {% endfor %}
+    </ul>
+  {% else %}
+    <li><em>Unbelievable.  No entries here so far</em>
+  {% endfor %}
+  {% for list in namelists %}
+    <li><em>Referenced in list <a href='/projects/{{ list.projectlink }}'>{{ list.ProjectURI }} </a></em></li>
+    <ul>
+       {% for key, value in list.iteritems() %}
+           <li>{{ key }}: {{ value }} </li>
+       {% endfor %}
+    </ul>
+  {% else %}
+    <li><em>Not referenced in a list-project</em>
+  {% endfor %}
+  {% for name in commonNames %}
+    <li><em>Common name: {{ name.CommonName }}</em></li>
+    <ul>
+       {% for key, value in name.iteritems() %}
+           <li>{{ key }}: {{ value }} </li>
+       {% endfor %}
+    </ul>
+  {% else %}
+    <li><em>No commen name in database</em>
+  {% endfor %}  
+  {% for aname in acceptedNames %}
+    <li><em>Accepted name in context of <a href='/projects/{{ aname.projectlink }}'>{{ aname.ProjectURI }} </a></em></li>
+    <ul>
+       {% for key, value in aname.iteritems() %}
+           <li>{{ key }}: {{ value }} </li>
+       {% endfor %}
+    </ul>
+  {% else %}
+    <li><em>Not an accepted name in an available context.</em>
+  {% endfor %}   
+  
+  {% for hierarchy in namehierarchies %}
+    <li><em>Hierarchy according to <a href='/projects/{{ hierarchy[0].projectlink }}'>{{ hierarchy[0].ProjectURI }}</a></em></li>
+    {% for hierarchylevel in hierarchy|reverse %}
+        
+        <ul><a href='{{ requestpath }}/{{ hierarchylevel.NameID }}'>{{ hierarchylevel.TaxonNameCache }}</a>    (<em>{{ hierarchylevel.TaxonomicRank }}</em>)
+        
+    {% endfor %}
+    {% for hierarchylevel in hierarchy|reverse %}
+        </ul>
+    {% endfor %}
+  {% else %}
+    <li><em>Not in a hierarchy! This seems to be an database error.</em></li>
+  {% endfor %} 
+  </ul>
+  <a href='{{ request.path }}{{ nameinfo['NameID'] }}/history'><em>History ...</em></a>
+{% endblock %}

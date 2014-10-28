@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+  {# databases:     anz, database
+  #}
+  <h2>List has items in the following databases:</h2>
+  <ul>
+  {% for row in databases %}
+           <li>{{ row['database'] }}: {{ row['anz'] }} items. </li>
+  {% else %}
+    <li><em>Unbelievable.  No entries here so far</em>
+  {% endfor %}
+
+  </ul>
+{% endblock %}

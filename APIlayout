@@ -1,0 +1,181 @@
+TODO: Wie unterscheiden zwischen Project und Liste?
+TODO: Wie die commonnames id erzeugen, so dass man auch rückwärts suchen kann? Hash in tabelle?
+TODO: Version ist genau die LogUpdatedWhen Spalte! Diese eventuell mitschicken?
+TODO: Wie die letzte änderung an der liste herausfinden? Kombination von log und tabelle?
+
+Müsste für alle Datenbanken gemacht werden und beinhaltet noch keine commonnames, acceptednames und hierachy änderungen
+
+select * from sys.databases where state=0 and name like 'DiversityTaxonNames%'
+
+select max(lastlog), projectid from (
+select max(a.logupdatedwhen) as lastlog, b.projectid as projectid 
+from [DiversityTaxonNames_Plants].[dbo].[TaxonName_Log] a 
+ join [DiversityTaxonNames_Plants].[dbo].[TaxonNameList] b 
+ on a.nameid=b.nameid where b.projectid in (select distinct projectID from [DiversityTaxonNames_Plants].[dbo].[TaxonNameList])
+ group by b.projectid
+union
+select max(a. logupdatedwhen) as lastlog, b.projectid as projectid  
+ from [DiversityTaxonNames_Plants].[dbo].[TaxonName] a 
+ join [DiversityTaxonNames_Plants].[dbo].[TaxonNameList] b 
+ on a.nameid=b.nameid where b.projectid in (select distinct projectID from [DiversityTaxonNames_Plants].[dbo].[TaxonNameList])
+ group by b.projectid
+) as tn group by projectid
+
+declare @database varchar(max)
+declare @query varchar(max)
+declare @subquery  varchar(max)
+
+declare dbcursor cursor
+   local static read_only forward_only
+for
+Select name from sys.databases where state=0 and name like 'DiversityTaxonNames%'
+
+set @query = ''
+open dbcursor
+fetch next from dbcursor into @database
+while @@fetch_status = 0
+begin
+  set @subquery = ' 
+     select ''' + @database + ''' as db, max(lastlog) as maxlog, projectid from (
+select max(a.logupdatedwhen) as lastlog, b.projectid as projectid 
+from [' + @database + '].[dbo].[TaxonName_Log] a 
+ join [' + @database + '].[dbo].[TaxonNameList] b 
+ on a.nameid=b.nameid where b.projectid in (select distinct projectID from [' + @database + '].[dbo].[TaxonNameList])
+ group by b.projectid
+union
+select max(a. logupdatedwhen) as lastlog, b.projectid as projectid  
+ from [' + @database + '].[dbo].[TaxonName] a 
+ join [' + @database + '].[dbo].[TaxonNameList] b 
+ on a.nameid=b.nameid where b.projectid in (select distinct projectID from [' + @database + '].[dbo].[TaxonNameList])
+ group by b.projectid
+) as tn group by projectid
+    '
+  if @query = '' 
+     set @query = @subquery
+  else
+     set @query = @query + ' union all ' + @subquery
+    
+   
+   fetch next from dbcursor into @database
+end
+close dbcursor
+deallocate dbcursor
+print @query
+execute (@query)
+
+
+Services API
+
+/
+Links to the services
+
+/lists
+Description what lists we serve
+check if list is not withhold.
+
+/lists/
+lists of url to lists
+
+/lists/server/database/id 
+* Info on that list link to Agents (intitutions and editors)
+
+/lists/server/database/id/
+list of url to all names of that list
+
+/names?query=<query>
+fulltext search in names. Result list of url to all matching names
+
+/names/
+list of url to all names
+
+/names/server/database/id
+* Info on that name
+
+/names/server/database/id/commonnames/
+list of url to common names for this name
+
+/names/server/database/id/projects/
+list of url to projects referencing this name
+
+/names/server/database/id/acceptednames/
+list of url to projects which refere this name as an accepted name
+
+/names/server/database/id/acceptednames/projectid
+* link to name which is an accepted name in this projects context
+* Info to this accepted name
+
+/names/server/database/id/hierachies/
+list of url to projects in which this name is in a hierachy
+
+/names/server/database/id/hierachies/projectid
+Url to parent name which is parent of this name in the given hierachy
+* Info to this hierachy
+
+/names/server/database/id/synonyms/
+list of url to synanymes for this name
+
+/names/server/database/id/synonyms/ProjectID
+url to the name which is a synonym in the projects context
+* Info to this synonym
+
+/agents/
+list of url to all agents
+
+/agents/server/database/id
+* info on the agent
+
+/agents/server/database/id/contacts/
+list of of url to all contacts for this agent
+
+/agents/server/database/id/contacts/number
+* Info on contact for agent
+
+/commonnames/
+list of url to all common names
+
+/commonnames/server/database/id
+* Info to this common name (ID is here a conactenation of 4 fields!, maybe we hash this, but must then provide a reverse table.)
+
+/commonnames?query=query
+full text query on common names -> list of uri to all matching common names
+Arguments: regexp for name, country, language
+
+
+****
+ID URIs auch auflösen?
+
+/Project_TNT/id -> Damit würden die URI zu echten URLs!
+
+***
+history
+version ändert sich wenn sich commonname, hierarchy, acceptedname, synonyms ändern.
+ -> Logfile bekommt einen eintrag
+ daher nur logfiles durchsuchen. -> Kein Zugriff auf die logfiles für User TNT ...
+ 
+***
+deleted? This name is not in this list anymore (since ...) -> Kein Zugriff für TNT auf die logfiles
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

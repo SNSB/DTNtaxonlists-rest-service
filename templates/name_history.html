@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block body %}
+  {# namelog:     *
+  #}
+  <h2>List had the following changes:</h2>
+  <ul>
+  {% for row in namelog %}
+      <li>History:
+      <ul>
+      {% for key, value in row.iteritems() %}
+           <li>{{ key }}: {{ value }}</li>
+      {% endfor %}
+      </ul></li>
+  {% else %}
+    <li><em>Unbelievable.  No entries here so far</em>
+  {% endfor %}
+
+  </ul>
+{% endblock %}
