@@ -25,7 +25,7 @@ class project(restful.Resource):
         projectlist = getproject('DiversityProjects_TNT', id)
         for row in projectlist:
             links = []
-            links.append(makelink('agents', 'related', url_for('projectagents', id=row['ProjectID'])))
+            links.append(makelink('agents', 'related', url_for('projectagents', id=row['ProjectID'], _external=True)))
             row['links'] = links
         return projectlist
  
@@ -37,7 +37,7 @@ class projectAgents(restful.Resource):
             agenturi = urlparse(row['AgentURI']).path
             row['AgentURI']=agenturi #remove host
             agentdb, agentid = agenturi.strip(' /').split('/')
-            links.append(makelink('agent', 'related', url_for('agenttnt', id=agentid)))
+            links.append(makelink('agent', 'related', url_for('agenttnt', id=agentid, _external=True)))
             row['links'] = links
         return projectagentlist
 

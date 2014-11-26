@@ -11,7 +11,7 @@ app.wsgi_app = ReverseProxied(app.wsgi_app)
 
 api = restful.Api(app)
 
-app.config["APPLICATION_ROOT"] = "/DTNtaxonlists/rest/v0.1"
+app.config["APPLICATION_ROOT"] = "/DTNtaxonlists"
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
@@ -58,7 +58,7 @@ def close_db(error):
 
 #api.add_resource(intro, '/')   # statik baselinks to LISTS, NAMES, AGENTS, COMMONNAMES, PROJECTS
 
-api.add_resource(taxonlists, '/lists/' )
+api.add_resource(taxonlists, '/lists/', '/lists' )
 api.add_resource(taxonlist, '/lists/<string:database>/<int:id>') # links to all LISTS or info on this list and link to _all_ AGENTS and links to _all_ NAMES
 api.add_resource(taxonlistwww, '/lists/<string:database>/<int:id>/www') # link to the associated project
 api.add_resource(taxonlistproject, '/lists/<string:database>/<int:id>/project') # link to the associated project
@@ -104,7 +104,7 @@ api.add_resource(referenceRelation, '/referencerelation/<string:database>/<int:i
 
 
 
-@app.route('/www/')
+@app.route('/www')
 def frontMatter():
     urlroot=request.url_root
     return render_template('show_lists.html', urlroot=urlroot )

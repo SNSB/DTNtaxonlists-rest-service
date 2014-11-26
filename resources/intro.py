@@ -16,10 +16,10 @@ def makelink(label, name, the_uri):
 class intro(restful.Resource):
     def get(self):
         links = []
-        links.append(makelink('lists', 'related', url_for('taxonlists')))
-        links.append(makelink('names', 'related', url_for('names')))
-        links.append(makelink('projects', 'related', url_for('projects')))
-        links.append(makelink('agents', 'related', url_for('agents')))
+        links.append(makelink('lists', 'related', url_for('taxonlists', _external=True)))
+        links.append(makelink('names', 'related', url_for('names', _external=True)))
+        links.append(makelink('projects', 'related', url_for('projects', _external=True)))
+        links.append(makelink('agents', 'related', url_for('agents', _external=True)))
         links.append(makelink('contact', 'related', 'http://www.snsb.info'))
         return {'server':'http://tnt.diversityworkbench.de', 'links':links}
                      
