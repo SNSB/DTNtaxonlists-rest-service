@@ -4,9 +4,10 @@
 
 from flask.ext import restful
 from flask.ext.restful import Resource, fields, marshal_with
-from flask import url_for
+from flask import url_for, Response
 import urllib2
 from database.name import *
+from flask import Flask,g, request, render_template
 
 def makelink(label, name, the_uri):
     link = {}
@@ -125,4 +126,9 @@ class hierarchy(restful.Resource):
             links.append(makelink('project', 'related', url_for('project', id=row['ProjectID'])))                     
             row['links'] = links
         return hlist
-    
+
+class namewww(restful.Resource):
+    def get(self, database, id):
+        response = Response(render_template("taxonname.html", database=database, id=id) )   
+        response.headers['content-type'] = 'text/html'
+        return response    

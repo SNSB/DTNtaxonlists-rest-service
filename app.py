@@ -62,6 +62,7 @@ api.add_resource(taxonlistproject, '/lists/<string:database>/<int:id>/project') 
 
 api.add_resource(names, '/names/' ) 
 api.add_resource(name, '/names/<string:database>/<int:id>' ) # urls to all NAMES or info on this name including info and links to _all_ COMMONNAMES, PROJECTS, ACCEPTEDNAMES, HIERARCHIES, SYNONYMS
+api.add_resource(namewww, '/names/<string:database>/<int:id>/www' ) # urls to all NAMES or info on this name including info and links to _all_ COMMONNAMES, PROJECTS, ACCEPTEDNAMES, HIERARCHIES, SYNONYMS
 api.add_resource(nameCommonNames, '/names/<string:database>/<int:id>/commonnames') # urls to the common names
 #api.add_resource(nameProjects, '/names/<string:database>/<int:id>/projects' ) # urls to PROJECTS
 api.add_resource(nameAcceptedNames, '/names/<string:database>/<int:id>/acceptednames' ) # urls to ACCEPTEDNAMES,
@@ -105,6 +106,7 @@ def frontMatter():
     urlroot=request.url_root
     return render_template('show_lists.html', urlroot=urlroot )
 
+# uwsgi --http 0.0.0.0:5000 --pyhome . --module app --callable app
 
 if __name__ == '__main__':
     #app.run(host='0.0.0.0', debug=True)
