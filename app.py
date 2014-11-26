@@ -4,8 +4,11 @@ from flask import Flask,g, request, render_template
 from flask.ext import restful
 from werkzeug.serving import run_simple
 
+from reverseproxy import ReverseProxied
 
 app = Flask(__name__)
+app.wsgi_app = ReverseProxied(app.wsgi_app)
+
 api = restful.Api(app)
 
 app.config["APPLICATION_ROOT"] = "/DTNtaxonlists/rest/v0.1"
@@ -107,7 +110,10 @@ def frontMatter():
     return render_template('show_lists.html', urlroot=urlroot )
 
 # uwsgi --http 0.0.0.0:5000 --pyhome . --module app --callable app
+# http://flask.pocoo.org/docs/0.10/deploying/mod_wsgi/
 
 if __name__ == '__main__':
     #app.run(host='0.0.0.0', debug=True)
     run_simple('0.0.0.0', 5000, app, use_reloader=True, use_debugger=True, use_evalex=True)
+    
+    
