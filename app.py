@@ -2,11 +2,13 @@
 
 from flask import Flask,g, request, render_template
 from flask.ext import restful
+from werkzeug.serving import run_simple
 
 
 app = Flask(__name__)
 api = restful.Api(app)
 
+app.config["APPLICATION_ROOT"] = "/DTNtaxonlists/rest/v0.1"
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
@@ -27,14 +29,17 @@ DIVERSITY_TAXON_NAMES='DiveristyTaxonNames'
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 from resources.intro import intro
-from resources.lists import taxonlist, taxonlistproject, taxonlists
+from resources.lists import taxonlist, taxonlistproject, taxonlists, taxonlistwww
 from resources.names import *
 from resources.agents import agent, agentsTNT, agentRelations, agentTNT, agentRelationsTNT
 from resources.projects import project, projects, projectAgents
 from resources.contacts import contact
 from resources.commonnames import commonname, commonnames
+from resources.references import references, reference, referenceRelations, referenceRelation
 import json
 import urllib2, urlparse
+
+
 
 
 @app.teardown_appcontext
@@ -52,6 +57,7 @@ def close_db(error):
 
 api.add_resource(taxonlists, '/lists/' )
 api.add_resource(taxonlist, '/lists/<string:database>/<int:id>') # links to all LISTS or info on this list and link to _all_ AGENTS and links to _all_ NAMES
+api.add_resource(taxonlistwww, '/lists/<string:database>/<int:id>/www') # link to the associated project
 api.add_resource(taxonlistproject, '/lists/<string:database>/<int:id>/project') # link to the associated project
 
 api.add_resource(names, '/names/' ) 
@@ -86,7 +92,11 @@ api.add_resource(projects, '/projects/')
 api.add_resource(project, '/projects/<int:id>', '/Projects/<int:id>', '/Projects_TNT/<int:id>') # links to all projects or info on this project 
 api.add_resource(projectAgents, '/projects/<int:id>/agents', '/Projects_TNT/<int:id>/agents')
 
-#TODO: References einbauen
+api.add_resource(references, '/references/')
+api.add_resource(reference, '/references/<string:database>/<int:id>')
+api.add_resource(referenceRelations, '/references/<string:database>/<int:id>/relations' )
+api.add_resource(referenceRelation, '/referencerelation/<string:database>/<int:id>/<string:role>/<int:sequence>/')
+#TODO: References testen
 
 
 
@@ -97,4 +107,5 @@ def frontMatter():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    #app.run(host='0.0.0.0', debug=True)
+    run_simple('0.0.0.0', 5000, app, use_reloader=True, use_debugger=True, use_evalex=True)

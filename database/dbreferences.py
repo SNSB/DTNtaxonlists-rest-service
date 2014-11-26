@@ -1,7 +1,7 @@
 # TaxonName-Database specific functions
 
 from flask import current_app
-from database.management import get_db, getDBs
+from database.management import get_db, getDBs, cleanDatabasename
 
 
 DWB_MODULE='DiversityReferences'
@@ -39,6 +39,8 @@ def databasenameOK(databasename):
 
 def getReferences(database):
     reflist=[]
+    if not cleanDatabasename(database):
+        return []
     query = u''' select '%s' as DatabaseName, RefID
                  from [%s].[dbo].[ReferenceTitle] \
                  ''' % (database, database)
@@ -51,6 +53,8 @@ def getReferences(database):
 
 def getReference(database, refid):
     agentlist=[]
+    if not cleanDatabasename(database):
+        return []    
     query = u''' select '%s' as DatabaseName, RefID, RefType, RefDescription_Cache, Title, DateYear, \
                  DateMonth, DateDay,  SourceTitle, SeriesTitle, Periodical, Volume, Issue, Pages, Publisher, \
                  PublPlace, Edition, ISSN_ISBN, Miscellaneous1, Miscellaneous2, UserDef1, UserDef2, UserDef3, \
@@ -66,6 +70,8 @@ def getReference(database, refid):
 
 def getReferenceRelations(database, refid):
     agentlist=[]
+    if not cleanDatabasename(database):
+        return []    
     query = u''' select '%s' as RefID, Role, Sequence 
                  from [%s].[dbo].[ReferenceRelator] \
                  where RefID=%s ''' % (database, database, refid)
@@ -82,6 +88,8 @@ def getReferenceRelations(database, refid):
 
 def getReferenceRelation(database, refid, role, sequence):
     agentlist=[]
+    if not cleanDatabasename(database):
+        return []    
     query = u''' select '%s' as RefID, Role, Sequence, Name 
                  from [%s].[dbo].[ReferenceRelator] \
                  where RefID=%s and role = '%s' and sequence = %s''' % (database, database, refid, role, sequence)

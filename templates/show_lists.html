@@ -1,11 +1,58 @@
 {% extends "layout.html" %}
 {% block body %}
-  <ul class=entries>
-  {% for list in listinfo %}
-    <li><h2><a href="/projects/{{ list.linkurl|safe }}">{{ list.ProjectTitle }}</a></h2>
-    <a href="/lists/{{ list.linkurl|safe }}">{{ list.Project }}</a>
-  {% else %}
-    <li><em>Unbelievable.  No entries here so far</em>
-  {% endfor %}
-  </ul>
+<h2>Available lists on this server:</h2>
+<div class="listview">Overview</div>
+
+
+<script>
+$.ajaxSetup({
+    async: false
+});
+$.getJSON("/lists/", function(data) {
+    var items = [];
+    $.each( data, function( listentry ) {
+        var listobject =  data[listentry]
+        var projectlink = ""
+        var listlink =""
+        $.each( listobject.links, function (linkindex) {
+            if (listobject.links[linkindex].name == 'listproject') {
+                projectlink=listobject.links[linkindex]["uri"];
+            };
+            if (listobject.links[linkindex].name == 'taxonnamelist') {
+                listlink=listobject.links[linkindex]["uri"];
+            };
+        });
+        var projectname = ""
+        var projectdescr = ""
+        var agentlink = ""
+        var agentitems = [];
+        $.getJSON(URI.parse(projectlink).path, function(projectlist) {
+            $.each( projectlist, function (projectlistindex) {
+                projectname = projectlist[projectlistindex].Project;
+                console.log("Project:"+projectname);
+                projectdescr = projectlist[projectlistindex].ProjectTitle;
+                $.each(projectlist[projectlistindex].links, function (pali) {
+                    if (projectlist[projectlistindex].links[pali].name=='agents') {
+                        agentlink = projectlist[projectlistindex].links[pali].uri;
+                    };
+                });
+            });
+            $.getJSON(URI.parse(agentlink).path, function(agents) {
+                $.each(agents, function(agentsindex) {
+                    if (agents[agentsindex].AgentRole == 'editor') {
+                        agentitems.push(agents[agentsindex].AgentName);
+                    };
+                });
+            });    
+        });
+        items.push( "<li id='Database'> <a href='" + URI.parse(listlink).path + "/www'>" + projectname + "</a> <ul><li class='projectdescription'>" + projectdescr + "</li><li class='dbname'>In: " + listobject.DatabaseName + "</li> <li class='curator'> Currator: <ul><li class='person'>"+ agentitems.join("</li><li class='person'>") + "</li></ul></li></ul> </li>" );
+    });
+
+    $( "<ul/>", {
+        "class": "my-new-list",
+        html: items.join( "" )
+        }).appendTo( "body" );
+});   
+</script>
+
 {% endblock %}

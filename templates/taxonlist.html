@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block body %}
+<h2 class="head2">List {{ id }} on {{ database }}</h2>
+<div class="listname"></div>
+<div class="listdescription"></div>
+<div class="curators">Curators:<div class="curatorlist"></div></div>
+
+
+
+<script>
+$.ajaxSetup({
+    async: false
+});
+$.getJSON("/Projects_TNT/{{ id }}", function(data) {
+   var projectname = "";
+   var projecttitle = "";
+   $.each( data, function( listentry ) {
+        var listobject =  data[listentry];
+        projectname = listobject.Project;
+        projecttitle= listobject.ProjectTitle;
+   });
+   
+   $(".listname").append(projectname);
+   $(".listdescription").append(projecttitle);
+});
+   
+$.getJSON("/Projects_TNT/{{ id }}/agents", function(data) {
+   $.each( data, function( listentry ) {
+        var listobject =  data[listentry];
+        $(".curatorlist").append("<div class='curatorname'>" + listobject.AgentName + "</div>"); 
+   });
+});
+   
+$.getJSON("/lists/{{ database }}/{{ id }}", function(data) {
+    var items = [];
+    $.each( data, function( listentry ) {
+        var listobject =  data[listentry]
+        $.each( listobject.links, function (linkindex) {
+            if (listobject.links[linkindex].name == 'taxonname') {
+                nameuri=listobject.links[linkindex]["uri"];
+            };
+        });
+        var taxonname = ""
+        $.getJSON(URI.parse(nameuri).path, function(projectlist) {
+            $.each( projectlist, function (projectlistindex) {
+                taxonname = projectlist[projectlistindex].TaxonNameCache;
+            });
+        });
+        items.push( "<li id='Database'> <a href='" + URI.parse(nameuri).path + "/www'>" + taxonname + "</a></li>" );
+    });
+
+    $( "<ul/>", {
+        "class": "my-new-list",
+        html: items.join( "" )
+        }).appendTo( "body" );
+});   
+</script>
+
+{% endblock %}

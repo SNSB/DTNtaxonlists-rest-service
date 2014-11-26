@@ -52,12 +52,9 @@ def getAgents(database):
 def getAgent(database, agentid):
     agentlist=[]
     query = u''' select '%s' as DatabaseName, AgentID, AgentParentID, AgentName, Version, AgentTitle, \
-                 GivenName, GivenNamePostfix, InheritedName, InheritedNamePostfix, \
-                 Abbreviation, AgentType, AgentRole, AgentGender, Description, \
-                 OriginalSpelling, Notes, PlaceOfBirth, PlaceOfDeath, \
-                 SynonymToAgentID, SynonymisationType, RevisionLevel, DataWithholdingReason, \
-                 ValidFromDate, ValidFromDay, ValidFromMonth, ValidFromYear, \
-                 ValidUntilDate, ValidUntilDay, ValidUntilMonth, ValidUntilYear
+                 GivenName, InheritedName, \
+                 Abbreviation, AgentType, AgentGender, Description, \
+                 RevisionLevel
                  from [%s].[dbo].[Agent] \
                  where AgentID=%s and DataWithholdingReason is Null''' % (database, database, agentid)
     current_app.logger.debug("Query %s " % (query))

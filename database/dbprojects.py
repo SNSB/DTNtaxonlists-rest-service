@@ -1,7 +1,7 @@
 # TaxonName-Database specific functions
 
 from flask import current_app
-from database.management import get_db, getDBs
+from database.management import get_db, getDBs, cleanDatabasename
 
 
 DWB_MODULE='DiversityProjects'
@@ -40,6 +40,8 @@ def databasenameOK(databasename):
 
 def getProject(database, projectid):
     projectlist=[]
+    if not cleanDatabasename(database):
+        return []
     query = u''' select ProjectID, ProjectParentID, Project, ProjectTitle, ProjectDescription, \
                  ProjectEditors, ProjectInstitution, ProjectNotes, ProjectCopyright, ProjectURL, \
                  ProjectSettings, ProjectRights, ProjectLicenseURI from [%s].[dbo].[Project] \
@@ -53,6 +55,8 @@ def getProject(database, projectid):
 
 def getProjectAgents(database, projectid):
     agentlist=[]
+    if not cleanDatabasename(database):
+        return []
     query = u''' select ProjectID, AgentName, AgentURI, AgentRole, Notes from [%s].[dbo].[ProjectAgent] \
                  where ProjectID=%s''' % (database, projectid)
     current_app.logger.debug("Query %s " % (query))

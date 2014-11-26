@@ -1,8 +1,9 @@
 # database management
 from flask import current_app,g
 import sqlalchemy
+import re
 
-DWB_MODULES=['DiversityTaxonNames', 'DiversityAgents', 'DiversityProjects']
+DWB_MODULES=['DiversityTaxonNames', 'DiversityAgents', 'DiversityProjects', 'DiversityReferences']
 
 def get_db(host=None, port=None, user=None, password=None):
     # Opens a database engine to the given host on the given port 
@@ -65,4 +66,7 @@ def getDBs(moduleType):
             current_app.logger.debug(e)
             pass
     return (DBlist)    
+
+def cleanDatabasename(name):
+    return re.match("[A-Za-z0-9_-]*$",name)
 

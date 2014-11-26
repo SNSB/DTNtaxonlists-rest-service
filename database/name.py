@@ -5,12 +5,14 @@
 #Open Connection to a Database and save the details in the App context
 from flask import current_app
 
-from database.management import get_db, getDBs
+from database.management import get_db, getDBs, cleanDatabasename
 from database.dbtaxonname import *
 
 
 def getName(database, id):
     namelist = []
+    if not cleanDatabasename(database):
+        return []
 #    dbList = getDBs('DiversityTaxonNames')
 #    if not database in dbList:
 #        return None
@@ -19,6 +21,8 @@ def getName(database, id):
 
 def getAllNames():
     lists=[]
+    if not cleanDatabasename(database):
+        return []
     dbList = getDBs('DiversityTaxonNames')
     for db in dbList:
         lists += getTaxonNames(db)
@@ -27,6 +31,8 @@ def getAllNames():
 # sublists 
 
 def getNameAllCommonNames(database, id):
+    if not cleanDatabasename(database):
+        return []
     #dbList = getDBs('DiversityTaxonNames')
     #if not database in dbList:
         #return None
@@ -35,6 +41,8 @@ def getNameAllCommonNames(database, id):
 
 def getNameAllSynonyms(database, id):
     lists=[]
+    if not cleanDatabasename(database):
+        return []
     #dbList = getDBs('DiversityTaxonNames')
     #if not database in dbList:
         #return None
@@ -43,6 +51,8 @@ def getNameAllSynonyms(database, id):
 
 def getNameAllAcceptednames(database, id):
     lists=[]
+    if not cleanDatabasename(database):
+        return []
     #dbList = getDBs('DiversityTaxonNames')
     #if not database in dbList:
         #return None
@@ -51,6 +61,8 @@ def getNameAllAcceptednames(database, id):
 
 def getNameAllHierarchies(database, id):
     lists=[]
+    if not cleanDatabasename(database):
+        return []
     #dbList = getDBs('DiversityTaxonNames')
     #if not database in dbList:
         #return None
@@ -61,6 +73,8 @@ def getNameAllHierarchies(database, id):
 
 def getacceptedname(database, projectid, nameid,  ignore):
     lists=[]
+    if not cleanDatabasename(database):
+        return []
     #dbList = getDBs('DiversityTaxonNames')
     #if not database in dbList:
         #return None
@@ -69,6 +83,8 @@ def getacceptedname(database, projectid, nameid,  ignore):
     
 def getsynonymy(database, projectid, nameid, synnameid, ignore):
     lists=[]
+    if not cleanDatabasename(database):
+        return []
     #dbList = getDBs('DiversityTaxonNames')
     #if not database in dbList:
         #return None
@@ -77,6 +93,8 @@ def getsynonymy(database, projectid, nameid, synnameid, ignore):
     
 def gettaxonhierarchy(database, projectid, nameid, ignore):
     lists=[]
+    if not cleanDatabasename(database):
+        return []
     #dbList = getDBs('DiversityTaxonNames')
     #if not database in dbList:
         #return None

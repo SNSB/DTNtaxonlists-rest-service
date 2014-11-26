@@ -1,7 +1,7 @@
 # TaxonName-Database specific functions
 
 from flask import current_app
-from database.management import get_db, getDBs
+from database.management import get_db, getDBs, cleanDatabasename
 
 
 DWB_MODULE='DiversityTaxonNames'
@@ -40,6 +40,8 @@ def databasenameOK(databasename):
 # get all TaxonNameLists in this database:
 def getTaxonNameLists(databasename):
     urilist = []
+    if not cleanDatabasename(databasename):
+        return []
     query = u'''select distinct a.ProjectID, a.ProjectURI from [%s].[dbo].[TaxonNameListProjectProxy] a \
                 where a.ProjectID in (select distinct c.ProjectID  from [%s].[dbo].[TaxonName] b inner \
                 join [%s].[dbo].[TaxonNameList] c on b.NameID=c.NameID \
@@ -59,6 +61,8 @@ def getTaxonNameLists(databasename):
 # get the Project uri for the given list
 def getTaxonNameListsProjectUri(databasename, id):
     urilist = []
+    if not cleanDatabasename(databasename):
+        return []
     query = u'select distinct ProjectURI from [%s].[dbo].[TaxonNameListProjectProxy] where ProjectID=%s' % (databasename, id)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
@@ -72,6 +76,8 @@ def getTaxonNameListsProjectUri(databasename, id):
 # Get ids of all names in the given list
 def getAllTaxonNamesFromList(databasename, listid):
     namelist = []
+    if not cleanDatabasename(databasename):
+        return []
     query = u'''select distinct a.NameID, a.Notes from [%s].[dbo].[TaxonNameList] a inner join [%s].[dbo].[TaxonName] b on a.NameID=b.NameID where \
                 (b.RevisionLevel is Null or b.RevisionLevel='final revision') and \
                 (b.IgnoreButKeepForReference is Null or b.IgnoreButKeepForReference=0) and \
@@ -92,9 +98,12 @@ def getAllTaxonNamesFromList(databasename, listid):
 # get all taxonname in this db
 def getTaxonNames(databasename):
     namelist = []
+    if not cleanDatabasename(databasename):
+        return []
     query = u'''select '%s' as DatabaseName, NameID from [%s].[dbo].[TaxonName] where \
                 (RevisionLevel is Null or RevisionLevel='final revision') and \
-                (IgnoreButKeepForReference is Null or IgnoreButKeepForReference=0) ''' % (databasename, databasename)
+                (IgnoreButKeepForReference is Null or IgnoreButKeepForReference=0) and \
+                (DataWithholdingReason is Null or DataWithholdingReason='') ''' % (databasename, databasename)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         namelistproxy = conn.execute(query)
@@ -104,16 +113,14 @@ def getTaxonNames(databasename):
 
 def getTaxonName(databasename, nameid):
     namelist = []
-    query = u'''select '%s' as DatabaseName, NameID, TaxonNameCache,Version,BasedOnNameID,CreationType, TaxonomicRank, GenusOrSupragenericName, 
-                SpeciesGenusNameID, InfragenericEpithet, SpeciesEpithet, InfraspecificEpithet, BasionymAuthors, 
-                CombiningAuthors, PublishingAuthors, SanctioningAuthor, NonNomenclaturalNameSuffix, IsRecombination,
-                IsHybrid, HybridNameID1, HybridNameID2, HybridNameID3, HybridNameID4, ReferenceTitle, ReferenceURI, 
-                Volume, Issue, Pages,DetailLocation, DayOfPubl, MonthOfPubl, YearOfPubl, DateOfPublSupplement,
-                YearOnPubl, DateOnPublSupplement, Protologue, ProtologueURI, ProtologueResourceURI, NameUsageReferences,
-                OriginalOrthography, NomenclaturalCode, NomenclaturalStatus, NomenclaturalComment, Typification, 
-                TypificationDetails, TypificationReferenceTitle, TypificationReferenceURI, TypificationNotes, TypeSubstrate,
-                TypeLocality, TypeSpecimenNotes, AnamorphTeleomorph, TypistNotes, RevisionLevel, IgnoreButKeepForReference, 
-                DataWithholdingReason from [%s].[dbo].[TaxonName] where NameID=%s and \
+    if not cleanDatabasename(databasename):
+        return []
+    query = u'''select '%s' as DatabaseName, NameID, TaxonNameCache,Version, TaxonomicRank, GenusOrSupragenericName, \
+                 InfragenericEpithet, SpeciesEpithet, InfraspecificEpithet, BasionymAuthors, \
+                CombiningAuthors, PublishingAuthors, SanctioningAuthor, NonNomenclaturalNameSuffix, IsRecombination, \
+                ReferenceTitle, ReferenceURI, \
+                Volume, Issue, Pages, YearOfPubl,NomenclaturalCode, NomenclaturalStatus, NomenclaturalComment, \
+                AnamorphTeleomorph, TypistNotes, RevisionLevel, IgnoreButKeepForReference from [%s].[dbo].[TaxonName] where NameID=%s and \
                 (RevisionLevel is Null or RevisionLevel='final revision') and \
                 (IgnoreButKeepForReference is Null or IgnoreButKeepForReference=0) and \
                 (DataWithholdingReason is Null or DataWithholdingReason='') ''' % (databasename, databasename, nameid)
@@ -126,6 +133,8 @@ def getTaxonName(databasename, nameid):
 
 def getTaxonNameAllCommonNames(databasename, nameid):
     commonnamelist =[]
+    if not cleanDatabasename(databasename):
+        return []
     query = u'''select '%s' as DatabaseName, NameID, CommonName, LanguageCode, CountryCode, ReferenceTitle 
                from [%s].[dbo].[TaxonCommonName] where NameID = %s''' % (databasename, databasename, nameid)
     current_app.logger.debug("Query %s " % (query))
@@ -137,6 +146,8 @@ def getTaxonNameAllCommonNames(databasename, nameid):
 
 def getTaxonNameAllAcceptedNames(databasename, nameid):
     acceptednamelist =[]
+    if not cleanDatabasename(databasename):
+        return []
     query = u'''select '%s' as DatabaseName, NameID, ProjectID, IgnoreButKeepForReference
                from [%s].[dbo].[TaxonAcceptedName] where NameID = %s and \
                (IgnoreButKeepForReference is Null or IgnoreButKeepForReference=0)
@@ -161,6 +172,8 @@ def getTaxonNameAllAcceptedNames(databasename, nameid):
      
 def getTaxonNameAllSynonyms(databasename, nameid):
     synonmylist =[]
+    if not cleanDatabasename(databasename):
+        return []
     query = u'''select '%s' as DatabaseName, NameID, ProjectID, SynNameID, IgnoreButKeepForReference
                from [%s].[dbo].[TaxonSynonymy] where NameID = %s and \
                (IgnoreButKeepForReference is Null or IgnoreButKeepForReference=0) \
@@ -174,6 +187,8 @@ def getTaxonNameAllSynonyms(databasename, nameid):
 
 def getTaxonNameAllHierarchies(databasename, nameid):
     hierarchylist =[]
+    if not cleanDatabasename(databasename):
+        return []
     query = u'''select '%s' as DatabaseName, NameID, ProjectID, IgnoreButKeepForReference
                from [%s].[dbo].[TaxonHierarchy] where NameID = %s and \
                (IgnoreButKeepForReference is Null or IgnoreButKeepForReference=0) \
@@ -189,6 +204,8 @@ def getTaxonNameAllHierarchies(databasename, nameid):
 
 def getCommonName(database, nameid, commonname, languagecode, countrycode, referencetitle):
     cnamelist=[]
+    if not cleanDatabasename(database):
+        return []
     query = u''' select NameID, CommonName, LanguageCode, CountryCode, ReferenceTitle, ReferenceURI, \
                 ReferenceDetails, SubjectContext, Notes \
                 from [%s].[dbo].[TaxonCommonName] where NameID=%s and CommonName='%s'and LanguageCode='%s' \
@@ -204,6 +221,8 @@ def getCommonName(database, nameid, commonname, languagecode, countrycode, refer
 
 def getAcceptedName(database, projectid, nameid, ignorebutkeepforreferences):
     anamelist=[]
+    if not cleanDatabasename(database):
+        return []
     query = u''' select NameID, ProjectID, IgnoreButKeepForReference, ConceptSuffix, ConceptNotes, RefURI, RefText, RefDetail, TypistsNotes  \
                 from [%s].[dbo].[TaxonAcceptedName] where NameID=%s and ProjectID='%s'and IgnoreButKeepForReference='%s' \
                  ''' % (database, nameid, projectid, ignorebutkeepforreferences)
@@ -218,6 +237,8 @@ def getAcceptedName(database, projectid, nameid, ignorebutkeepforreferences):
 
 def getSynonymy(database, projectid, nameid, synnameid, ignorebutkeepforreferences):
     anamelist=[]
+    if not cleanDatabasename(database):
+        return []
     query = u''' select '%s' as DatabaseName, NameID, ProjectID, SynNameID, IgnoreButKeepForReference, ConceptSuffix, ConceptNotes, SynRefURI, SynRefText, SynRefDetail, SynTypistsNotes,  \
                  SynType, SynIsUncertain
                 from [%s].[dbo].[TaxonSynonymy] where NameID=%s and ProjectID='%s' and SynNameID='%s' and IgnoreButKeepForReference='%s' \
@@ -233,6 +254,8 @@ def getSynonymy(database, projectid, nameid, synnameid, ignorebutkeepforreferenc
 
 def getTaxonHierarchy(database, projectid,  nameid, ignorebutkeepforreferences):
     anamelist=[]
+    if not cleanDatabasename(database):
+        return []
     query = u''' select '%s' as DatabaseName, NameID, ProjectID, IgnoreButKeepForReference, NameParentID, HierarchyRefURI, HierarchyRefText, HierarchyRefDetail, \
                  HierarchyPositionIsUncertain, HierarchyTypistsNotes, HierarchyListCache \
                  from [%s].[dbo].[TaxonHierarchy] where NameID=%s and ProjectID='%s' and IgnoreButKeepForReference='%s' \

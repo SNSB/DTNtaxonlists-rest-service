@@ -3,10 +3,11 @@
 
 from flask.ext import restful
 from flask.ext.restful import fields, marshal_with
-from flask import url_for
+from flask import url_for, Response
 from database.list import getList, getAllLists, getListProject
 from urlparse import urlparse
 
+from flask import Flask,g, request, render_template
 
 def makelink(label, name, the_uri):
     link = {}
@@ -43,5 +44,8 @@ class taxonlists(restful.Resource):
             row['links'] = links
         return listlist
     
-    
-    
+class taxonlistwww(restful.Resource):
+    def get(self, database, id):
+        response = Response(render_template("taxonlist.html", database=database, id=id) )   
+        response.headers['content-type'] = 'text/html'
+        return response
