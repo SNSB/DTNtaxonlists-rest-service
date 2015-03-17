@@ -19,14 +19,14 @@ class references(restful.Resource):
         referencelist = getreferences('DiversityReferences_TNT')
         for row in referencelist:
             links = []
-            ref = url_for('reference', database='DiversityReferences_TNT', id=row['refID'], _external=True)
+            ref = url_for('reference', database='DiversityReferences_TNT', id=row['RefID'], _external=True)
             links.append(makelink('self', 'related', ref))
             row['links'] = links
         return referencelist
 
 class reference(restful.Resource):
     def get(self, database, id):
-        referencelist = getreferences(database, id)
+        referencelist = getreference(database, id)
         for row in referencelist:
             links = []
             links.append(makelink('relations', 'related', url_for('referencerelations',  database=row['DatabaseName'], id=row['RefID'], _external=True)))

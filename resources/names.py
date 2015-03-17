@@ -57,7 +57,7 @@ class nameCommonNames(restful.Resource):
             links = []
             
             #print __file__ +" : "+row['CommonName']
-            newid = u"[%s,%s,%s,%s]" % (row['CommonName'], row['LanguageCode'], row['CountryCode'], row['ReferenceTitle'])
+            newid = u"[%s#%s#%s#%s]" % (row['CommonName'], row['LanguageCode'], row['CountryCode'], row['ReferenceTitle'])
             #newid = urllib2.quote(newid.encode('utf-8')) # no utf8 but %xx encoding in urls 
             #url = u"http://tnt.diversityworkbench.de/commonnames/%s/%s/%s" % (row['DatabaseName'], row['NameID'], newid )
             url = url_for('commonname', database=row['DatabaseName'], nameid=row['NameID'], cid=newid, _external=True)

@@ -47,7 +47,8 @@ def getTaxonNameLists(databasename):
                 join [%s].[dbo].[TaxonNameList] c on b.NameID=c.NameID \
                 where (b.RevisionLevel is null or b.RevisionLevel = 'final revision') and \
                 (b.IgnoreButKeepForReference is Null or b.IgnoreButKeepForReference=0) and \
-                (b.DataWithholdingReason is Null or b.DataWithholdingReason='') \
+                (b.DataWithholdingReason is Null or b.DataWithholdingReason='') and \
+                (a.ProjectID = 701 or a.ProjectID = 704 or a.ProjectID = 1137 or a.ProjectID = 855 or a.ProjectID = 849) \
                 )''' % (databasename, databasename,databasename) # TODO: Revision level has to be 'final revision'
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
@@ -63,7 +64,7 @@ def getTaxonNameListsProjectUri(databasename, id):
     urilist = []
     if not cleanDatabasename(databasename):
         return []
-    query = u'select distinct ProjectURI from [%s].[dbo].[TaxonNameListProjectProxy] where ProjectID=%s' % (databasename, id)
+    query = u'select distinct ProjectURI from [%s].[dbo].[TaxonNameListProjectProxy] where ProjectID=%s and (ProjectID = 701 or ProjectID = 704 or ProjectID = 1137 or ProjectID = 855 or ProjectID = 849)' % (databasename, id)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         projectURI = conn.execute(query)
@@ -82,7 +83,8 @@ def getAllTaxonNamesFromList(databasename, listid):
                 (b.RevisionLevel is Null or b.RevisionLevel='final revision') and \
                 (b.IgnoreButKeepForReference is Null or b.IgnoreButKeepForReference=0) and \
                 (b.DataWithholdingReason is Null or b.DataWithholdingReason='') \
-                and ProjectID=%s''' % (databasename, databasename, listid)
+                and ProjectID=%s and \
+                (ProjectID = 701 or ProjectID = 704 or ProjectID = 1137 or ProjectID = 855 or ProjectID = 849)''' % (databasename, databasename, listid)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         nameids = conn.execute(query)

@@ -140,11 +140,31 @@ list of url to all common names
 full text query on common names -> list of uri to all matching common names
 Arguments: regexp for name, country, language
 
+/projects_TNT ???
+list of urls to all projects
+
+/projects/
+list of urls to all projects
+
+/projects/server/database/id
+* Info for this project
+
+
 
 ****
 ID URIs auch auflösen?
 
 /Project_TNT/id -> Damit würden die URI zu echten URLs!
+Project URI: http://tnt.diversityworkbench.de/Projects_TNT/1140
+Auflosen in URL: localhost/projects/1140
+
+Databasenamen als URL-Pfad? projects_tnt, taxonnames_animalia, references_tnt, scientificterms
+Wenn in der URI ein servername angegeben ist, wird der request einfach an diesen weitergegeben? (link auf diesen server...)
+
+***
+TaxonListen erstrecken sich nur über eine Datenbank, per Definition
+Was aber ist mit Projekten? Diese haben 
+
 
 ***
 history
@@ -154,6 +174,11 @@ version ändert sich wenn sich commonname, hierarchy, acceptedname, synonyms ände
  
 ***
 deleted? This name is not in this list anymore (since ...) -> Kein Zugriff für TNT auf die logfiles
+
+
+***
+Lookup-Table für die connectionports, damit der servername dem richtigen Port zugeordnet wird?
+
 
 
 

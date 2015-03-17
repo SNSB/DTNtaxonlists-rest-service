@@ -13,7 +13,7 @@ class commonnames(restful.Resource):
 class commonname(restful.Resource):
     def get(self, database, nameid, cid):
         # cid split [a,b,c,d] in a b c d
-        commonname, languagecode, countrycode, referencetitle = re.sub("""[\[\]!#"]""", "", cid).split(",")
+        commonname, languagecode, countrycode, referencetitle = re.sub("""[\[\]!"]""", "", cid).split("#")
         #print commonname #= commonname.encode('latin-1').decode('utf-8')
         return getcommonname(database, nameid, commonname, languagecode, countrycode, referencetitle)
  
