@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<!-- #database, id, taxonnames, taxonlistproject, taxonlistagents -->
+
+<h2 class="head2">{{ taxonlistproject[0]['ProjectTitle'] }}</h2>
+<p>Projekt: {{ taxonlistproject[0]['Project'] }}</p>
+<p>Listennummer {{ id }} in der Datenbank {{ database }}</p>
+<h3>Kurator{% if taxonlistagents|length > 1 %}en{% endif %}</h3>
+  <ul class="curatorlist">
+  {% for item in taxonlistagents -%}
+     <li>{{ item.AgentRole }}: {{item.AgentName}}</li>
+  {% endfor %}
+  </ul>
+
+<h2>Taxonomische Namen</h2>
+
+<table class="taxonnametable">
+<tr class=tablehead><th>Taxonomischer Name</th><th>Name</th><th>Sprache</th></tr>
+{% for nameitem in taxonnames -%}
+    {% set outer_loop = loop %}
+    {% if nameitem.nameinfo[0].commonnames %}
+        {% for cname in nameitem.nameinfo[0].commonnames -%}
+            <tr>
+            {% if loop.index == 1 %}
+                <td class="taxonname">{{ nameitem.nameinfo[0].TaxonNameCache }} [{{ nameitem.nameinfo[0].TaxonomicRank }}] </td>
+            {% else %}
+                <td></td>
+                <td></td>
+            {% endif %}
+            <td class="commonname">{{ cname.CommonName }}</td>
+            <td class="languagecode">{{ cname.LanguageCode }}</td>
+            </tr>
+        {% endfor %}
+    {% else %}
+            <tr>
+                <td class="taxonname">{{ nameitem.nameinfo[0].TaxonNameCache }}</td>
+                <td></td>
+                <td></td>
+            <td></td>
+            <td></td>
+            </tr>
+    {% endif %}    
+{% endfor %}  
+
+</table>
+  
+{% endblock %}

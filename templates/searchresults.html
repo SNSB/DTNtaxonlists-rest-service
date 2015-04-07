@@ -1,0 +1,12 @@
+ 
+{% extends "layout.html" %}
+{% block body %}
+  <ul class=entries>
+  {% for name in resultlist %}
+     
+    <li><a href="{{ name.url }}/www">{{ name.name }}  -  {{ name.commonname }}</a></li>
+  {% else %}
+    <li><em>No matches. Try to append ~3 or * to the search pattern.</em>
+  {% endfor %}
+  </ul>
+{% endblock %}
