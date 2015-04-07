@@ -1,13 +1,21 @@
 <!doctype html>
-<header>
-<script src="http://services.snsb.info/DTNtaxonlists/static/uri.min.js"></script>
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>http://services.snsb.info/DTNtaxonlists/rest/v0.1</title>
+<head>
+<script src="{{ url_for('static', filename='uri.min.js') }}"></script>
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
-
-<title>TNT</title>
-</header>
+<style>
+    .languagecode { 
+       font-style: italic; 
+    }
+</style>
+</head>
 <div class=page>
-  <h1>Regional Taxonomic Reference Lists</h1>
+  <h1>Regionale Taxonomische Referenz Listen</h1>
+  REST-Service auf <a href="http://services.snsb.info/DTNtaxonlists/rest/v0.1/">http://services.snsb.info/DTNtaxonlists/rest/v0.1/lists</a>
   <div class=metanav>
   </div>
   {% block body %}{% endblock %}
 </div>
+</html>

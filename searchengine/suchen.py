@@ -57,6 +57,7 @@ def createindex():
 def indexquery(name,www):
     if name==None:
         return []
+    print("Name: %s" % name)        
     ix = index.open_dir("index")
     qp = MultifieldParser(["commonname", "database", "tags", "name"], schema=ix.schema, termclass=FuzzyTerm)
     qp.add_plugin(qparser.FuzzyTermPlugin())

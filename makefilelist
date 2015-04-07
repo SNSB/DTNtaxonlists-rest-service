@@ -1,0 +1,13 @@
+#!/bin/bash
+find -L static > filelist.txt
+find -L templates >> filelist.txt
+find -L resources | grep 'py$' >> filelist.txt
+find -L database | grep 'py$' >> filelist.txt
+find -L searchengine | grep 'py$' >> filelist.txt
+echo "app.py" >> filelist.txt
+echo "__init__.py" >> filelist.txt
+echo "reverseproxy.py" >> filelist.txt
+echo "APIlayout" >> filelist.txt
+#pip freeze > requirements.txt
+echo "requirements.txt" >> filelist.txt
+

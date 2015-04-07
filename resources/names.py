@@ -8,6 +8,8 @@ from flask import url_for, Response
 import urllib2
 from database.name import *
 from flask import Flask,g, request, render_template
+from flask_restful import reqparse
+from searchengine.suchen import *
 
 def makelink(label, name, the_uri):
     link = {}
@@ -17,12 +19,23 @@ def makelink(label, name, the_uri):
     link['name'] = label
     return link
 
+class regenrateindex(restful.Resource):
+    def get(self):
+        createindex()
+
 class names(restful.Resource):
     def get(self):
-        namelist = getAllNames()
-        for row in namelist:
-            row['nameuri'] = url_for('name', database=row['DatabaseName'], id = row['NameID'], _external=True)
-        return namelist
+        parser =  reqparse.RequestParser()
+        parser.add_argument('name') #, type=unicode
+        parser.add_argument('www', type=bool)
+        args = parser.parse_args()
+        #createindex()
+        results = indexquery(args['name'], args['www'])
+        return results
+        #namelist = getAllNames()
+        #for row in namelist:
+            #row['nameuri'] = url_for('name', database=row['DatabaseName'], id = row['NameID'], _external=True)
+        #return namelist
 
 
 #name_sublinks = {
@@ -47,10 +60,11 @@ class name(restful.Resource):
             links.append(makelink('acceptednames', 'related', url_for('nameacceptednames', database=row['DatabaseName'], id=row['NameID'], _external=True) ))
             links.append(makelink('synonyms', 'related', url_for('namesynonyms', database=row['DatabaseName'], id=row['NameID'], _external=True) ))
             links.append(makelink('hierarchies', 'related', url_for('namehierarchies', database=row['DatabaseName'], id=row['NameID'], _external=True) ))
+            links.append(makelink('listproject', 'related', url_for('project', id=row['ProjectID'], _external=True) ))
             row['links'] = links
         return nameinfo
 
-class nameCommonNames(restful.Resource):
+class namecommonnames(restful.Resource):
     def get(self, database, id):
         cnamelist =  getNameAllCommonNames(database, id)
         for row in cnamelist:

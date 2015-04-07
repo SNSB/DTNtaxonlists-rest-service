@@ -11,7 +11,7 @@
 $.ajaxSetup({
     async: false
 });
-$.getJSON("/Projects_TNT/{{ id }}", function(data) {
+$.getJSON("{{ url_for('project', id=id ) }}", function(data) {
    var projectname = "";
    var projecttitle = "";
    $.each( data, function( listentry ) {
@@ -24,14 +24,14 @@ $.getJSON("/Projects_TNT/{{ id }}", function(data) {
    $(".listdescription").append(projecttitle);
 });
    
-$.getJSON("/Projects_TNT/{{ id }}/agents", function(data) {
+$.getJSON("{{ url_for('project', id=id, next='/agents') }}", function(data) {
    $.each( data, function( listentry ) {
         var listobject =  data[listentry];
         $(".curatorlist").append("<div class='curatorname'>" + listobject.AgentName + "</div>"); 
    });
 });
    
-$.getJSON("/lists/{{ database }}/{{ id }}", function(data) {
+$.getJSON("{{ url_for('name', database=database, id=id) }}", function(data) {
     var items = [];
     $.each( data, function( listentry ) {
         var listobject =  data[listentry]

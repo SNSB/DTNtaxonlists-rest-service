@@ -21,8 +21,6 @@ def getName(database, id):
 
 def getAllNames():
     lists=[]
-    if not cleanDatabasename(database):
-        return []
     dbList = getDBs('DiversityTaxonNames')
     for db in dbList:
         lists += getTaxonNames(db)

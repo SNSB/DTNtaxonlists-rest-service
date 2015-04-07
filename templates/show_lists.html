@@ -1,14 +1,12 @@
 {% extends "layout.html" %}
 {% block body %}
-<h2>Available lists on this server:</h2>
-<div class="listview">Overview</div>
-
+<h2>Verf&uuml;gbare Listen auf diesem Server:</h2>
 
 <script>
 $.ajaxSetup({
     async: false
 });
-$.getJSON("/lists/", function(data) {
+$.getJSON("{{ url_for('taxonlists', __external=T) }}", function(data) {
     var items = [];
     $.each( data, function( listentry ) {
         var listobject =  data[listentry]

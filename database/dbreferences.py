@@ -72,7 +72,7 @@ def getReferenceRelations(database, refid):
     agentlist=[]
     if not cleanDatabasename(database):
         return []    
-    query = u''' select '%s' as RefID, Role, Sequence 
+    query = u''' select '%s' as DatabaseName, RefID, Role, Sequence, Name 
                  from [%s].[dbo].[ReferenceRelator] \
                  where RefID=%s ''' % (database, database, refid)
     current_app.logger.debug("Query %s " % (query))
@@ -90,7 +90,7 @@ def getReferenceRelation(database, refid, role, sequence):
     agentlist=[]
     if not cleanDatabasename(database):
         return []    
-    query = u''' select '%s' as RefID, Role, Sequence, Name 
+    query = u''' select '%s' as DatabaseName, RefID, Role, Sequence, Name 
                  from [%s].[dbo].[ReferenceRelator] \
                  where RefID=%s and role = '%s' and sequence = %s''' % (database, database, refid, role, sequence)
     current_app.logger.debug("Query %s " % (query))

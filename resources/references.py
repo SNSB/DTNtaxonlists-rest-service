@@ -33,12 +33,16 @@ class reference(restful.Resource):
             row['links'] = links
         return referencelist
     
-class referenceRelations(restful.Resource):
+class referencerelations(restful.Resource):
     def get(self, database, id):
         relationslist = getreferencerelations(database, id)
+        for row in relationslist:
+            links = []
+            links.append(makelink('referenceRelation', 'related', url_for('referencerelation',  database=row['DatabaseName'], id=row['RefID'], role=row['Role'],sequence=row['Sequence'], _external=True)))
+            row['links'] = links
         return relationslist
       
-class referenceRelation(restful.Resource):
+class referencerelation(restful.Resource):
     def get(self, database, id, role, sequence):
         relationslist = getreferencerelation(database, id, role, sequence)
         return relationslist

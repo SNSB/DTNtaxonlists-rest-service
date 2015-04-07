@@ -19,7 +19,7 @@ class agentsTNT(restful.Resource):
         agentlist = getagents('DiversityAgents_TNT')
         for row in agentlist:
             links = []
-            agent = url_for('agent', database='DiversityAgents_TNT', id=row['AgentID'])
+            agent = url_for('agent', database='DiversityAgents_TNT', id=row['AgentID'], _external=True)
             links.append(makelink('self', 'related', agent))
             row['links'] = links
         return agentlist
@@ -29,9 +29,9 @@ class agent(restful.Resource):
         agentlist = getagent(database, id)
         for row in agentlist:
             links = []
-            links.append(makelink('relations', 'related', url_for('agentrelations',  database=row['DatabaseName'], id=row['AgentID'])))
+            links.append(makelink('relations', 'related', url_for('agentrelations',  database=row['DatabaseName'], id=row['AgentID'], _external=True)))
             if row['AgentParentID']:
-                links.append(makelink('parent', 'related', url_for('agent', database=row['DatabaseName'], id=row['AgentParentID'])))
+                links.append(makelink('parent', 'related', url_for('agent', database=row['DatabaseName'], id=row['AgentParentID'], _external=True)))
             row['links'] = links
         return agentlist
     
@@ -45,9 +45,9 @@ class agentTNT(restful.Resource):
         agentlist = getagent('DiversityAgents_TNT', id)
         for row in agentlist:
             links = []
-            links.append(makelink('relations', 'related', url_for('agentrelations',  database=row['DatabaseName'], id=row['AgentID'])))
+            links.append(makelink('relations', 'related', url_for('agentrelations',  database=row['DatabaseName'], id=row['AgentID'], _external=True)))
             if row['AgentParentID']:
-                links.append(makelink('parent', 'related', url_for('agent', database=row['DatabaseName'], id=row['AgentParentID'])))
+                links.append(makelink('parent', 'related', url_for('agent', database=row['DatabaseName'], id=row['AgentParentID'], _external=True)))
             row['links'] = links
         return agentlist
     

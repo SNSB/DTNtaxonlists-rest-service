@@ -6,8 +6,9 @@ from flask.ext.restful import fields, marshal_with
 from flask import url_for, Response
 from database.list import getList, getAllLists, getListProject
 from urlparse import urlparse
-
 from flask import Flask,g, request, render_template
+
+import requests
 
 def makelink(label, name, the_uri):
     link = {}
@@ -29,7 +30,14 @@ class taxonlist(restful.Resource):
 
 class taxonlistproject(restful.Resource):
     def get(self, database, id):
-        return getListProject(database, id)
+        listlist = getListProject(database, id)
+        for row in listlist:
+            links=[]
+            row["projecturi"] = urlparse(row["projecturi"]).path
+            projecturi = url_for('project', id=id, _external=True)
+            links.append(makelink('listproject', 'related', projecturi))
+            row['links'] = links
+        return listlist
     
 class taxonlists(restful.Resource):
     def get(self):
@@ -44,8 +52,3 @@ class taxonlists(restful.Resource):
             row['links'] = links
         return listlist
     
-class taxonlistwww(restful.Resource):
-    def get(self, database, id):
-        response = Response(render_template("taxonlist.html", database=database, id=id) )   
-        response.headers['content-type'] = 'text/html'
-        return response

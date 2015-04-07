@@ -3,7 +3,7 @@
   <ul class=entries>
   {# TaxonNameCache, TaxonomicRank, a.NameID, BaseURI, BaseServer, BaseDB #}
   {% for taxonname in taxonnamelist %}
-    <li><a href="/names/{{ taxonname.BaseServer|safe }}/{{ taxonname.BaseDB }}/{{ taxonname.NameID }}">{{ taxonname.TaxonNameCache }}</a> ({{taxonname.TaxonomicRank}})</li>
+    <li><a href="/names/{{ taxonname.BaseServer}}/{{ taxonname.BaseDB }}/{{ taxonname.NameID }}">{{ taxonname.TaxonNameCache }}</a> ({{taxonname.TaxonomicRank}})</li>
   {% else %}
     <li><em>Unbelievable.  No entries here so far</em>
   {% endfor %}

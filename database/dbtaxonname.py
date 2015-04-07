@@ -48,7 +48,7 @@ def getTaxonNameLists(databasename):
                 where (b.RevisionLevel is null or b.RevisionLevel = 'final revision') and \
                 (b.IgnoreButKeepForReference is Null or b.IgnoreButKeepForReference=0) and \
                 (b.DataWithholdingReason is Null or b.DataWithholdingReason='') and \
-                (a.ProjectID = 701 or a.ProjectID = 704 or a.ProjectID = 1137 or a.ProjectID = 855 or a.ProjectID = 849) \
+                (a.ProjectID = 701 or a.ProjectID = 704 or a.ProjectID = 1137 or a.ProjectID = 855 or a.ProjectID = 1143 or a.ProjectID = 1144 or a.ProjectID = 849) \
                 )''' % (databasename, databasename,databasename) # TODO: Revision level has to be 'final revision'
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
@@ -64,7 +64,7 @@ def getTaxonNameListsProjectUri(databasename, id):
     urilist = []
     if not cleanDatabasename(databasename):
         return []
-    query = u'select distinct ProjectURI from [%s].[dbo].[TaxonNameListProjectProxy] where ProjectID=%s and (ProjectID = 701 or ProjectID = 704 or ProjectID = 1137 or ProjectID = 855 or ProjectID = 849)' % (databasename, id)
+    query = u'select distinct ProjectURI from [%s].[dbo].[TaxonNameListProjectProxy] where ProjectID=%s and (ProjectID = 701 or ProjectID = 704 or ProjectID = 1137 or ProjectID = 855 or ProjectID = 1143 or ProjectID = 1144 or ProjectID = 849)' % (databasename, id)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         projectURI = conn.execute(query)
@@ -84,7 +84,7 @@ def getAllTaxonNamesFromList(databasename, listid):
                 (b.IgnoreButKeepForReference is Null or b.IgnoreButKeepForReference=0) and \
                 (b.DataWithholdingReason is Null or b.DataWithholdingReason='') \
                 and ProjectID=%s and \
-                (ProjectID = 701 or ProjectID = 704 or ProjectID = 1137 or ProjectID = 855 or ProjectID = 849)''' % (databasename, databasename, listid)
+                (ProjectID = 701 or ProjectID = 704 or ProjectID = 1137 or ProjectID = 855 or ProjectID = 1143 or ProjectID = 1144 or ProjectID = 849)''' % (databasename, databasename, listid)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         nameids = conn.execute(query)
@@ -102,10 +102,10 @@ def getTaxonNames(databasename):
     namelist = []
     if not cleanDatabasename(databasename):
         return []
-    query = u'''select '%s' as DatabaseName, NameID from [%s].[dbo].[TaxonName] where \
-                (RevisionLevel is Null or RevisionLevel='final revision') and \
-                (IgnoreButKeepForReference is Null or IgnoreButKeepForReference=0) and \
-                (DataWithholdingReason is Null or DataWithholdingReason='') ''' % (databasename, databasename)
+    query = u'''select '%s' as DatabaseName, b.NameID, a.ProjectID from [%s].[dbo].[TaxonName] b inner join [%s].[dbo].[TaxonNameList] a on a.NameID=b.NameID where \
+                (b.RevisionLevel is Null or b.RevisionLevel='final revision') and \
+                (b.IgnoreButKeepForReference is Null or b.IgnoreButKeepForReference=0) and \
+                (b.DataWithholdingReason is Null or b.DataWithholdingReason='') ''' % (databasename, databasename, databasename)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         namelistproxy = conn.execute(query)
@@ -117,15 +117,18 @@ def getTaxonName(databasename, nameid):
     namelist = []
     if not cleanDatabasename(databasename):
         return []
-    query = u'''select '%s' as DatabaseName, NameID, TaxonNameCache,Version, TaxonomicRank, GenusOrSupragenericName, \
-                 InfragenericEpithet, SpeciesEpithet, InfraspecificEpithet, BasionymAuthors, \
-                CombiningAuthors, PublishingAuthors, SanctioningAuthor, NonNomenclaturalNameSuffix, IsRecombination, \
-                ReferenceTitle, ReferenceURI, \
-                Volume, Issue, Pages, YearOfPubl,NomenclaturalCode, NomenclaturalStatus, NomenclaturalComment, \
-                AnamorphTeleomorph, TypistNotes, RevisionLevel, IgnoreButKeepForReference from [%s].[dbo].[TaxonName] where NameID=%s and \
-                (RevisionLevel is Null or RevisionLevel='final revision') and \
-                (IgnoreButKeepForReference is Null or IgnoreButKeepForReference=0) and \
-                (DataWithholdingReason is Null or DataWithholdingReason='') ''' % (databasename, databasename, nameid)
+    query = u'''select '%s' as DatabaseName, a.NameID, a.TaxonNameCache, a.Version, a.TaxonomicRank, a.GenusOrSupragenericName, \
+                a.InfragenericEpithet, a.SpeciesEpithet, a.InfraspecificEpithet, a.BasionymAuthors, \
+                a.CombiningAuthors, a.PublishingAuthors, a.SanctioningAuthor, a.NonNomenclaturalNameSuffix, a.IsRecombination, \
+                a.ReferenceTitle, a.ReferenceURI, \
+                a.Volume, a.Issue, a.Pages, a.YearOfPubl, a.NomenclaturalCode, a.NomenclaturalStatus, a.NomenclaturalComment, \
+                a.AnamorphTeleomorph, a.TypistNotes, a.RevisionLevel, a.IgnoreButKeepForReference, b.ProjectID \
+                from [%s].[dbo].[TaxonName] a inner join [%s].[dbo].[TaxonNameList] b on  \
+                a.NameID=b.NameID
+                where a.NameID=%s and \
+                (a.RevisionLevel is Null or a.RevisionLevel='final revision') and \
+                (a.IgnoreButKeepForReference is Null or a.IgnoreButKeepForReference=0) and \
+                (a.DataWithholdingReason is Null or a.DataWithholdingReason='') ''' % (databasename, databasename, databasename, nameid)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         namelistproxy = conn.execute(query)

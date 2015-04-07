@@ -2,9 +2,9 @@
 # as a demonstration of an API spec in YAML
 swagger: '2.0'
 info:
-  title: Uber API
-  description: Move your app forward with the Uber API
-  version: "1.0.0"
+  title: Regionale Taxonomische Referenz Listen
+  description: The desciption
+  version: "0.1"
 # the domain of the service
 host: services.snsb.info
 # array of all schemes that your API supports
