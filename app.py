@@ -125,6 +125,6 @@ def frontMatter():
 
 if __name__ == '__main__':
     #app.run(host='0.0.0.0', debug=True)
-    run_simple('0.0.0.0', 5000, app, use_reloader=True, use_debugger=True, use_evalex=True)
+    run_simple('0.0.0.0', 5000, app, use_reloader=True, use_debugger=False, use_evalex=True)
     
     

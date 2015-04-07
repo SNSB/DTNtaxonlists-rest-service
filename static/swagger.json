@@ -5,11 +5,11 @@
         "description": "<p>The REST API called DWB REST Webservice for Taxon Lists is - in a first version - delivering basic information on taxon names in use, selected synonyms and vernicular names of around 30-35 taxonomic groups of animals, fungi and plants. The current focus is on lists (checklists, taxonomic reference lists) under active curation by specialists on taxonomy or floristics and faunistics in Germany. Those lists often include taxon-related information delivered or needed by the regional nature conservation agencies. This information will be mobilisied in a latter step. </p><p>For more information like usage or licences please refer to <a href=\"http://www.diversitymobile.net/wiki/DTN_Taxon_Lists_Services\">DTN_Taxon_Lists_Services</a></p>",
         "version": "0.1"
     },
-    "host": "localhost:5000",
+    "host": "services.snsb.info",
     "schemes": [
         "http"
     ],
-    "basePath": "",
+    "basePath": "/DTNtaxonlists/rest/v0.1",
     "produces": [
         "application/json"
     ],
