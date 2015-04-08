@@ -85,5 +85,6 @@ searchengine/__init__.py
 app.py
 __init__.py
 reverseproxy.py
+restnames.wsgi
 APIlayout
 requirements.txt

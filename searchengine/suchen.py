@@ -25,13 +25,13 @@ def createindex():
                     database=TEXT, # in which database
                     country=TEXT, # all countries, comma separated
                     tags=KEYWORD)
-    if not os.path.exists("index"):
-       os.mkdir("index")
-    ix = create_in("index", schema)
+    if not os.path.exists("/var/www/localhost/index"):
+       os.mkdir("/var/www/localhost/index")
+    ix = create_in("/var/www/localhost/index", schema)
     writer = ix.writer()
     allnames=getAllNames()
     for item in allnames:
-        if item['ProjectID'] in [701, 704, 1137, 855, 1143, 1144, 849]:
+        if item['ProjectID'] in [701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129]:
             uri = u"" + url_for('name', database=item['DatabaseName'], id = item['NameID'], _external=True)
             commonnames=getTaxonNameAllCommonNames(item['DatabaseName'], item['NameID'])
             cn = u" "
@@ -47,8 +47,8 @@ def createindex():
             if len(namelist)>0:
                 taxonname = namelist[0]['TaxonNameCache']
                 keys = u",".join(filter(lambda l: isinstance(l, six.string_types), namelist[0].values()))
-            print("country: %s " % co)
-            print("commonname: %s " % cn)
+            #print("country: %s " % co)
+            #print("commonname: %s " % cn)
             writer.add_document(name=taxonname, url=uri, database=item['DatabaseName'], project=u"%s" % item['ProjectID'], commonname=cn, country=co, tags=keys)
     #        else:
     #          writer.add_document(name=taxonname, url=uri, database=item['DatabaseName'], tags=keys)
@@ -57,8 +57,8 @@ def createindex():
 def indexquery(name,www):
     if name==None:
         return []
-    print("Name: %s" % name)        
-    ix = index.open_dir("index")
+    #print("Name: %s" % name)        
+    ix = index.open_dir("/var/www/localhost/index")
     qp = MultifieldParser(["commonname", "database", "tags", "name"], schema=ix.schema, termclass=FuzzyTerm)
     qp.add_plugin(qparser.FuzzyTermPlugin())
     q = qp.parse(name)

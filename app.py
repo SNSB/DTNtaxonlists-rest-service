@@ -4,6 +4,8 @@ from flask import Flask,g, request, render_template
 from flask.ext import restful
 from werkzeug.serving import run_simple
 from flask.ext.cache import Cache 
+from flask.ext.restful.representations import json
+
 
 from reverseproxy import ReverseProxied
 
@@ -22,7 +24,7 @@ app.config["APPLICATION_ROOT"] = "/DTNtaxonlists"
 # Load default config and override config from an environment variable
 app.config.update(dict(
     DATABASESERVER='''mssql+pymssql://TNT:***REMOVED***@tnt.diversityworkbench.de:5432''',
-    DEBUG=True,
+    DEBUG=False,
     SECRET_KEY='development key',
     USERNAME='admin',
     PASSWORD='default',
@@ -36,6 +38,9 @@ DIVERSITY_TAXON_NAMES='DiveristyTaxonNames'
 
 
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
+
+json.settings.setdefault('indent', 4)
+json.settings.setdefault('sort_keys', True)
 
 from resources.intro import intro
 from resources.lists import taxonlist, taxonlistproject, taxonlists
@@ -128,3 +133,19 @@ if __name__ == '__main__':
     run_simple('0.0.0.0', 5000, app, use_reloader=True, use_debugger=False, use_evalex=True)
     
     
+# distribution:
+#  run ./pack.sh in activated virtual environment (source bin/activate)
+#  scp restnames.tar to server
+#  tar -C /var/www/localhost -xvf restnames.tar
+#  pip install -r requirements.txt
+#  service httpd restart
+#  rebuild index: http://webservice.../indexneubauen
+# TODO: index kann nicht neu gebaut werden da apache keinen zugriff hat.
+# search.py anpassen falls pfad sich aendert (/var/www/localhost/index)
+# mkdir -p var/www/localhost/index
+# chown -R apache:apache var/www/localhost/index
+# fuer SELLINUX, damit geschrieben werden darf:
+# chcon -t httpd_sys_content_rw_t /var/www/localhost/index
+# chcon -t httpd_sys_content_rw_t /var/www/localhost/index/*
+
+

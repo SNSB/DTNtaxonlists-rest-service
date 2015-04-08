@@ -43,7 +43,7 @@ $.getJSON("{{ url_for('taxonlists', __external=T) }}", function(data) {
                 });
             });    
         });
-        items.push( "<li id='Database'> <a href='" + URI.parse(listlink).path + "/www'>" + projectname + "</a> <ul><li class='projectdescription'>" + projectdescr + "</li><li class='dbname'>In: " + listobject.DatabaseName + "</li> <li class='curator'> Currator: <ul><li class='person'>"+ agentitems.join("</li><li class='person'>") + "</li></ul></li></ul> </li>" );
+        items.push( "<li id='Database'> <a href='" + URI.parse(listlink).path + "www'>" + projectname + "</a> <ul><li class='projectdescription'>" + projectdescr + "</li><li class='dbname'>In: " + listobject.DatabaseName + "</li> <li class='curator'> Curator: <ul><li class='person'>"+ agentitems.join("</li><li class='person'>") + "</li></ul></li></ul> </li>" );
     });
 
     $( "<ul/>", {
