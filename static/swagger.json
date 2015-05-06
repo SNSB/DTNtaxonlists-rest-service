@@ -1,15 +1,17 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "Regionale Taxonomische Referenzlisten",
-        "description": "<p>The REST API called DWB REST Webservice for Taxon Lists is - in a first version - delivering basic information on taxon names in use, selected synonyms and vernicular names of around 30-35 taxonomic groups of animals, fungi and plants. The current focus is on lists (checklists, taxonomic reference lists) under active curation by specialists on taxonomy or floristics and faunistics in Germany. Those lists often include taxon-related information delivered or needed by the regional nature conservation agencies. This information will be mobilisied in a latter step. </p><p>For more information like usage or licences please refer to <a href=\"http://www.diversitymobile.net/wiki/DTN_Taxon_Lists_Services\">DTN_Taxon_Lists_Services</a></p>",
+        "title": "Nationale, regionale und zielgruppenorientierte Taxon-Referenzlisten",
+        "description": "<p>The REST API called DWB REST Webservice for Taxon Lists is - in a first version - delivering basic information on taxon names in use, synonyms, classification and vernicular names of a number of  taxonomic groups of animals, fungi and plants. The current focus is on lists (checklists, taxon reference lists, red lists) under active curation by experts on taxonomy or floristics and faunistics in Germany. Those regionalised taxonomic reference lists may include further taxon-related information delivered or needed by the regional nature conservation agencies and projects. This information will be mobilisied in a next step. </p><p>For more information please refer to <a href=\"http://www.diversitymobile.net/wiki/DTN_taxon_lists_concept_and_architecture\"> DTN taxon lists concept and architecture</a> and <a href=\"http://www.diversitymobile.net/wiki/DTN_Taxon_Lists_Services\">DTN_Taxon_Lists_Services</a></p>",
         "version": "0.1"
     },
     "host": "services.snsb.info",
+    "_host": "localhost:5000",
     "schemes": [
         "http"
     ],
     "basePath": "/DTNtaxonlists/rest/v0.1",
+    "_basePath": "/",
     "produces": [
         "application/json"
     ],
@@ -135,7 +137,7 @@
         "/names/{database}/{nameid}/acceptednames": {
             "get": {
                 "summary": "the corresponding accepted names",
-                "description": "get a list of links to accepted names for this taxonomic name",
+                "description": "A list of links to accepted names for this taxonomic name",
                 "parameters": [
                     {
                         "name": "database",
@@ -179,7 +181,7 @@
         "/names/{database}/{nameid}/hierarchies": {
             "get": {
                 "summary": "the parents of all available hierachies for this taxonomic name",
-                "description": "get a list of links to parent names for this taxonomic name",
+                "description": "A list of links to parent names for this taxonomic name",
                 "parameters": [
                     {
                         "name": "database",
@@ -223,13 +225,13 @@
         "/lists": {
             "get": {
                 "summary": "Taxonomic name lists",
-                "description": "links to all lists on this server\n",
+                "description": "Links to all lists on this server\n",
                 "tags": [
                     "lists"
                 ],
                 "responses": {
                     "200": {
-                        "description": "An list of urls to to all taxonomic name lists and urls to the project which defined this list",
+                        "description": "A list of urls to to all taxonomic name lists and urls to the project which defined this list",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -243,7 +245,7 @@
         "/lists/{database}/{listid}": {
             "get": {
                 "summary": "links to all taxonomic names in this specific list",
-                "description": "get a list of links to taxonomic names which are stored in this list",
+                "description": "List of links to taxonomic names which are stored in this list",
                 "parameters": [
                     {
                         "name": "database",
@@ -287,7 +289,7 @@
         "/lists/{database}/{listid}/project": {
             "get": {
                 "summary": "link to the project",
-                "description": "get a list owith one link to the project which defines this list",
+                "description": "A list with one link to the project which defines this list",
                 "parameters": [
                     {
                         "name": "database",
@@ -331,7 +333,7 @@
         "/projects": {
             "get": {
                 "summary": "returns null",
-                "description": "links to all projects on this server. Not implemented.",
+                "description": "Links to all projects on this server. Not implemented.",
                 "tags": [
                     "projects"
                 ],
@@ -348,7 +350,7 @@
         "/projects/{projectid}": {
             "get": {
                 "summary": "a specific project description on this server",
-                "description": "returns an array with one element which represents the description of the selected project",
+                "description": "An array with one element which represents the description of the selected project",
                 "parameters": [
                     {
                         "name": "projectid",
@@ -384,7 +386,7 @@
         "/projects/{projectid}/agents": {
             "get": {
                 "summary": "all agents for this project",
-                "description": "returns an array with links to all agents of this project",
+                "description": "An array with links to all agents of this project",
                 "parameters": [
                     {
                         "name": "projectid",
@@ -417,10 +419,46 @@
                 }
             }
         },
+        "/projects/{projectid}/references": {
+            "get": {
+                "summary": "literature references",
+                "description": "An array with links to all references of this project",
+                "parameters": [
+                    {
+                        "name": "projectid",
+                        "in": "path",
+                        "description": "server unique id of the project",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with items for all project associated references",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Referencelink"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/Agents_TNT/{agentid}": {
             "get": {
                 "summary": "description of this agents",
-                "description": "returns an array one item, describing the agent",
+                "description": "An array one item, describing the agent",
                 "parameters": [
                     {
                         "name": "agentid",
@@ -597,6 +635,58 @@
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/Hierarchy"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/hierarchy/{databaseid}/{projectid}/{nameid}/full": {
+            "get": {
+                "summary": "All parent names and the hierarchy defining projects",
+                "description": "An array with links to all parent names in the hierarchy and to the hierarchy defining project",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "projectid",
+                        "in": "path",
+                        "description": "database unique id of the project which defined the hierarchy",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    {
+                        "name": "nameid",
+                        "in": "path",
+                        "description": "database unique id of the taxonomic name",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "taxonnames"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with references to all parents of the given name in the given hierarchy",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Hierarchyfull"
                             }
                         }
                     },
@@ -902,7 +992,7 @@
                 },
                 "TaxonNameCache": {
                     "type": "string",
-                    "description": "the combined cached taxonomic name"
+                    "description": "Combined cached taxonomic name"
                 },
                 "TaxonomicRank": {
                     "type": "string"
@@ -924,7 +1014,7 @@
                     "items": {
                         "$ref": "#/definitions/Link"
                     },
-                    "description": "links to common names, accepted names, synonyms, hierarchies and the list project"
+                    "description": "Links to common names, accepted names, synonyms, hierarchies and the list project"
                 }
             }
         },
@@ -1227,7 +1317,45 @@
                     "items": {
                         "$ref": "#/definitions/Link"
                     },
-                    "description": "project link to the project description in which this name is defined as an accepted name"
+                    "description": "Project link to the project description in which this name is defined as an accepted name"
+                }
+            }
+        },
+        "Hierarchyfull": {
+            "properties": {
+                "NameID": {
+                    "type": "integer",
+                    "description": "NameID of the current parent or the starting name when level==0"
+                },
+                "NameParentID": {
+                    "type": "integer",
+                    "description": "NameID of the parent of this entry"
+                },
+                "ProjectID": {
+                    "type": "integer"
+                },
+                "TaxonNameCache": {
+                    "type": "string",
+                    "description": "cached name of this parent"
+                },
+                "TaxonomicRank": {
+                    "type": "string",
+                    "description": "Taxonomic ranc of this parent"
+                },
+                "baseNameID": {
+                    "type": "integer",
+                    "description": "NameID of the base name for which this parent query was startet"
+                },
+                "level": {
+                    "type": "integer",
+                    "description": "Sort order for this parent list. 0 is the starting name, 1 the first parent, 2 the parent of the parent, a.s.o."
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    },
+                    "description": "Links to the parent name and the hierarchy defining project"
                 }
             }
         },
@@ -1271,7 +1399,7 @@
                     "items": {
                         "$ref": "#/definitions/Link"
                     },
-                    "description": "links to the parent name and the hierarchy defining project"
+                    "description": "Links to the parent name and the hierarchy defining project"
                 }
             }
         },
@@ -1288,7 +1416,7 @@
                     "items": {
                         "$ref": "#/definitions/Link"
                     },
-                    "description": "self link to the reference dataset"
+                    "description": "Links to the reference dataset"
                 }
             }
         },
@@ -1371,7 +1499,7 @@
                     "items": {
                         "$ref": "#/definitions/Link"
                     },
-                    "description": "relations links for the reference, containing roles like authors"
+                    "description": "Relations links for the reference, containing roles like author"
                 }
             }
         },

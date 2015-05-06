@@ -68,5 +68,12 @@ def getDBs(moduleType):
     return (DBlist)    
 
 def cleanDatabasename(name):
-    return re.match("[A-Za-z0-9_-]*$",name)
+    return(re.match("[A-Za-z0-9_-]*$",name))
+
+def diversitydatabase(name):
+    if not name.startswith('Diversity'):
+        return ('Diversity'+name)
+    return(name)
+
+
 

@@ -5,7 +5,7 @@
 #Open Connection to a Database and save the details in the App context
 from flask import current_app
 
-from database.management import get_db, getDBs, cleanDatabasename
+from database.management import get_db, getDBs, cleanDatabasename, diversitydatabase
 from database.dbreferences import *
 
 
@@ -13,6 +13,7 @@ def getreference(database, id):
     referencelist = []
     if not cleanDatabasename(database):
         return []
+    database=diversitydatabase(database)
     #dbList = getDBs('DiversityAgents')
     #if not database in dbList:
         #return None
@@ -23,6 +24,7 @@ def getreferences(database):
     referencelist=[]
     if not cleanDatabasename(database):
         return []
+    database=diversitydatabase(database)
     #dbList = getDBs('DiversityAgents')
     #if not database in dbList:
         #return None
@@ -34,6 +36,7 @@ def getreferencerelations(database, id):
     referencelist=[]
     if not cleanDatabasename(database):
         return []
+    database=diversitydatabase(database)
     #dbList = getDBs('DiversityAgents')
     #if not database in dbList:
         #return None
@@ -47,6 +50,7 @@ def getreferencerelation(database, id, role, sequence):
     referencelist=[]
     if not cleanDatabasename(database):
         return []
+    database=diversitydatabase(database)
     #dbList = getDBs('DiversityAgents')
     #if not database in dbList:
         #return None

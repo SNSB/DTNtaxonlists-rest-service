@@ -1,7 +1,7 @@
 # TaxonName-Database specific functions
 
 from flask import current_app
-from database.management import get_db, getDBs
+from database.management import get_db, getDBs, cleanDatabasename, diversitydatabase
 
 
 DWB_MODULE='DiversityAgents_TNT'
@@ -39,6 +39,10 @@ def databasenameOK(databasename):
 
 def getAgents(database):
     agentlist=[]
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+     
     query = u''' select '%s' as DatabaseName, AgentID
                  from [%s].[dbo].[Agent] where DataWithholdingReason is Null \
                  ''' % (database, database)
@@ -51,6 +55,10 @@ def getAgents(database):
 
 def getAgent(database, agentid):
     agentlist=[]
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+     
     query = u''' select '%s' as DatabaseName, AgentID, AgentParentID, AgentName, Version, AgentTitle, \
                  GivenName, InheritedName, \
                  Abbreviation, AgentType, AgentGender, Description, \
@@ -66,6 +74,10 @@ def getAgent(database, agentid):
 
 def getAgentRelations(database, agentid):
     agentlist=[]
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+     
     query = u''' select '%s' as DatabaseName, AgentID, RelatedAgentID, RelationType
                  from [%s].[dbo].[AgentRelation] \
                  where AgentID=%s ''' % (database, database, agentid)

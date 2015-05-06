@@ -32,6 +32,15 @@ class reference(restful.Resource):
             links.append(makelink('relations', 'related', url_for('referencerelations',  database=row['DatabaseName'], id=row['RefID'], _external=True)))
             row['links'] = links
         return referencelist
+
+class referenceTNT(restful.Resource):
+    def get(self,  id):
+        referencelist = getreference('DiversityReferences_TNT', id)
+        for row in referencelist:
+            links = []
+            links.append(makelink('relations', 'related', url_for('referencerelations',  database='DiversityReferences_TNT', id=row['RefID'], _external=True)))
+            row['links'] = links
+        return referencelist    
     
 class referencerelations(restful.Resource):
     def get(self, database, id):

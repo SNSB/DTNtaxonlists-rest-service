@@ -5,13 +5,16 @@
 #Open Connection to a Database and save the details in the App context
 from flask import current_app
 
-from database.management import get_db, getDBs
+from database.management import get_db, getDBs, cleanDatabasename, diversitydatabase
 from database.dbagents import *
 
 
 def getagent(database, id):
     agentlist = []
-    #dbList = getDBs('DiversityAgents')
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+     #dbList = getDBs('DiversityAgents')
     #if not database in dbList:
         #return None
     agentlist = getAgent(database, id)
@@ -19,6 +22,9 @@ def getagent(database, id):
 
 def getagents(database):
     agentlist=[]
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
     #dbList = getDBs('DiversityAgents')
     #if not database in dbList:
         #return None
@@ -27,6 +33,9 @@ def getagents(database):
 
 def getagentrelations(database, id):
     agentlist=[]
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
     #dbList = getDBs('DiversityAgents')
     #if not database in dbList:
         #return None

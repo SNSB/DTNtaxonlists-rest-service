@@ -3,7 +3,7 @@
 
 from flask.ext import restful
 from flask import url_for
-from database.project import getproject, getprojectagents
+from database.project import getproject, getprojectagents, getprojectreferences
 from urlparse import urlparse
 #import urllib2
 
@@ -26,6 +26,7 @@ class project(restful.Resource):
         for row in projectlist:
             links = []
             links.append(makelink('agents', 'related', url_for('projectagents', id=row['ProjectID'], _external=True)))
+            links.append(makelink('references', 'related', url_for('projectreferences', id=row['ProjectID'], _external=True)))            
             row['links'] = links
         return projectlist
  
@@ -41,3 +42,16 @@ class projectAgents(restful.Resource):
             row['links'] = links
         return projectagentlist
 
+class projectReferences(restful.Resource):
+    def get(self, id):
+        projectreferencelist = getprojectreferences('DiversityProjects_TNT', id)
+        for row in projectreferencelist:
+            links = []
+            referenceuri = urlparse(row['ReferenceURI']).path
+            row['ReferenceURI']=referenceuri #remove host
+            referencedb, referenceid = referenceuri.strip(' /').split('/')
+            row['DatabaseName']='DiversityProjects_TNT'
+            row['RefID']=referenceid
+            links.append(makelink('reference', 'related', url_for('reference', database=referencedb, id=referenceid, _external=True)))
+            row['links'] = links
+        return projectreferencelist

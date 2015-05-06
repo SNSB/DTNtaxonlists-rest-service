@@ -46,10 +46,10 @@ from resources.intro import intro
 from resources.lists import taxonlist, taxonlistproject, taxonlists
 from resources.names import *
 from resources.agents import agent, agentsTNT, agentRelations, agentTNT, agentRelationsTNT
-from resources.projects import project, projects, projectAgents
+from resources.projects import project, projects, projectAgents, projectReferences
 from resources.contacts import contact
 from resources.commonnames import commonname, commonnames
-from resources.references import references, reference, referencerelations, referencerelation
+from resources.references import references, reference, referenceTNT, referencerelations, referencerelation
 import json
 import urllib2, urlparse
 
@@ -102,14 +102,17 @@ api.add_resource(acceptedname, '/acceptednames/<string:database>/<int:projectid>
 api.add_resource(synonymy, '/synonymy/<string:database>/<int:projectid>/<int:nameid>/<int:synnameid>/')
 
 api.add_resource(hierarchy, '/hierarchy/<string:database>/<int:projectid>/<int:nameid>/')
+api.add_resource(hierarchyfull, '/hierarchy/<string:database>/<int:projectid>/<int:nameid>/full')
 
 
 api.add_resource(projects, '/projects/')
 api.add_resource(project, '/projects/<int:id>/', '/Projects/<int:id>/', '/Projects_TNT/<int:id>/') # links to all projects or info on this project 
 api.add_resource(projectAgents, '/projects/<int:id>/agents', '/Projects_TNT/<int:id>/agents')
+api.add_resource(projectReferences, '/projects/<int:id>/references', '/Projects_TNT/<int:id>/references')
 
 api.add_resource(references, '/references/')
 api.add_resource(reference, '/references/<string:database>/<int:id>/')
+api.add_resource(referenceTNT, '/References_TNT/<int:id>/')
 api.add_resource(referencerelations, '/references/<string:database>/<int:id>/relations' )
 api.add_resource(referencerelation, '/referencerelation/<string:database>/<int:id>/<string:role>/<int:sequence>/')
 
@@ -140,12 +143,15 @@ if __name__ == '__main__':
 #  pip install -r requirements.txt
 #  service httpd restart
 #  rebuild index: http://webservice.../indexneubauen
-# TODO: index kann nicht neu gebaut werden da apache keinen zugriff hat.
+# TODO: index kann nicht neu gebaut werden da apache keinen zugriff hat. -> SELINUX anpassen!
 # search.py anpassen falls pfad sich aendert (/var/www/localhost/index)
 # mkdir -p var/www/localhost/index
 # chown -R apache:apache var/www/localhost/index
 # fuer SELLINUX, damit geschrieben werden darf:
 # chcon -t httpd_sys_content_rw_t /var/www/localhost/index
 # chcon -t httpd_sys_content_rw_t /var/www/localhost/index/*
-
+#
+# to update the docs, simply modify the static/swagger.json file
+# _host and _basePath in the json are for local testing. The comment in api_doc.html is also for testing.
+# to enable debug comment out run_simple above and uncomment app.run.
 

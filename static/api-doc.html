@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Swagger UI</title>
+  <title>DTNtaxonlists REST</title>
   <link rel="icon" type="image/png" href="images/favicon-32x32.png" sizes="32x32" />
   <link rel="icon" type="image/png" href="images/favicon-16x16.png" sizes="16x16" />
   <link href='css/typography.css' media='screen' rel='stylesheet' type='text/css'/>
@@ -22,7 +22,9 @@
 
   <script type="text/javascript">
     $(function () {
-      var url = "http://services.snsb.info/DTNtaxonlists/rest/v0.1/static/swagger.json";
+      var url = "http://services.snsb.info/DTNtaxonlists/rest/v0.1/static/swagger.json"; 
+<!--     var url = "http://localhost:5000/static/swagger.json"; 
+-->
       window.swaggerUi = new SwaggerUi({
         url: url,
         dom_id: "swagger-ui-container",
@@ -79,14 +81,19 @@
   </script>
 </head>
 
-<body class="swagger-section">
-<div id='header'>
-  <div class="swagger-ui-wrap">
-    <a  href="http://www.snsb.info"><img src="http://www.snsb.info/images/logo_snsb-it_90.png"></a>
-  </div>
-</div>
 
-<div id="message-bar" class="swagger-ui-wrap">&nbsp;</div>
-<div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+<body class="swagger-section" style="text-align:left; margin-left:10px; margin-right:10px; background-color:#EEEEEE">
+    <div style="position:relative; background-color:#FFFFFF; width:100%; height:60px;">
+       <div style="position:relative; top:20px; color:#9b9d9f; background-color:#FFFFFF; float:right; height:50px"> </div>
+    </div>
+    <div style="position:relative; top:0px; left:0px; background-image:url( http://www.snsb.info/images/NurPixel.jpg ); height:75px; width:100%;"> </div>
+    <div style="position:relative; top:2px; left:0px; background-image:url( http://www.snsb.info/images/Balken.jpg ); height:18px; width:100%;"> </div>
+    <div style="position:absolute; top:30px; left:60px;">
+        <a href="http://www.snsb.info"><img border="0" alt="SNSB" src="http://www.snsb.info/images/logo_snsb-it_90.png"></a>
+    </div>
+
+
+    <div id="message-bar" class="swagger-ui-wrap">&nbsp;</div>
+    <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
 </body>
 </html>

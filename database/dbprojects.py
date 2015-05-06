@@ -1,7 +1,7 @@
 # TaxonName-Database specific functions
 
 from flask import current_app
-from database.management import get_db, getDBs, cleanDatabasename
+from database.management import get_db, getDBs, cleanDatabasename, diversitydatabase
 
 
 DWB_MODULE='DiversityProjects'
@@ -42,6 +42,7 @@ def getProject(database, projectid):
     projectlist=[]
     if not cleanDatabasename(database):
         return []
+    database=diversitydatabase(database)
     query = u''' select ProjectID, ProjectParentID, Project, ProjectTitle, ProjectDescription, \
                  ProjectEditors, ProjectInstitution, ProjectNotes, ProjectCopyright, ProjectURL, \
                  ProjectSettings, ProjectRights, ProjectLicenseURI from [%s].[dbo].[Project] \
@@ -57,6 +58,7 @@ def getProjectAgents(database, projectid):
     agentlist=[]
     if not cleanDatabasename(database):
         return []
+    database=diversitydatabase(database)
     query = u''' select ProjectID, AgentName, AgentURI, AgentRole, Notes from [%s].[dbo].[ProjectAgent] \
                  where ProjectID=%s''' % (database, projectid)
     current_app.logger.debug("Query %s " % (query))
@@ -66,5 +68,18 @@ def getProjectAgents(database, projectid):
             agentlist=R2L(tagentlist)
     return agentlist    
 
+def getProjectReferences(database, projectid):
+    referenceslist=[]
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+    query = u''' select ProjectID, ReferenceTitle, ReferenceURI, ReferenceDetails, Notes from [%s].[dbo].[ProjectReference] \
+                 where ProjectID=%s''' % (database, projectid)
+    current_app.logger.debug("Query %s " % (query))
+    with get_db().connect() as conn:
+        tagentlist = conn.execute(query)
+        if tagentlist != None:
+            referenceslist=R2L(tagentlist)
+    return referenceslist    
 
 #

@@ -137,10 +137,21 @@ class hierarchy(restful.Resource):
         for row in hlist:
             links=[]
             links.append(makelink('parent', 'related', url_for('name', database=row['DatabaseName'], id=row['NameParentID'], _external=True)))
+            links.append(makelink('allparents', 'related', url_for('hierarchyfull', database=row['DatabaseName'], projectid=row['ProjectID'], nameid=row['NameID'], _external=True)))
             links.append(makelink('project', 'related', url_for('project', id=row['ProjectID'], _external=True)))                     
             row['links'] = links
         return hlist
 
+class hierarchyfull(restful.Resource):
+    def get(self, database, projectid, nameid):
+        hlist = gettaxonhierachyfull(database, projectid, nameid, 0)
+        for row in hlist:
+            links=[]
+            links.append(makelink('parent', 'related', url_for('name', database=database, id=row['NameParentID'], _external=True)))
+            links.append(makelink('project', 'related', url_for('project', id=row['ProjectID'], _external=True)))                     
+            row['links'] = links
+        return hlist
+    
 class namewww(restful.Resource):
     def get(self, database, id):
         response = Response(render_template("taxonname.html", database=database, id=id) )   

@@ -5,7 +5,7 @@
 #Open Connection to a Database and save the details in the App context
 from flask import current_app
 
-from database.management import get_db, getDBs, cleanDatabasename
+from database.management import get_db, getDBs, cleanDatabasename, diversitydatabase
 from database.dbtaxonname import *
 
 
@@ -13,6 +13,7 @@ def getList(database, id):
     namelist = []
     if not cleanDatabasename(database):
         return []
+    database=diversitydatabase(database)
     #dbList = getDBs('DiversityTaxonNames')
     #if not database in dbList:
         #return None
@@ -29,7 +30,8 @@ def getAllLists():
 def getListProject(database, id):
     projecturi=None
     if not cleanDatabasename(database):
-        return  projecturi   
+        return  projecturi  
+    database=diversitydatabase(database)
     #dbList = getDBs('DiversityTaxonNames')
     #if not database in dbList:
         #return None
