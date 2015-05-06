@@ -20,7 +20,7 @@ class agentsTNT(restful.Resource):
         for row in agentlist:
             links = []
             agent = url_for('agent', database='DiversityAgents_TNT', id=row['AgentID'], _external=True)
-            links.append(makelink('self', 'related', agent))
+            links.append(makelink('agent', 'details', agent))
             row['links'] = links
         return agentlist
 

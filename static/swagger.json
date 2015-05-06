@@ -1336,11 +1336,11 @@
                 },
                 "TaxonNameCache": {
                     "type": "string",
-                    "description": "cached name of this parent"
+                    "description": "Cached name of this parent"
                 },
                 "TaxonomicRank": {
                     "type": "string",
-                    "description": "Taxonomic ranc of this parent"
+                    "description": "Taxonomic rank of this parent"
                 },
                 "baseNameID": {
                     "type": "integer",

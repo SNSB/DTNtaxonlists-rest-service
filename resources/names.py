@@ -76,7 +76,7 @@ class namecommonnames(restful.Resource):
             #url = u"http://tnt.diversityworkbench.de/commonnames/%s/%s/%s" % (row['DatabaseName'], row['NameID'], newid )
             url = url_for('commonname', database=row['DatabaseName'], nameid=row['NameID'], cid=newid, _external=True)
             #print url
-            links.append(makelink('commonnames','related', url))
+            links.append(makelink('commonnames','details', url))
             row['links'] = links
             #print __file__ +" : " + row['commonnameuri']
         return cnamelist
@@ -86,7 +86,7 @@ class nameAcceptedNames(restful.Resource):
         anlist = getNameAllAcceptednames(database, id)
         for row in anlist:
             links=[]
-            links.append(makelink('acceptedname', 'related', url_for('acceptedname', database=row['DatabaseName'], projectid=row['ProjectID'], nameid=row['NameID'], _external=True)))
+            links.append(makelink('acceptedname', 'details', url_for('acceptedname', database=row['DatabaseName'], projectid=row['ProjectID'], nameid=row['NameID'], _external=True)))
             row['links'] = links
         return anlist        
 
@@ -95,7 +95,7 @@ class nameSynonyms(restful.Resource):
         slist = getNameAllSynonyms(database, id)
         for row in slist:
             links = []
-            links.append(makelink('synonymy', 'related',  url_for('synonymy', database=row['DatabaseName'], projectid=row['ProjectID'], nameid=row['NameID'], synnameid=row['SynNameID'], _external=True)))
+            links.append(makelink('synonymy', 'details',  url_for('synonymy', database=row['DatabaseName'], projectid=row['ProjectID'], nameid=row['NameID'], synnameid=row['SynNameID'], _external=True)))
             row['links'] = links
         return slist        
 
@@ -104,7 +104,7 @@ class nameHierarchies(restful.Resource):
         hlist = getNameAllHierarchies(database, id)
         for row in hlist:
             links=[]
-            links.append(makelink('hierarchy', 'related', url_for('hierarchy', database=row['DatabaseName'], projectid=row['ProjectID'], nameid=row['NameID'], _external=True)))
+            links.append(makelink('hierarchy', 'details', url_for('hierarchy', database=row['DatabaseName'], projectid=row['ProjectID'], nameid=row['NameID'], _external=True)))
             row['links'] = links
         return hlist        
 

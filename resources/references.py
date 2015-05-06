@@ -20,7 +20,7 @@ class references(restful.Resource):
         for row in referencelist:
             links = []
             ref = url_for('reference', database='DiversityReferences_TNT', id=row['RefID'], _external=True)
-            links.append(makelink('self', 'related', ref))
+            links.append(makelink('reference', 'details', ref))
             row['links'] = links
         return referencelist
 
@@ -29,7 +29,7 @@ class reference(restful.Resource):
         referencelist = getreference(database, id)
         for row in referencelist:
             links = []
-            links.append(makelink('relations', 'related', url_for('referencerelations',  database=row['DatabaseName'], id=row['RefID'], _external=True)))
+            links.append(makelink('relations', 'authors', url_for('referencerelations',  database=row['DatabaseName'], id=row['RefID'], _external=True)))
             row['links'] = links
         return referencelist
 
@@ -38,7 +38,7 @@ class referenceTNT(restful.Resource):
         referencelist = getreference('DiversityReferences_TNT', id)
         for row in referencelist:
             links = []
-            links.append(makelink('relations', 'related', url_for('referencerelations',  database='DiversityReferences_TNT', id=row['RefID'], _external=True)))
+            links.append(makelink('relations', 'authors', url_for('referencerelations',  database='DiversityReferences_TNT', id=row['RefID'], _external=True)))
             row['links'] = links
         return referencelist    
     
@@ -47,7 +47,7 @@ class referencerelations(restful.Resource):
         relationslist = getreferencerelations(database, id)
         for row in relationslist:
             links = []
-            links.append(makelink('referenceRelation', 'related', url_for('referencerelation',  database=row['DatabaseName'], id=row['RefID'], role=row['Role'],sequence=row['Sequence'], _external=True)))
+            links.append(makelink('referenceRelation', 'details', url_for('referencerelation',  database=row['DatabaseName'], id=row['RefID'], role=row['Role'],sequence=row['Sequence'], _external=True)))
             row['links'] = links
         return relationslist
       
