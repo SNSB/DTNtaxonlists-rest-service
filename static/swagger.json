@@ -177,7 +177,95 @@
                     }
                 }
             }
+        },        
+        "/names/{database}/{nameid}/synonyms": {
+            "get": {
+                "summary": "Synonyms",
+                "description": "A list of synonymic names for this taxonomic name",
+                "parameters": [
+                    {
+                        "name": "database",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "nameid",
+                        "in": "path",
+                        "description": "database unique id of the taxonomic name",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "taxonnames"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with links to the synonyms or an empty array if no synonyms are stored",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Synonymnamelink"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
         },
+        "/names/{database}/{nameid}/acceptednames": {
+            "get": {
+                "summary": "Accepted names",
+                "description": "A list of accepted names for this taxonomic name",
+                "parameters": [
+                    {
+                        "name": "database",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "nameid",
+                        "in": "path",
+                        "description": "database unique id of the taxonomic name",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "taxonnames"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with links to the accepted names with the ProjectID indicating the context in which this accepted names is valid.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Acceptednamelink"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },        
         "/names/{database}/{nameid}/hierarchies": {
             "get": {
                 "summary": "the parents of all available hierachies for this taxonomic name",
@@ -583,6 +671,66 @@
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/Acceptedname"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/synonymy/{databaseid}/{projectid}/{nameid}/{synnameid}": {
+            "get": {
+                "summary": "Synonyms",
+                "description": "An array with a links to the synonym",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "projectid",
+                        "in": "path",
+                        "description": "database unique id of the project in which this synonym is defined",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    {
+                        "name": "nameid",
+                        "in": "path",
+                        "description": "database unique id of the name",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    },
+                    {
+                        "name": "synnameid",
+                        "in": "path",
+                        "description": "database unique id of the synonym name",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "taxonnames"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with one element containing a link to the synonym",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Synonymname"
                             }
                         }
                     },
@@ -1318,6 +1466,53 @@
                         "$ref": "#/definitions/Link"
                     },
                     "description": "Project link to the project description in which this name is defined as an accepted name"
+                }
+            }
+        },
+        "Synonymname": {
+            "properties": {
+                "ConceptNotes": {
+                    "type": "string"
+                },
+                "ConceptSuffix": {
+                    "type": "string"
+                },
+                "IgnoreButKeepForReference": {
+                    "type": "integer"
+                },
+                "NameID": {
+                    "type": "integer"
+                },
+                "ProjectID": {
+                    "type": "integer"
+                },
+                "SynNameID": {
+                    "type": "integer"
+                },
+                "SynTypistsNotes": {
+                    "type": "string"
+                },
+                "SynRefDetail": {
+                    "type": "string"
+                },
+                "SynRefText": {
+                    "type": "string"
+                },
+                "SynRefURI": {
+                    "type": "string"
+                },
+                "SynType": {
+                    "type": "string"
+                },
+                "SynTypistsNotes": {
+                    "type": "string"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    },
+                    "description": "Link to the name dataset of the synonym"
                 }
             }
         },
