@@ -1142,8 +1142,13 @@
                     "type": "string",
                     "description": "Combined cached taxonomic name"
                 },
+                "TaxonomicRankCode": {
+                    "type": "string",
+                    "description": "Abbreviation of the rank"
+                },
                 "TaxonomicRank": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Taxonomic rank, according to the DisplayText field of the code-ENUM"
                 },
                 "TypistNotes": {
                     "type": "string"
@@ -1171,7 +1176,7 @@
                 "DatabaseName": {
                     "type": "string"
                 },
-                "IgnoreButKeepFor Reference": {
+                "IgnoreButKeepForReference": {
                     "type": "integer"
                 },
                 "NameID": {
@@ -1193,7 +1198,7 @@
                 "DatabaseName": {
                     "type": "string"
                 },
-                "IgnoreButKeepFor Reference": {
+                "IgnoreButKeepForReference": {
                     "type": "integer"
                 },
                 "NameID": {
@@ -1209,13 +1214,38 @@
                     }
                 }
             }
+        },        
+        "Synonymnamelink": {
+            "properties": {
+                "DatabaseName": {
+                    "type": "string"
+                },
+                "IgnoreButKeepForReference": {
+                    "type": "integer"
+                },
+                "NameID": {
+                    "type": "integer"
+                },
+                "ProjectID": {
+                    "type": "integer"
+                },
+                "SynNameID": {
+                    "type": "string"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
         },
         "Commonnamelink": {
             "properties": {
                 "DatabaseName": {
                     "type": "string"
                 },
-                "IgnoreButKeepFor Reference": {
+                "IgnoreButKeepForReference": {
                     "type": "integer"
                 },
                 "NameID": {
@@ -1533,9 +1563,17 @@
                     "type": "string",
                     "description": "Cached name of this parent"
                 },
+                "TaxonomicRankCode": {
+                    "type": "string",
+                    "description": "Abbreviation of the rank"
+                },
+                "TaxonomicRankCode": {
+                    "type": "string",
+                    "description": "Taxonomic rank abbreviation"
+                },
                 "TaxonomicRank": {
                     "type": "string",
-                    "description": "Taxonomic rank of this parent"
+                    "description": "Taxonomic rank of this parent, according to the DisplayText-code-ENUM in the database"
                 },
                 "baseNameID": {
                     "type": "integer",

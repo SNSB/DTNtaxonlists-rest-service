@@ -123,19 +123,19 @@ def getTaxonName(databasename, nameid):
     if not cleanDatabasename(databasename):
         return []
     databasename=diversitydatabase(databasename)
-    query = u'''select '%s' as DatabaseName, a.NameID, a.TaxonNameCache, a.Version, a.TaxonomicRank, a.GenusOrSupragenericName, \
+    query = u'''select '%s' as DatabaseName, a.NameID, a.TaxonNameCache, a.Version, a.TaxonomicRank as TaxonomicRankCode, c.DisplayText as TaxonomicRank, a.GenusOrSupragenericName, \
                 a.InfragenericEpithet, a.SpeciesEpithet, a.InfraspecificEpithet, a.BasionymAuthors, \
                 a.CombiningAuthors, a.PublishingAuthors, a.SanctioningAuthor, a.NonNomenclaturalNameSuffix, a.IsRecombination, \
                 a.ReferenceTitle, a.ReferenceURI, \
                 a.Volume, a.Issue, a.Pages, a.YearOfPubl, a.NomenclaturalCode, a.NomenclaturalStatus, a.NomenclaturalComment, \
                 a.AnamorphTeleomorph, a.TypistNotes, a.RevisionLevel, a.IgnoreButKeepForReference, b.ProjectID \
                 from [%s].[dbo].[TaxonName] a inner join [%s].[dbo].[TaxonNameList] b on  \
-                a.NameID=b.NameID
+                a.NameID=b.NameID left join [%s].[dbo].[TaxonNameTaxonomicRank_Enum] c on a.TaxonomicRank=c.Code
                 where a.NameID=%s and \
                 (a.RevisionLevel is Null or a.RevisionLevel='final revision') and \
                 (a.IgnoreButKeepForReference is Null or a.IgnoreButKeepForReference=0) and \
                 (a.DataWithholdingReason is Null or a.DataWithholdingReason='') \
-                and ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851) ''' % (databasename, databasename, databasename, nameid)
+                and ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851) ''' % (databasename, databasename, databasename, databasename, nameid)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         namelistproxy = conn.execute(query)
@@ -304,11 +304,13 @@ def getTaxonHierarchyFull(database, projectid,  nameid, ignorebutkeepforreferenc
                        on child.NameParentID = name.NameID and child.ProjectID = name.ProjectID
                    where name.IgnoreButKeepForReference = %s
                 )
-                select a.*, n.TaxonNameCache, n.TaxonomicRank 
+                select a.*, n.TaxonNameCache, n.TaxonomicRank as TaxonomicRankCode, c.DisplayText as TaxonomicRank 
                     from hierachy a 
                         left join %s.dbo.TaxonName n 
                         on a.NameID=n.nameID 
-                order by baseNameID, level;''')  % (database, nameid, ignorebutkeepforreferences, database, ignorebutkeepforreferences, database)
+                        left join %s.dbo.TaxonNameTaxonomicRank_Enum c on
+                        n.TaxonomicRank=c.Code
+                order by baseNameID, level;''')  % (database, nameid, ignorebutkeepforreferences, database, ignorebutkeepforreferences, database, database)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         tanamelist = conn.execute(query)
