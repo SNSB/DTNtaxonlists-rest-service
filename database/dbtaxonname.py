@@ -36,7 +36,7 @@ def databasenameOK(databasename):
         return False
     return True
 
-# also change in the search.py 701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851
+# also change in the search.py 701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154
 
 # get all TaxonNameLists in this database:
 def getTaxonNameLists(databasename):
@@ -50,7 +50,7 @@ def getTaxonNameLists(databasename):
                 where (b.RevisionLevel is null or b.RevisionLevel = 'final revision') and \
                 (b.IgnoreButKeepForReference is Null or b.IgnoreButKeepForReference=0) and \
                 (b.DataWithholdingReason is Null or b.DataWithholdingReason='')) and \
-                a.ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851) \
+                a.ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154) \
                 ''' % (databasename, databasename,databasename) # TODO: Revision level has to be 'final revision'
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
@@ -67,7 +67,7 @@ def getTaxonNameListsProjectUri(databasename, id):
     if not cleanDatabasename(databasename):
         return []
     databasename=diversitydatabase(databasename)
-    query = u'select distinct ProjectURI from [%s].[dbo].[TaxonNameListProjectProxy] where ProjectID=%s and ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851)' % (databasename, id)
+    query = u'select distinct ProjectURI from [%s].[dbo].[TaxonNameListProjectProxy] where ProjectID=%s and ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154)' % (databasename, id)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         projectURI = conn.execute(query)
@@ -88,7 +88,7 @@ def getAllTaxonNamesFromList(databasename, listid):
                 (b.IgnoreButKeepForReference is Null or b.IgnoreButKeepForReference=0) and \
                 (b.DataWithholdingReason is Null or b.DataWithholdingReason='') \
                 and ProjectID=%s and \
-                ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851)''' % (databasename, databasename, listid)
+                ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154)''' % (databasename, databasename, listid)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         nameids = conn.execute(query)
@@ -135,13 +135,63 @@ def getTaxonName(databasename, nameid):
                 (a.RevisionLevel is Null or a.RevisionLevel='final revision') and \
                 (a.IgnoreButKeepForReference is Null or a.IgnoreButKeepForReference=0) and \
                 (a.DataWithholdingReason is Null or a.DataWithholdingReason='') \
-                and ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851) ''' % (databasename, databasename, databasename, databasename, nameid)
+                and ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154) ''' % (databasename, databasename, databasename, databasename, nameid)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         namelistproxy = conn.execute(query)
         if namelistproxy != None:
             namelist=R2L(namelistproxy)
     return namelist                    
+
+def getTaxonName_for_search_only(databasename, nameid):
+    namelist = []
+    if not cleanDatabasename(databasename):
+        return []
+    databasename=diversitydatabase(databasename)
+    query = u'''select '%s' as DatabaseName, a.NameID, a.TaxonNameCache, a.Version, a.TaxonomicRank as TaxonomicRankCode, c.DisplayText as TaxonomicRank, a.GenusOrSupragenericName, \
+                a.InfragenericEpithet, a.SpeciesEpithet, a.InfraspecificEpithet, a.BasionymAuthors, \
+                a.CombiningAuthors, a.PublishingAuthors, a.SanctioningAuthor, a.NonNomenclaturalNameSuffix, a.IsRecombination, \
+                a.ReferenceTitle, a.ReferenceURI, \
+                a.Volume, a.Issue, a.Pages, a.YearOfPubl, a.NomenclaturalCode, a.NomenclaturalStatus, a.NomenclaturalComment, \
+                a.AnamorphTeleomorph, a.TypistNotes, a.RevisionLevel, a.IgnoreButKeepForReference, b.ProjectID, \
+                a.GenusOrSupragenericName + \
+                case when a.InfragenericEpithet is null or a.InfragenericEpithet = '' then '' else \
+                    case when a.NomenclaturalCode = 3 \
+                        then case when a.TaxonomicRank = 'subgen.' then  + ' ' + a.TaxonomicRank + ' ' + a.InfragenericEpithet \
+                        else ' (' + a.InfragenericEpithet + ')' end \
+                    else ' ' + a.TaxonomicRank + ' ' + RTRIM(a.InfragenericEpithet) end \
+                end \
+                + \
+                case when a.SpeciesEpithet is null or a.SpeciesEpithet  = '' then '' else ' ' + RTRIM(a.SpeciesEpithet) end \
+                + \
+                case when a.InfraspecificEpithet is null  or a.InfraspecificEpithet = '' \
+                    then '' \
+                    else \
+                        case    when a.SpeciesEpithet <> a.InfraspecificEpithet \
+                            then    ' ' + \
+                            case when a.TaxonomicRank is null or a.TaxonomicRank = ''  then '' \
+                            else case when a.NomenclaturalCode = 3 and (a.TaxonomicRank = 'ssp.' or a.TaxonomicRank = 'subsp.')  then '' else a.TaxonomicRank + ' ' end \
+                            end \
+                           + RTRIM(a.InfraspecificEpithet) \
+                        else \
+                        case when a.NomenclaturalCode = 3 /* Zoology */ and a.SpeciesEpithet = a.InfraspecificEpithet and  (a.TaxonomicRank = 'ssp.' or a.TaxonomicRank = 'subsp.') \
+                            then ' ' + RTRIM(a.InfraspecificEpithet) else '' end \
+                        end \
+                end as TaxonName_for_search_only \
+                from [%s].[dbo].[TaxonName] a inner join [%s].[dbo].[TaxonNameList] b on  \
+                a.NameID=b.NameID left join [%s].[dbo].[TaxonNameTaxonomicRank_Enum] c on a.TaxonomicRank=c.Code
+                where a.NameID=%s and \
+                (a.RevisionLevel is Null or a.RevisionLevel='final revision') and \
+                (a.IgnoreButKeepForReference is Null or a.IgnoreButKeepForReference=0) and \
+                (a.DataWithholdingReason is Null or a.DataWithholdingReason='') \
+                and ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154) ''' % (databasename, databasename, databasename, databasename, nameid)
+    current_app.logger.debug("Query %s " % (query))
+    with get_db().connect() as conn:
+        namelistproxy = conn.execute(query)
+        if namelistproxy != None:
+            namelist=R2L(namelistproxy)
+    return namelist   
+
 
 def getTaxonNameAllCommonNames(databasename, nameid):
     commonnamelist =[]

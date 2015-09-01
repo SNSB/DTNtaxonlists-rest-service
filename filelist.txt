@@ -35,13 +35,16 @@ static/fonts/droid-sans-v6-latin-700.woff2
 static/fonts/droid-sans-v6-latin-regular.ttf
 static/fonts/droid-sans-v6-latin-regular.svg
 static/fonts/droid-sans-v6-latin-700.ttf
+static/x_style.css
 static/uri.min.js
 static/css
 static/css/typography.css
 static/css/print.css
 static/css/screen.css
+static/css/.Rhistory
 static/css/reset.css
 static/swagger-ui.js
+static/api-doc2.html
 static/api-doc.html
 templates
 templates/layout.html

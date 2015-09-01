@@ -132,8 +132,8 @@ def frontMatter():
 # http://flask.pocoo.org/docs/0.10/deploying/mod_wsgi/
 
 if __name__ == '__main__':
-    #app.run(host='0.0.0.0', debug=True)
-    run_simple('0.0.0.0', 5000, app, use_reloader=True, use_debugger=False, use_evalex=True)
+    app.run(host='0.0.0.0', debug=True)
+    #run_simple('0.0.0.0', 5000, app, use_reloader=True, use_debugger=False, use_evalex=True)
     
     
 # distribution:
