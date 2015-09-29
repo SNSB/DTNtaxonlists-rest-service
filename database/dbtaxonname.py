@@ -98,6 +98,39 @@ def getAllTaxonNamesFromList(databasename, listid):
                     namelist.append({'nameid':nameid['NameID'], 'notes': nameid['Notes'], 'database': databasename})
     return namelist
 
+##########################################################
+
+# Get all names of a list including the first accepted name and the first common name 
+def getAllTaxonNamesFromListFlat(databasename, listid):
+    namelist = []
+    if not cleanDatabasename(databasename):
+        return []
+    databasename=diversitydatabase(databasename)
+    query = u'''select '%s' as DatabaseName, a.NameID, a.TaxonNameCache, a.Version, a.TaxonomicRank as TaxonomicRankCode, c.DisplayText as TaxonomicRank, a.GenusOrSupragenericName, \
+                a.InfragenericEpithet, a.SpeciesEpithet, a.InfraspecificEpithet, a.BasionymAuthors, \
+                a.CombiningAuthors, a.PublishingAuthors, a.SanctioningAuthor, a.NonNomenclaturalNameSuffix, a.IsRecombination, \
+                a.ReferenceTitle, a.ReferenceURI, \
+                a.Volume, a.Issue, a.Pages, a.YearOfPubl, a.NomenclaturalCode, a.NomenclaturalStatus, a.NomenclaturalComment, \
+                a.AnamorphTeleomorph, a.TypistNotes, a.RevisionLevel, a.IgnoreButKeepForReference, b.ProjectID, \
+                an.ProjectID as AcceptedNameProject, \
+                sy.ProjectID as SynonymieProject, sy.SynNameID as SynonymieNameID, \
+                hi.NameParentID as HierarchieNameParentID, hi.ProjectID as HierarchieProject \
+                from [%s].[dbo].[TaxonName] a inner join [%s].[dbo].[TaxonNameList] b on  \
+                a.NameID=b.NameID left join [%s].[dbo].[TaxonNameTaxonomicRank_Enum] c on a.TaxonomicRank=c.Code left join \
+                [%s].[dbo].[TaxonAcceptedName] an on an.NameID = a.NameID left join \
+                [%s].[dbo].[TaxonHierarchy] hi on hi.NameID = a.NameID left join \
+                [%s].[dbo].[TaxonSynonymy] sy on sy.NameID = a.NameID \
+                where b.ProjectID=%s and \
+                (a.RevisionLevel is Null or a.RevisionLevel='final revision') and \
+                (a.IgnoreButKeepForReference is Null or a.IgnoreButKeepForReference=0) and \
+                (a.DataWithholdingReason is Null or a.DataWithholdingReason='') \
+                and b.ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154) ''' % (databasename, databasename, databasename, databasename, databasename, databasename, databasename, listid)
+    current_app.logger.debug("Query %s " % (query))
+    with get_db().connect() as conn:
+        namelistproxy = conn.execute(query)
+        if namelistproxy != None:
+            namelist=R2L(namelistproxy)
+    return namelist 
 ###################
 
 

@@ -43,7 +43,7 @@ json.settings.setdefault('indent', 4)
 json.settings.setdefault('sort_keys', True)
 
 from resources.intro import intro
-from resources.lists import taxonlist, taxonlistproject, taxonlists
+from resources.lists import taxonlist, taxonlistproject, taxonlists, taxonlistflat
 from resources.names import *
 from resources.agents import agent, agentsTNT, agentRelations, agentTNT, agentRelationsTNT
 from resources.projects import project, projects, projectAgents, projectReferences
@@ -74,6 +74,8 @@ api.add_resource(taxonlists, '/lists/', '/lists' )
 api.add_resource(taxonlist, '/lists/<string:database>/<int:id>/') # links to all LISTS or info on this list and link to _all_ AGENTS and links to _all_ NAMES
 api.add_resource(wwwtaxonlist, '/lists/<string:database>/<int:id>/www') # link to the associated project
 api.add_resource(taxonlistproject, '/lists/<string:database>/<int:id>/project') # link to the associated project
+api.add_resource(taxonlistflat, '/lists/<string:database>/<int:id>/flat') # all names of list in flat format
+
 
 api.add_resource(names, '/names/' ) 
 api.add_resource(name, '/names/<string:database>/<int:id>/' ) # urls to all NAMES or info on this name including info and links to _all_ COMMONNAMES, PROJECTS, ACCEPTEDNAMES, HIERARCHIES, SYNONYMS

@@ -5,6 +5,7 @@ from flask.ext import restful
 from flask.ext.restful import fields, marshal_with
 from flask import url_for, Response
 from database.list import getList, getAllLists, getListProject
+from database.dbtaxonname import getAllTaxonNamesFromListFlat
 from urlparse import urlparse
 from flask import Flask,g, request, render_template
 
@@ -26,6 +27,26 @@ class taxonlist(restful.Resource):
             uri =  url_for('name', database=database, id = row['nameid'], _external=True)
             links.append(makelink('taxonname', 'details', uri))
             row['links'] = links
+        return namelist
+    
+class taxonlistflat(restful.Resource):
+    def get(self, database, id):
+        namelist = getAllTaxonNamesFromListFlat(database,id)
+        for row in namelist:
+            uri =  url_for('name', database=database, id = row['NameID'], _external=True)
+            row['taxonID'] = uri
+            if row['HierarchieNameParentID'] is not None and row['HierarchieNameParentID'] != -1:
+                uri_parent = url_for('name', database=database, id = row['HierarchieNameParentID'], _external=True)
+            else:
+                uri_parent = None
+            row['parentNameUsageID'] = uri_parent
+            if row['SynonymieNameID'] is not None:
+                uri_synonym = url_for('name', database=database, id = row['SynonymieNameID'], _external=True)
+            else:
+                uri_synonym = None
+            row['acceptedNameUsageID'] = uri_synonym
+            
+            
         return namelist
 
 class taxonlistproject(restful.Resource):
