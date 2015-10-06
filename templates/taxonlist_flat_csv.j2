@@ -1,0 +1,5 @@
+taxonID,scientificName,acceptedNameUsageID,parentNameUsageID,references,taxonRank,namePublishedIn
+{% for nameitem in taxonnames -%}
+"{{ nameitem.taxonID }}","{{ nameitem.TaxonNameCache | default('', true)  }}","{{ nameitem.acceptedNameUsageID | default('', true)  }}","{{ nameitem.parentNameUsageID | default('', true)  }}","{{ project.ProjectURL | default('', true)  }}","{{ nameitem.TaxonomicRank | default('', true)  }}","{%- if nameitem.PublishingAuthors -%}{{ nameitem.PublishingAuthor }} {%- endif -%}{%- if nameitem.YearOfPubl %}({{ nameitem.YearOfPubl }}){%- endif -%}{%- if  nameitem.ReferenceTitle -%} {{nameitem.ReferenceTitle }}{%- endif -%} {{ nameitem.Issue  | default('', true)  }} {{ nameitem.Volume | default('', true) }} {{ nameitem.Pages | default('', true) }}"
+{% endfor %}  
+

@@ -52,6 +52,7 @@ templates/nameinfo.html
 templates/show_taxonnames.html
 templates/show_list_info.html
 templates/project_info.html
+templates/taxonlist_flat_csv.j2
 templates/.directory
 templates/login.html
 templates/show_entries.html
@@ -65,6 +66,7 @@ resources/agents.py
 resources/__init__.py
 resources/lists.py
 resources/names.py
+resources/taxonlist_flat_csv.py
 resources/contacts.py
 resources/projects.py
 resources/intro.py

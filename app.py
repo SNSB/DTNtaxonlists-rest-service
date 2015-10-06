@@ -44,6 +44,7 @@ json.settings.setdefault('sort_keys', True)
 
 from resources.intro import intro
 from resources.lists import taxonlist, taxonlistproject, taxonlists, taxonlistflat
+from resources.taxonlist_flat_csv import taxonlist_flat_csv
 from resources.names import *
 from resources.agents import agent, agentsTNT, agentRelations, agentTNT, agentRelationsTNT
 from resources.projects import project, projects, projectAgents, projectReferences
@@ -75,6 +76,7 @@ api.add_resource(taxonlist, '/lists/<string:database>/<int:id>/') # links to all
 api.add_resource(wwwtaxonlist, '/lists/<string:database>/<int:id>/www') # link to the associated project
 api.add_resource(taxonlistproject, '/lists/<string:database>/<int:id>/project') # link to the associated project
 api.add_resource(taxonlistflat, '/lists/<string:database>/<int:id>/flat') # all names of list in flat format
+api.add_resource(taxonlist_flat_csv, '/lists/<string:database>/<int:id>/csv') # all names of list in flat format
 
 
 api.add_resource(names, '/names/' ) 
@@ -134,8 +136,8 @@ def frontMatter():
 # http://flask.pocoo.org/docs/0.10/deploying/mod_wsgi/
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
-    #run_simple('0.0.0.0', 5000, app, use_reloader=True, use_debugger=False, use_evalex=True)
+    #app.run(host='0.0.0.0', debug=True)
+    run_simple('0.0.0.0', 5000, app, use_reloader=True, use_debugger=False, use_evalex=True)
     
     
 # distribution:
