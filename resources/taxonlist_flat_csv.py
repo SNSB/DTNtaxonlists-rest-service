@@ -30,7 +30,7 @@ class taxonlist_flat_csv(restful.Resource):
             if row['AcceptedNameProject'] is None and row['SynonymieNameID'] is not None:
                 synonym_is_accepted = getTaxonNameAllAcceptedNames(database, row['SynonymieNameID'])
                 if len(synonym_is_accepted) > 0 and synonym_is_accepted[0]['NameID'] is not None:
-                    uri_synonym = url_for('name', database=database, id = row['NameID'], _external=True)
+                    uri_synonym = url_for('name', database=database, id = synonym_is_accepted[0]['NameID'], _external=True)
                 else:
                     uri_synonym = None
             else:
