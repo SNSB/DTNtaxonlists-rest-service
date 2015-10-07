@@ -44,7 +44,7 @@ json.settings.setdefault('sort_keys', True)
 
 from resources.intro import intro
 from resources.lists import taxonlist, taxonlistproject, taxonlists, taxonlistflat
-from resources.taxonlist_flat_csv import taxonlist_flat_csv
+from resources.taxonlist_flat_csv import taxonlist_flat_csv, darwin_core_zip
 from resources.names import *
 from resources.agents import agent, agentsTNT, agentRelations, agentTNT, agentRelationsTNT
 from resources.projects import project, projects, projectAgents, projectReferences
@@ -77,6 +77,7 @@ api.add_resource(wwwtaxonlist, '/lists/<string:database>/<int:id>/www') # link t
 api.add_resource(taxonlistproject, '/lists/<string:database>/<int:id>/project') # link to the associated project
 api.add_resource(taxonlistflat, '/lists/<string:database>/<int:id>/flat') # all names of list in flat format
 api.add_resource(taxonlist_flat_csv, '/lists/<string:database>/<int:id>/csv') # all names of list in flat format
+api.add_resource(darwin_core_zip, '/lists/<string:database>/<int:id>/zip') # all names of list in darwin core zip  format
 
 
 api.add_resource(names, '/names/' ) 
