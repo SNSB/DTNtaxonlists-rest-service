@@ -78,6 +78,10 @@ class   darwin_core_zip( restful.Resource ):
             row['taxonID'] = uri
         taxoncommonname_csv = render_template("taxonlistcommonnames_flat_csv.j2", database=database, id=id, commonnames=taxoncommonnamelist, project=project[0]) 
         
+        
+        import time
+        currentdate = time.strftime("%Y-%m-%d")
+        
         projectagentlist = getProjectAgents('DiversityProjects_TNT', id)
         for row in projectagentlist:
             agenturi = urlparse(row['AgentURI']).path
@@ -94,14 +98,14 @@ class   darwin_core_zip( restful.Resource ):
                 #row['InheritedNamePostfix'] = agent[0]['InheritedNamePostfix']
                 row['Abbreviation'] = agent[0]['Abbreviation']
                 row['AgentType'] = agent[0]['AgentType']
-        taxonlist_eml = render_template("taxonlist_flat_eml.j2", database=database, id=id, agents=projectagentlist, project=project[0], thisurl = thisurl) 
+        taxonlist_eml = render_template("taxonlist_flat_eml.j2", database=database, id=id, agents=projectagentlist, project=project[0], currentdate=currentdate, thisurl=thisurl) 
         
         taxonlist_meta = render_template("meta.xml.j2", database=database, id=id, project=project[0], commonnamesexist=(len(taxoncommonnamelist) > 0) )
         
         from flask import Flask, send_file
         from zipfile import ZipFile
         from StringIO import StringIO
-        import time
+
         timestr = time.strftime("%Y%m%d-%H%M%S")
 
         inMemoryOutputFile = StringIO()
