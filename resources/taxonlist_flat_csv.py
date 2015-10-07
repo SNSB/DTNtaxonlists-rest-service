@@ -103,14 +103,14 @@ class   darwin_core_zip( restful.Resource ):
         taxonlist_meta = render_template("meta.xml.j2", database=database, id=id, project=project[0], commonnamesexist=(len(taxoncommonnamelist) > 0) )
         
         from flask import Flask, send_file
-        from zipfile import ZipFile
+        from zipfile import ZipFile, ZIP_DEFLATED
         from StringIO import StringIO
 
         timestr = time.strftime("%Y%m%d-%H%M%S")
 
         inMemoryOutputFile = StringIO()
 
-        zipFile = ZipFile(inMemoryOutputFile, 'w') 
+        zipFile = ZipFile(inMemoryOutputFile, 'w', ZIP_DEFLATED) 
         zipFile.writestr('eml.eml', taxonlist_eml.encode('utf-8'))
         zipFile.writestr('meta.xml', taxonlist_meta.encode('utf-8'))
         zipFile.writestr('taxon.csv', taxon_csv.encode('utf-8'))
