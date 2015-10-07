@@ -1,0 +1,30 @@
+<eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.1.1"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.1 http://rs.gbif.org/schema/eml-gbif-profile/1.0.2/eml.xsd"
+         packageId=""  system="http://services.snsb.info/DTNtaxonlists/rest/v0.1/" scope="system"
+         xml:lang="en">
+<dataset>
+    <title>{{ project.ProjectTitle }}</title>
+    {% for editor in agents -%}
+    {%- if editor.AgentRole == 'editor' -%}
+    <person id="{{ editor.AgentID }}" scope="document">
+        <individualName>
+            {% if editor.AgentTitel -%}<Salutation>{{ editor.AgentTitel }}</Salutation>{%- endif -%}
+            <surName>{{ editor.InheritedNamePrefix | default('', True) }}{{ editor.InheritedName }}{{ editor.InheritedNamePostfix | default('', True) }}</surName>
+            <givenName>{{ editor.GivenName }}{{ editor.GivenNamePostfix | default('', True) }}</givenName>
+        </individualName>
+        <RoleType>{{ editor.AgentRole }}</RoleType>
+    </person>
+    {%- endif -%}
+    {%- endfor %}
+    <abstract>
+        <para>The DTN Taxon lists services concept is described under http://www.diversitymobile.net/wiki/DTN_Taxon_Lists_Services. The taxon lists are offered via several open and freely accessible services with a dynamic data flow involving DTN data bases DTN Software and DTN Information model.</para>
+    </abstract>
+    <distribution scope="document">
+        <online>
+           <url function="resource">{{ thisurl }}</url>
+           <url function="information">{{ project.ProjectURL }}</url>
+        </online>
+    </distribution>
+</dataset>
+</eml:eml>
