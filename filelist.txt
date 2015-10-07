@@ -48,6 +48,7 @@ static/api-doc2.html
 static/api-doc.html
 templates
 templates/layout.html
+templates/meta.xml.j2
 templates/nameinfo.html
 templates/show_taxonnames.html
 templates/show_list_info.html
@@ -62,6 +63,8 @@ templates/name_history.html
 templates/taxonlist.html
 templates/taxonlist_internal.html
 templates/show_lists.html
+templates/taxonlistcommonnames_flat_csv.j2
+templates/taxonlist_flat_eml.j2
 resources/agents.py
 resources/__init__.py
 resources/lists.py

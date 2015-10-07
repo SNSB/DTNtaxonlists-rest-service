@@ -6,7 +6,7 @@
 <dataset>
     <title>{{ project.ProjectTitle }}</title>
     {% for editor in agents -%}
-    {%- if editor.AgentRole == 'editor' -%}
+    {% if editor.AgentRole == 'editor' -%}
     <person id="{{ editor.AgentID }}" scope="document">
         <individualName>
             {% if editor.AgentTitel -%}<Salutation>{{ editor.AgentTitel }}</Salutation>{%- endif -%}
@@ -15,8 +15,8 @@
         </individualName>
         <RoleType>{{ editor.AgentRole }}</RoleType>
     </person>
-    {%- endif -%}
-    {%- endfor %}
+    {% endif -%}
+    {% endfor %}
     <abstract>
         <para>The DTN Taxon lists services concept is described under http://www.diversitymobile.net/wiki/DTN_Taxon_Lists_Services. The taxon lists are offered via several open and freely accessible services with a dynamic data flow involving DTN data bases DTN Software and DTN Information model.</para>
     </abstract>
