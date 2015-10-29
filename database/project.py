@@ -44,3 +44,15 @@ def getprojectreferences(database, id):
 #        return None
     lists = getProjectReferences(database,id)
     return lists
+
+def getprojectlicense(database, id):
+    lists=[]
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+#    dbList = getDBs('DiversityProjects')
+#    if not database in dbList:
+#        return None
+    lists = getProjectLicense(database,id)
+    return lists
+    

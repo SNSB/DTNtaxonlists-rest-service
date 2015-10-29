@@ -47,7 +47,7 @@ from resources.lists import taxonlist, taxonlistproject, taxonlists, taxonlistfl
 from resources.taxonlist_flat_csv import taxonlist_flat_csv, darwin_core_zip
 from resources.names import *
 from resources.agents import agent, agentsTNT, agentRelations, agentTNT, agentRelationsTNT
-from resources.projects import project, projects, projectAgents, projectReferences
+from resources.projects import project, projects, projectAgents, projectReferences, projectLicense
 from resources.contacts import contact
 from resources.commonnames import commonname, commonnames
 from resources.references import references, reference, referenceTNT, referencerelations, referencerelation
@@ -77,7 +77,7 @@ api.add_resource(wwwtaxonlist, '/lists/<string:database>/<int:id>/www') # link t
 api.add_resource(taxonlistproject, '/lists/<string:database>/<int:id>/project') # link to the associated project
 api.add_resource(taxonlistflat, '/lists/<string:database>/<int:id>/flat') # all names of list in flat format
 api.add_resource(taxonlist_flat_csv, '/lists/<string:database>/<int:id>/csv') # all names of list in flat format
-api.add_resource(darwin_core_zip, '/lists/<string:database>/<int:id>/zip') # all names of list in darwin core zip  format
+api.add_resource(darwin_core_zip, '/lists/<string:database>/<int:id>/dwc') # all names of list in darwin core zip  format
 
 
 api.add_resource(names, '/names/' ) 
@@ -114,6 +114,7 @@ api.add_resource(projects, '/projects/')
 api.add_resource(project, '/projects/<int:id>/', '/Projects/<int:id>/', '/Projects_TNT/<int:id>/') # links to all projects or info on this project 
 api.add_resource(projectAgents, '/projects/<int:id>/agents', '/Projects_TNT/<int:id>/agents')
 api.add_resource(projectReferences, '/projects/<int:id>/references', '/Projects_TNT/<int:id>/references')
+api.add_resource(projectLicense, '/projects/<int:id>/licenses', '/Projects_TNT/<int:id>/licenses')
 
 api.add_resource(references, '/references/')
 api.add_resource(reference, '/references/<string:database>/<int:id>/')

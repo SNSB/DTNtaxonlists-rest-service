@@ -43,10 +43,11 @@ def getProject(database, projectid):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query = u''' select ProjectID, ProjectParentID, Project, ProjectTitle, ProjectDescription, \
-                 ProjectEditors, ProjectInstitution, ProjectNotes, ProjectCopyright, ProjectURL, \
-                 ProjectSettings, ProjectRights, ProjectLicenseURI from [%s].[dbo].[Project] \
-                 where ProjectID=%s''' % (database, projectid)
+    query = u''' select a.ProjectID, a.ProjectParentID, a.Project, a.ProjectTitle, a.ProjectDescription, \
+                 a.ProjectEditors, a.ProjectInstitution, a.ProjectNotes, a.ProjectCopyright, a.ProjectURL, \
+                 a.ProjectSettings, a.ProjectRights, a.ProjectLicenseURI \
+                 from [%s].dbo.[Project] a \
+                 where a.ProjectID=%s''' % (database, projectid)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         tprojectlist = conn.execute(query)
@@ -54,6 +55,24 @@ def getProject(database, projectid):
             projectlist=R2L(tprojectlist)
     return projectlist
 
+def getProjectLicense(database, projectid):
+    licenselist = []
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+    query = u''' select b.LicenseID, b.ProjectID, b.DisplayText as LicenseDisplayText, b.LicenseURI, b.LicenseType, b.LicenseHolder, \
+                 b.LicenseHolderAgentURI, b.LicenseYear, b.Context as LicenseContext, \
+                 b.IPR, b.IPRHolder, b.IPRHolderAgentURI, b.CopyrightStatement, b.CopyrightHolder, \
+                 b.CopyrightHolderAgentUri, b.Notes as LicenseNotes \
+                 from [%s].dbo.[ProjectLicense] b \
+                 where b.ProjectID=%s''' % (database, projectid)
+    current_app.logger.debug("Query %s " % (query))
+    with get_db().connect() as conn:
+        tlicenselist = conn.execute(query)
+        if tlicenselist != None:
+            licenselist=R2L(tlicenselist)
+    return licenselist
+                 
 def getProjectAgents(database, projectid):
     agentlist=[]
     if not cleanDatabasename(database):

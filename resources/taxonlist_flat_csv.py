@@ -7,7 +7,7 @@ import urllib2
 from resources.lists import taxonlistflat
 
 from database.dbtaxonname import getAllTaxonNamesFromListFlat, getTaxonNameAllAcceptedNames, getAllCommonNamesFromListFlat
-from database.dbprojects import getProject, getProjectAgents
+from database.dbprojects import getProject, getProjectAgents, getProjectLicense
 from database.dbagents import getAgent
 
 from flask.ext import restful
@@ -80,7 +80,7 @@ class   darwin_core_zip( restful.Resource ):
         
         
         import time
-        currentdate = time.strftime("%Y-%m-%d")
+        currentdate = time.strftime("%Y-%m-%dT%H:%M:%S%z")
         
         projectagentlist = getProjectAgents('DiversityProjects_TNT', id)
         for row in projectagentlist:
@@ -98,7 +98,9 @@ class   darwin_core_zip( restful.Resource ):
                 #row['InheritedNamePostfix'] = agent[0]['InheritedNamePostfix']
                 row['Abbreviation'] = agent[0]['Abbreviation']
                 row['AgentType'] = agent[0]['AgentType']
-        taxonlist_eml = render_template("taxonlist_flat_eml.j2", database=database, id=id, agents=projectagentlist, project=project[0], currentdate=currentdate, thisurl=thisurl) 
+                
+        projectlicencelist = getProjectLicense('DiversityProjects_TNT', id)
+        taxonlist_eml = render_template("taxonlist_flat_eml.j2", database=database, id=id, agents=projectagentlist, project=project[0], licenses=projectlicencelist, currentdate=currentdate, thisurl=thisurl) 
         
         taxonlist_meta = render_template("meta.xml.j2", database=database, id=id, project=project[0], commonnamesexist=(len(taxoncommonnamelist) > 0) )
         
