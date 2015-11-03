@@ -1,5 +1,4 @@
 taxonID,vernacularName,countryCode,language
 {% for nameitem in commonnames -%}
 "{{ nameitem.taxonID }}","{{ nameitem.CommonName | default('', true)  }}","{{ nameitem.CountryCode | default('', true)  }}","{{ nameitem.LanguageCode | default('', true)  }}"
-{% endfor %}  
-
+{% endfor %}

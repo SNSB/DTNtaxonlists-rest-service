@@ -1,5 +1,4 @@
 taxonID,scientificName,taxonomicStatus,acceptedNameUsageID,parentNameUsageID,references,taxonRank,namePublishedIn
 {% for nameitem in taxonnames -%}
 "{{ nameitem.taxonID }}","{{ nameitem.TaxonNameCache | default('', true)  }}",{%- if nameitem.AcceptedNameProject -%}"accepted"{%- elif nameitem.AcceptedNameProject -%}"{{ nameitem.SynType }} synonym"{%- endif -%},"{{ nameitem.acceptedNameUsageID | default('', true)  }}","{{ nameitem.parentNameUsageID | default('', true)  }}","{{ nameitem.taxonID | default('', true)  }}","{{ nameitem.TaxonomicRank | default('', true)  }}","{%- if  nameitem.ReferenceTitle -%}{{nameitem.ReferenceTitle }}{%- endif -%}"
-{% endfor %}  
-
+{% endfor %}

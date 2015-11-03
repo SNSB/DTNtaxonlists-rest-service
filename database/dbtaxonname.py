@@ -112,12 +112,15 @@ def getAllTaxonNamesFromListFlat(databasename, listid):
                 a.ReferenceTitle, a.ReferenceURI, \
                 a.Volume, a.Issue, a.Pages, a.YearOfPubl, a.NomenclaturalCode, a.NomenclaturalStatus, a.NomenclaturalComment, \
                 a.AnamorphTeleomorph, a.TypistNotes, a.RevisionLevel, a.IgnoreButKeepForReference, b.ProjectID, \
-                an.ProjectID as AcceptedNameProject, \
-                sy.ProjectID as SynonymieProject, sy.SynNameID as SynonymieNameID, sy.SynType, \
-                hi.NameParentID as HierarchieNameParentID, hi.ProjectID as HierarchieProject \
+                (case when an.IgnoreButKeepForReference is null or an.IgnoreButKeepForReference = 0 then an.ProjectID else null end) as AcceptedNameProject, \
+                (case when sy.IgnoreButKeepForReference is null or sy.IgnoreButKeepForReference = 0 then sy.ProjectID else null end) as SynonymieProject, \
+                (case when sy.IgnoreButKeepForReference is null or sy.IgnoreButKeepForReference = 0 then sy.SynNameID else null end) as SynonymieNameID, \
+                (case when sy.IgnoreButKeepForReference is null or sy.IgnoreButKeepForReference = 0 then sy.SynType else null end) as SynType, \
+                (case when hi.IgnoreButKeepForReference is null or hi.IgnoreButKeepForReference = 0 then hi.NameParentID else null end) as HierarchieNameParentID, \
+                (case when hi.IgnoreButKeepForReference is null or hi.IgnoreButKeepForReference = 0 then hi.ProjectID else null end) as HierarchieProject \
                 from [%s].[dbo].[TaxonName] a inner join [%s].[dbo].[TaxonNameList] b on  \
                 a.NameID=b.NameID left join [%s].[dbo].[TaxonNameTaxonomicRank_Enum] c on a.TaxonomicRank=c.Code left join \
-                [%s].[dbo].[TaxonAcceptedName] an on an.NameID = a.NameID left join \
+                [%s].[dbo].[TaxonAcceptedName] an on an.NameID = a.NameID  left join \
                 [%s].[dbo].[TaxonHierarchy] hi on hi.NameID = a.NameID left join \
                 [%s].[dbo].[TaxonSynonymy] sy on sy.NameID = a.NameID \
                 where b.ProjectID=%s and \

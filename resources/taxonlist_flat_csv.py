@@ -113,7 +113,7 @@ class   darwin_core_zip( restful.Resource ):
         inMemoryOutputFile = StringIO()
 
         zipFile = ZipFile(inMemoryOutputFile, 'w', ZIP_DEFLATED) 
-        zipFile.writestr('eml.eml', taxonlist_eml.encode('utf-8'))
+        zipFile.writestr('eml.xml', taxonlist_eml.encode('utf-8'))
         zipFile.writestr('meta.xml', taxonlist_meta.encode('utf-8'))
         zipFile.writestr('taxon.csv', taxon_csv.encode('utf-8'))
         if len(taxoncommonnamelist)>0:
