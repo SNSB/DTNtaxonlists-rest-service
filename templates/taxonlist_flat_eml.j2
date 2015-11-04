@@ -40,6 +40,9 @@
   <metadata>
     <gbif>
       <dateStamp>{{ currentdate }}</dateStamp>
+      <citation>
+        {% for license in licenses %}{{ license.LicenseHolder }}{% if not loop.last %}, {% endif %}{% endfor %}: {{ project.ProjectTitle }}
+      </citation>
     </gbif>
    </metadata>
 </additionalMetadata>
