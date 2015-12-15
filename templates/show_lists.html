@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-<h2 class="swagger-ui-wrap">Verf&uuml;gbare Listen auf diesem Server:</h2>
+<h2 class="swagger-ui-wrap">Overview on Published Lists</h2>
 <div class="project">
 </div>
 <script>
@@ -9,6 +9,7 @@ $.ajaxSetup({
 });
 $.getJSON("{{ url_for('taxonlists', __external=T) }}", function(data) {
     var items = [];
+    
     $.each( data, function( listentry ) {
         var listobject =  data[listentry]
         var projectlink = ""
@@ -45,7 +46,17 @@ $.getJSON("{{ url_for('taxonlists', __external=T) }}", function(data) {
                 });
             });    
         });
-        items.push( "<div id='Database' class='content' style='padding: 0 0 10px;'> <a href='" + projectURI + "'><h2 style='color: #0f6ab4;'>" + projectname + "</h2></a> <h4 style='margin-left:2em;'>" + projectdescr + "</h4> <div class='markdown' style='margin-left:2em; padding:3px;'><p class='database'>In database " + listobject.DatabaseName + "</p>  <h4> Curator: </h4><ul><li class='curname' style='color: #333333; line-height: 1.4em; padding: 3px 0;'>"+ agentitems.join("</li><li class='curname'  style='color: #333333; line-height: 1.4em; padding: 3px 0;'>") + "</li></ul> </div> </div>" );
+        var item = "<div id='Database' class='content' style='padding: 0 0 10px;'> <a href='" + projectURI + "'><h2 style='color: #0f6ab4;'>" + projectdescr + "</h2></a>  <div class='markdown' style='margin-left:2em; padding:3px;'> <h4>TaxRefCode: </h4><p style='color: #333333; line-height: 1.4em; padding: 3px 0; margin-left:1em;'>" + projectname + "</p>"
+        if (agentitems.length > 1) {
+           item = item + "<h4> Curators: </h4>";
+        }
+        else {
+           item = item + "<h4> Curator: </h4>";
+        }
+        item = item + "<li class='curname' style='color: #333333; line-height: 1.4em; padding: 3px 0; margin-left:2em;'>"+ agentitems.join("</li><li class='curname'  style='color: #333333; line-height: 1.4em; padding: 3px 0; margin-left:2em;'>") + "</li></ul> </div> </div>" 
+        
+        items.push( item );
+        
     });
 
     $( "<div/>", {
