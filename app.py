@@ -5,7 +5,7 @@ from flask.ext import restful
 from werkzeug.serving import run_simple
 from flask.ext.cache import Cache 
 from flask.ext.restful.representations import json
-
+from flask.ext.cors import CORS
 
 from reverseproxy import ReverseProxied
 
@@ -14,6 +14,7 @@ from reverseproxy import ReverseProxied
 
 
 app = Flask(__name__)
+CORS(app)
 app.wsgi_app = ReverseProxied(app.wsgi_app)
 cache = Cache(app,config={'CACHE_TYPE': 'simple'})
 
@@ -138,8 +139,8 @@ def frontMatter():
 # http://flask.pocoo.org/docs/0.10/deploying/mod_wsgi/
 
 if __name__ == '__main__':
-    #app.run(host='0.0.0.0', debug=True)
-    run_simple('0.0.0.0', 5000, app, use_reloader=True, use_debugger=False, use_evalex=True)
+    app.run(host='0.0.0.0', debug=True)
+    #run_simple('0.0.0.0', 5000, app, use_reloader=True, use_debugger=False, use_evalex=True)
     
     
 # distribution:

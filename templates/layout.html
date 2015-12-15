@@ -3,6 +3,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <title>http://services.snsb.info/DTNtaxonlists/rest/v0.1</title>
 <head>
+  <link href='static/css/typography.css' media='screen' rel='stylesheet' type='text/css'/>
+  <link href='static/css/reset.css' media='screen' rel='stylesheet' type='text/css'/>
+  <link href='static/css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
+  <link href='static/css/reset.css' media='print' rel='stylesheet' type='text/css'/>
+  <link href='static/css/print.css' media='print' rel='stylesheet' type='text/css'/>
+
 <script src="{{ url_for('static', filename='uri.min.js') }}"></script>
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <style>
@@ -11,11 +17,32 @@
     }
 </style>
 </head>
-<div class=page>
+<body class="swagger-section" style="text-align:left; margin-left:10px; margin-right:10px; background-color:#EEEEEE">
+	
+    <a href="http://diversityworkbench.net/Portal/Main_Page" target="_blank">
+        <img src="http://www.snsb.info/Pictures/Diversity_allein_tr.png" title="Diversity Workbench" alt="to Diversity Workbench" height="60" border="0" align="left" style="float: left; 
+            margin-right: 40px; margin-top: 10px;"/>
+    </a>
+    <a href="http://www.bolgermany.de/" target="_blank">
+        <img src="http://www.snsb.info/Pictures/GBOL_Logo_small.png" title="German Barcode of Life" alt="to German Barcode of Life" border="0" align="right" style="float: right;
+            margin-left: 40px; margin-top: 10px;"/>
+	</a>
+    <a href="http://www.gfbio.org/" target="_blank">
+        <img src="http://www.snsb.info/Pictures/gfbiologo-transparent.png" title="German Federation for Biological data" alt="to GFBio" height="50" border="0" align="right" style="float: right;
+            margin-left: 40px; margin-top: 10px;"/>
+    </a>
+	<br />
+	<br />
+	<br />
+	<br />
+    <div style="position:relative; top:10px; left:0px; background-image:url( http://www.snsb.info/images/Balken2.jpg ); height:28px; width:100%;"> </div>
+	
+<div class="swagger-ui-wrap">
   <h1>Regionale Taxonomische Referenz Listen</h1>
   REST-Service auf <a href="http://services.snsb.info/DTNtaxonlists/rest/v0.1/">http://services.snsb.info/DTNtaxonlists/rest/v0.1/lists</a>
-  <div class=metanav>
-  </div>
+
   {% block body %}{% endblock %}
 </div>
+</body>
 </html>
+

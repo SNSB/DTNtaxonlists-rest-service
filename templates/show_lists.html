@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
-<h2>Verf&uuml;gbare Listen auf diesem Server:</h2>
-
+<h2 class="swagger-ui-wrap">Verf&uuml;gbare Listen auf diesem Server:</h2>
+<div class="project">
+</div>
 <script>
 $.ajaxSetup({
     async: false
@@ -29,6 +30,7 @@ $.getJSON("{{ url_for('taxonlists', __external=T) }}", function(data) {
                 projectname = projectlist[projectlistindex].Project;
                 console.log("Project:"+projectname);
                 projectdescr = projectlist[projectlistindex].ProjectTitle;
+                projectURI = projectlist[projectlistindex].ProjectURL;
                 $.each(projectlist[projectlistindex].links, function (pali) {
                     if (projectlist[projectlistindex].links[pali].name=='agents') {
                         agentlink = projectlist[projectlistindex].links[pali].uri;
@@ -43,13 +45,13 @@ $.getJSON("{{ url_for('taxonlists', __external=T) }}", function(data) {
                 });
             });    
         });
-        items.push( "<li id='Database'> <a href='" + URI.parse(listlink).path + "www'>" + projectname + "</a> <ul><li class='projectdescription'>" + projectdescr + "</li><li class='dbname'>In: " + listobject.DatabaseName + "</li> <li class='curator'> Curator: <ul><li class='person'>"+ agentitems.join("</li><li class='person'>") + "</li></ul></li></ul> </li>" );
+        items.push( "<div id='Database' class='content' style='padding: 0 0 10px;'> <a href='" + projectURI + "'><h2 style='color: #0f6ab4;'>" + projectname + "</h2></a> <h4 style='margin-left:2em;'>" + projectdescr + "</h4> <div class='markdown' style='margin-left:2em; padding:3px;'><p class='database'>In database " + listobject.DatabaseName + "</p>  <h4> Curator: </h4><ul><li class='curname' style='color: #333333; line-height: 1.4em; padding: 3px 0;'>"+ agentitems.join("</li><li class='curname'  style='color: #333333; line-height: 1.4em; padding: 3px 0;'>") + "</li></ul> </div> </div>" );
     });
 
-    $( "<ul/>", {
-        "class": "my-new-list",
+    $( "<div/>", {
+        "class": "container",
         html: items.join( "" )
-        }).appendTo( "body" );
+        }).appendTo( ".project" );
 });   
 </script>
 
