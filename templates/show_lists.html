@@ -4,6 +4,12 @@
 <div class="project">
 </div>
 <script>
+function insensitive(s1, s2) {
+  var s1lower = s1.toLowerCase();
+  var s2lower = s2.toLowerCase();
+  return s1lower > s2lower? 1 : (s1lower < s2lower? -1 : 0);
+};
+
 $.ajaxSetup({
     async: false
 });
@@ -46,7 +52,7 @@ $.getJSON("{{ url_for('taxonlists', __external=T) }}", function(data) {
                 });
             });    
         });
-        var item = "<div id='Database' class='content' style='padding: 0 0 10px;'> <a href='" + projectURI + "'><h2 style='color: #0f6ab4;'>" + projectdescr + "</h2></a>  <div class='markdown' style='margin-left:2em; padding:3px;'> <h4>TaxRefCode: </h4><p style='color: #333333; line-height: 1.4em; padding: 3px 0; margin-left:1em;'>" + projectname + "</p>"
+        var item = "<div id='" + projectdescr + "' class='content' style='padding: 0 0 10px;'> <a href='" + projectURI + "'><h2 style='color: #0f6ab4;'>" + projectdescr + "</h2></a>  <div class='markdown' style='margin-left:2em; padding:3px;'> <h4>TaxRefCode: </h4><p style='color: #333333; line-height: 1.4em; padding: 3px 0; margin-left:1em;'>" + projectname + "</p>"
         if (agentitems.length > 1) {
            item = item + "<h4> Curators: </h4>";
         }
@@ -58,6 +64,7 @@ $.getJSON("{{ url_for('taxonlists', __external=T) }}", function(data) {
         items.push( item );
         
     });
+    items.sort(insensitive);
 
     $( "<div/>", {
         "class": "container",
