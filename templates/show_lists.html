@@ -15,6 +15,7 @@ $.ajaxSetup({
 });
 $.getJSON("{{ url_for('taxonlists', __external=T) }}", function(data) {
     var items = [];
+    var items2 = [];
     
     $.each( data, function( listentry ) {
         var listobject =  data[listentry]
@@ -66,10 +67,22 @@ $.getJSON("{{ url_for('taxonlists', __external=T) }}", function(data) {
         
     });
     items.sort(insensitive);
+    
+    var db = "";
+    items.forEach(function (element, index, array) {
+       db_now = $(element).attr("title")
+       console.log(db_now);
+       if (! (db_now === db)) {
+          element = "<h1>" + db_now.split("_")[1] + "</h1>" + element;
+          db = db_now;
+       }
+       items2.push(element);
+    })
+    
 
     $( "<div/>", {
         "class": "container",
-        html: items.join( "" )
+        html: items2.join( "" )
         }).appendTo( ".project" );
 });   
 </script>
