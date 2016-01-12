@@ -32,7 +32,7 @@ def createindex():
     writer = ix.writer()
     allnames=getAllNames()
     for item in allnames:
-        if item['ProjectID'] in [701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154]:
+        if item['ProjectID'] in [701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154, 923, 924, 925, 926, 927]:
             uri = u"" + url_for('name', database=item['DatabaseName'], id = item['NameID'], _external=True)
             commonnames=getTaxonNameAllCommonNames(item['DatabaseName'], item['NameID'])
             cn = u" "
