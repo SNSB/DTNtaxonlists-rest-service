@@ -80,7 +80,6 @@ api.add_resource(taxonlistflat, '/lists/<string:database>/<int:id>/flat') # all 
 api.add_resource(taxonlist_flat_csv, '/lists/<string:database>/<int:id>/csv') # all names of list in flat format
 api.add_resource(darwin_core_zip, '/lists/<string:database>/<int:id>/dwc') # all names of list in darwin core zip  format
 
-
 api.add_resource(names, '/names/' ) 
 api.add_resource(name, '/names/<string:database>/<int:id>/' ) # urls to all NAMES or info on this name including info and links to _all_ COMMONNAMES, PROJECTS, ACCEPTEDNAMES, HIERARCHIES, SYNONYMS
 api.add_resource(namewww, '/names/<string:database>/<int:id>/www' ) # urls to all NAMES or info on this name including info and links to _all_ COMMONNAMES, PROJECTS, ACCEPTEDNAMES, HIERARCHIES, SYNONYMS
@@ -100,7 +99,7 @@ api.add_resource(agentRelationsTNT, '/Agents_TNT/<int:id>/relations' )
 
 api.add_resource(contact, '/contacts/<int:id>/') # Info on that contacts
 
-#api.add_resource(commonnames, '/commonnames/')
+api.add_resource(commonnames, '/commonnames/')
 api.add_resource(commonname, u'/commonnames/<string:database>/<int:nameid>/<string:cid>/') # links to all commonnames or info on this common name
 
 api.add_resource(acceptedname, '/acceptednames/<string:database>/<int:projectid>/<int:nameid>/')

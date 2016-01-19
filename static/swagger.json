@@ -17,16 +17,32 @@
         "/names": {
             "get": {
                 "summary": "Taxonomic names search",
-                "description": "<p>Full text search on names</p><p> The search covers the fields: <ul><li>TaxonNameCache</li><li>CommonName</li><li>CountryCode</li><li>DatabaseName</li></ul></p><p> Use ~N to allow N uncertain letters: colo~2 will search everything by exchanging two letters in colo: colo, coco, cora, ...</p>",
+                "description": "<p>Full text search on names</p><p> The search covers the fields: <ul><li>TaxonNameCache</li><li>CommonName</li><li>CountryCode</li><li>DatabaseName</li></ul></p><p> Use ~N to allow N uncertain letters: colo~2 will search everything by exchanging two letters in colo: colo, coco, cora, ...</p><p>Additional search possiblities with:<ul><li>Search for NameID with the parameter nameid.</li><li>Search for exact matches in attribute TaxonNameCache with parameter exactname.</li><ul></p><p>Parameters should not be used together in one query. One parameter has to be given..</p>",
                 "parameters": [
                     {
                         "name": "name",
                         "in": "query",
                         "description": "Text to search",
-                        "required": true,
+                        "required": false,
                         "type": "string",
                         "format": "string"
-                    }
+                    },
+                    {
+                        "name": "exactname",
+                        "in": "query",
+                        "description": "Exact name to search in field TaxonNameCache",
+                        "required": false,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "nameid",
+                        "in": "query",
+                        "description": "NameID to search for in all lists",
+                        "required": false,
+                        "type": "string",
+                        "format": "string"
+                    }                     
                 ],
                 "tags": [
                     "taxonnames"
@@ -577,6 +593,42 @@
                 }
             }
         },
+        "/commonnames/": {
+            "get": {
+                "summary": "Query the common name dataset",
+                "description": "Exact search on all common names",
+                "parameters": [
+                    {
+                        "name": "exactcommonname",
+                        "in": "query",
+                        "description": "Exact common name to search",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    }
+                ],
+                "tags": [
+                    "taxonnames"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with elements, containing the commonname dataset",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Commonname"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },        
         "/commonnames/{databaseid}/{nameid}/{cid}": {
             "get": {
                 "summary": "the common name dataset",
@@ -1456,6 +1508,13 @@
                 },
                 "SubjectContext": {
                     "type": "string"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    },
+                    "description": "Link to the refering taxonamic name"
                 }
             }
         },

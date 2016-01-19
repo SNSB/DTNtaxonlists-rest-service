@@ -17,5 +17,9 @@ def getcommonname(database, nameid, commonname, languagecode, countrycode, refer
     namelist = getCommonName(database, nameid, commonname, languagecode, countrycode, referencetitle)
     return namelist
 
-
-    
+def findCommonName(namestring):
+    lists=[]
+    dbList = getDBs('DiversityTaxonNames')
+    for db in dbList:
+        lists += findCommonNames(db, namestring)
+    return lists

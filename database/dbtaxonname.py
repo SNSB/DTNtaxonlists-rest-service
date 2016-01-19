@@ -2,7 +2,7 @@
 
 from flask import current_app
 from database.management import get_db, getDBs, cleanDatabasename, diversitydatabase
-
+import re
 
 DWB_MODULE='DiversityTaxonNames'
 FINAL_REVISION_LEVEL = 'final revision'
@@ -249,6 +249,27 @@ def getTaxonName_for_search_only(databasename, nameid):
             namelist=R2L(namelistproxy)
     return namelist   
 
+def findTaxonNames(databasename, namestring):
+    namelist = []
+    if not cleanDatabasename(databasename):
+        return []
+    if not namestring or len(namestring) > 200 or re.match(".*['\"\;\<\>\!].*",namestring):
+        current_app.logger.debug("ERROR ATTACK! %s " % namestring)
+        return []
+    databasename=diversitydatabase(databasename)
+    query = u'''select '%s' as DatabaseName, b.NameID, b.TaxonNameCache, a.ProjectID from [%s].[dbo].[TaxonName] b inner join [%s].[dbo].[TaxonNameList] a on a.NameID=b.NameID where \
+                (b.RevisionLevel is Null or b.RevisionLevel='final revision') and \
+                (b.IgnoreButKeepForReference is Null or b.IgnoreButKeepForReference=0) and \
+                (b.DataWithholdingReason is Null or b.DataWithholdingReason='') \
+                and a.ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154, 923, 924, 925, 926, 927) \
+                and b.TaxonNameCache = '%s' ''' % (databasename, databasename, databasename, namestring)
+    current_app.logger.debug("Query %s " % (query))
+    with get_db().connect() as conn:
+        namelistproxy = conn.execute(query)
+        if namelistproxy != None:
+            namelist = R2L(namelistproxy)
+    current_app.logger.debug("Resultlen = %i " % len(namelist))
+    return namelist
 
 def getTaxonNameAllCommonNames(databasename, nameid):
     commonnamelist =[]
@@ -263,6 +284,25 @@ def getTaxonNameAllCommonNames(databasename, nameid):
         if cnamelist != None:
             commonnamelist=R2L(cnamelist)
     return commonnamelist                    
+
+def findCommonNames(databasename, namestring):
+    commonnamelist =[]
+    if not cleanDatabasename(databasename):
+        return []
+    if not namestring or len(namestring) > 200 or re.match(".*['\"\;\<\>\!].*",namestring):
+        current_app.logger.debug("ERROR ATTACK! %s " % namestring)
+        return []    
+    databasename=diversitydatabase(databasename)
+    query = u'''select '%s' as DatabaseName, NameID, CommonName, LanguageCode, CountryCode, ReferenceTitle, ReferenceURI, \
+               ReferenceDetails, SubjectContext, Notes \
+               from [%s].[dbo].[TaxonCommonName] where CommonName = '%s' ''' % (databasename, databasename, namestring)
+    current_app.logger.debug("Query %s " % (query))
+    with get_db().connect() as conn:
+        cnamelist = conn.execute(query)
+        if cnamelist != None:
+            commonnamelist=R2L(cnamelist)
+    current_app.logger.debug("Resultlen = %i " % len(commonnamelist))            
+    return commonnamelist 
 
 def getTaxonNameAllAcceptedNames(databasename, nameid):
     acceptednamelist =[]
@@ -330,10 +370,10 @@ def getCommonName(database, nameid, commonname, languagecode, countrycode, refer
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query = u''' select NameID, CommonName, LanguageCode, CountryCode, ReferenceTitle, ReferenceURI, \
+    query = u''' select '%s' as DatabaseName, NameID, CommonName, LanguageCode, CountryCode, ReferenceTitle, ReferenceURI, \
                 ReferenceDetails, SubjectContext, Notes \
                 from [%s].[dbo].[TaxonCommonName] where NameID=%s and CommonName='%s'and LanguageCode='%s' \
-                and CountryCode = '%s' and ReferenceTitle = '%s' ''' % (database, nameid, commonname, languagecode, countrycode, referencetitle)
+                and CountryCode = '%s' and ReferenceTitle = '%s' ''' % (database, database, nameid, commonname, languagecode, countrycode, referencetitle)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         tcnamelist = conn.execute(query)

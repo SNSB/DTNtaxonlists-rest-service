@@ -25,17 +25,85 @@ class regenrateindex(restful.Resource):
 
 class names(restful.Resource):
     def get(self):
+        results = []
         parser =  reqparse.RequestParser()
         parser.add_argument('name') #, type=unicode
         parser.add_argument('www', type=bool)
+        parser.add_argument('exactname')
+        parser.add_argument('nameid', type=int)
+        parser.add_argument('exactcommonname')
         args = parser.parse_args()
         #createindex()
-        results = indexquery(args['name'], args['www'])
+        if args['name']:
+            results = indexquery(args['name'], args['www'])
+        if args['exactname']:
+            temp = findName(args['exactname'])
+            for row in temp:
+                temprow = {}
+                commonnames=getTaxonNameAllCommonNames(row['DatabaseName'], row['NameID'])
+                cn = u" "
+                for n in commonnames:
+                    cn += n['CommonName'] + u", "
+                if len(cn)>1:
+                    cn=cn.strip()
+                temprow['commonname'] = cn
+                temprow['name'] = row['TaxonNameCache']
+                temprow['uri'] = url_for('name', database=row['DatabaseName'], id = row['NameID'], _external=True)
+                results.append(temprow)
+        if args['nameid']:
+            temp = findNameID(args['nameid'])
+            for row in temp:
+                temprow = {}
+                commonnames=getTaxonNameAllCommonNames(row['DatabaseName'], row['NameID'])
+                cn = u" "
+                for n in commonnames:
+                    cn += n['CommonName'] + u", "
+                if len(cn)>1:
+                    cn=cn.strip()
+                temprow['commonname'] = cn
+                temprow['name'] = row['TaxonNameCache']
+                temprow['uri'] = url_for('name', database=row['DatabaseName'], id = row['NameID'], _external=True)
+                results.append(temprow)
         return results
         #namelist = getAllNames()
         #for row in namelist:
             #row['nameuri'] = url_for('name', database=row['DatabaseName'], id = row['NameID'], _external=True)
         #return namelist
+
+
+class findexactname(restful.Resource):
+    def get(self):
+        parser =  reqparse.RequestParser()
+        parser.add_argument('exactname')
+        args = parser.parse_args()
+        results = findName(args['exactname'])
+        for row in results:
+            row['uri'] = url_for('name', database=row['DatabaseName'], id = row['NameID'], _external=True)
+        return results
+        
+
+class findallnameid(restful.Resource):
+    def get(self):
+        parser =  reqparse.RequestParser()
+        parser.add_argument('nameid', type=int)
+        args = parser.parse_args()
+        results = findNameID(args['nameid'])
+        for row in results:
+            row['uri'] = url_for('name', database=row['DatabaseName'], id = row['NameID'], _external=True)
+        return results 
+
+class findexactcommanname(restful.Resource):
+    def get(self):
+        parser =  reqparse.RequestParser()
+        parser.add_argument('exactcommonname')
+        args = parser.parse_args()
+        results = findCommonName(args['exactcommonname'])
+        for row in results:
+            newid = u"[%s#%s#%s#%s]" % (row['CommonName'], row['LanguageCode'], row['CountryCode'], row['ReferenceTitle'])
+            url = url_for('commonname', database=row['DatabaseName'], nameid=row['NameID'], cid=newid, _external=True)
+            row['uri'] = url
+        return results
+
 
 
 #name_sublinks = {
@@ -159,3 +227,4 @@ class namewww(restful.Resource):
         response = Response(render_template("taxonname.html", database=database, id=id) )   
         response.headers['content-type'] = 'text/html'
         return response    
+
