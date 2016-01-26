@@ -34,18 +34,19 @@ def findName(namestring):
         lists += findTaxonNames(db, namestring)
     return lists
 
-def findCommonName(namestring):
-    lists=[]
-    dbList = getDBs('DiversityTaxonNames')
-    for db in dbList:
-        lists += findCommonNames(db, namestring)
-    return lists
 
 def findNameID(nameid):
     lists=[]
     dbList = getDBs('DiversityTaxonNames')
     for db in dbList:
         lists += getTaxonName(db, nameid)
+    return lists
+
+def findNamePartly(namestring):
+    lists=[]
+    dbList = getDBs('DiversityTaxonNames')
+    for db in dbList:
+        lists += findTaxonNamePartly(db, namestring)
     return lists
 
 

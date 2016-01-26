@@ -32,6 +32,7 @@ class names(restful.Resource):
         parser.add_argument('exactname')
         parser.add_argument('nameid', type=int)
         parser.add_argument('exactcommonname')
+        parser.add_argument('exactnamepartwithoutauthorandyear')
         args = parser.parse_args()
         #createindex()
         if args['name']:
@@ -64,6 +65,20 @@ class names(restful.Resource):
                 temprow['name'] = row['TaxonNameCache']
                 temprow['uri'] = url_for('name', database=row['DatabaseName'], id = row['NameID'], _external=True)
                 results.append(temprow)
+        if args['exactnamepartwithoutauthorandyear']:
+            temp = findNamePartly(args['exactnamepartwithoutauthorandyear'])
+            for row in temp:
+                temprow = {}
+                commonnames=getTaxonNameAllCommonNames(row['DatabaseName'], row['NameID'])
+                cn = u" "
+                for n in commonnames:
+                    cn += n['CommonName'] + u", "
+                if len(cn)>1:
+                    cn=cn.strip()
+                temprow['commonname'] = cn
+                temprow['name'] = row['TaxonNameCache']
+                temprow['uri'] = url_for('name', database=row['DatabaseName'], id = row['NameID'], _external=True)
+                results.append(temprow)                
         return results
         #namelist = getAllNames()
         #for row in namelist:

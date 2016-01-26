@@ -247,7 +247,8 @@ def getTaxonName_for_search_only(databasename, nameid):
         namelistproxy = conn.execute(query)
         if namelistproxy != None:
             namelist=R2L(namelistproxy)
-    return namelist   
+    return namelist  
+
 
 def findTaxonNames(databasename, namestring):
     namelist = []
@@ -269,6 +270,54 @@ def findTaxonNames(databasename, namestring):
         if namelistproxy != None:
             namelist = R2L(namelistproxy)
     current_app.logger.debug("Resultlen = %i " % len(namelist))
+    return namelist
+
+def findTaxonNamePartly(databasename, namestring):
+    namelist = []
+    if not cleanDatabasename(databasename):
+        return []
+    if not namestring or len(namestring) > 200 or re.match(".*['\"\;\<\>\!].*",namestring):
+        current_app.logger.debug("ERROR ATTACK! %s " % namestring)
+        return []
+    
+    databasename=diversitydatabase(databasename)
+    query = u'''select '%s' as DatabaseName, a.NameID, a.TaxonNameCache, a.TypistNotes, a.RevisionLevel, a.IgnoreButKeepForReference, b.ProjectID \
+                from [%s].[dbo].[TaxonName] a inner join [%s].[dbo].[TaxonNameList] b on  \
+                a.NameID=b.NameID left join [%s].[dbo].[TaxonNameTaxonomicRank_Enum] c on a.TaxonomicRank=c.Code
+                where \
+                (a.RevisionLevel is Null or a.RevisionLevel='final revision') and \
+                (a.IgnoreButKeepForReference is Null or a.IgnoreButKeepForReference=0) and \
+                (a.DataWithholdingReason is Null or a.DataWithholdingReason='') \
+                and ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154, 923, 924, 925, 926, 927) \
+                and (a.GenusOrSupragenericName + \
+                case when a.InfragenericEpithet is null or a.InfragenericEpithet = '' then '' else \
+                    case when a.NomenclaturalCode = 3 \
+                        then case when a.TaxonomicRank = 'subgen.' then  + ' ' + a.TaxonomicRank + ' ' + a.InfragenericEpithet \
+                        else ' (' + a.InfragenericEpithet + ')' end \
+                    else ' ' + a.TaxonomicRank + ' ' + RTRIM(a.InfragenericEpithet) end \
+                end \
+                + \
+                case when a.SpeciesEpithet is null or a.SpeciesEpithet  = '' then '' else ' ' + RTRIM(a.SpeciesEpithet) end \
+                + \
+                case when a.InfraspecificEpithet is null  or a.InfraspecificEpithet = '' \
+                    then '' \
+                    else \
+                        case    when a.SpeciesEpithet <> a.InfraspecificEpithet \
+                            then    ' ' + \
+                            case when a.TaxonomicRank is null or a.TaxonomicRank = ''  then '' \
+                            else case when a.NomenclaturalCode = 3 and (a.TaxonomicRank = 'ssp.' or a.TaxonomicRank = 'subsp.')  then '' else a.TaxonomicRank + ' ' end \
+                            end \
+                           + RTRIM(a.InfraspecificEpithet) \
+                        else \
+                        case when a.NomenclaturalCode = 3 /* Zoology */ and a.SpeciesEpithet = a.InfraspecificEpithet and  (a.TaxonomicRank = 'ssp.' or a.TaxonomicRank = 'subsp.') \
+                            then ' ' + RTRIM(a.InfraspecificEpithet) else '' end \
+                        end \
+                end) = '%s' ''' % (databasename, databasename, databasename, databasename, namestring)
+    current_app.logger.debug("Query %s " % (query))
+    with get_db().connect() as conn:
+        namelistproxy = conn.execute(query)
+        if namelistproxy != None:
+            namelist=R2L(namelistproxy)
     return namelist
 
 def getTaxonNameAllCommonNames(databasename, nameid):
