@@ -44,6 +44,7 @@ static/css/screen.css
 static/css/.Rhistory
 static/css/reset.css
 static/swagger-ui.js
+static/revision.txt
 static/api-doc2.html
 static/api-doc.html
 templates

@@ -1,14 +1,14 @@
 #!/bin/bash
-find -L static > filelist.txt
-find -L templates >> filelist.txt
-find -L resources | grep 'py$' >> filelist.txt
-find -L database | grep 'py$' >> filelist.txt
-find -L searchengine | grep 'py$' >> filelist.txt
-echo "app.py" >> filelist.txt
-echo "__init__.py" >> filelist.txt
-echo "reverseproxy.py" >> filelist.txt
-echo "restnames.wsgi" >> filelist.txt
-echo "APIlayout" >> filelist.txt
+find -L static > filelist.tmp
+find -L templates >> filelist.tmp
+find -L resources | grep 'py$' >> filelist.tmp
+find -L database | grep 'py$' >> filelist.tmp
+find -L searchengine | grep 'py$' >> filelist.tmp
+echo "app.py" >> filelist.tmp
+echo "__init__.py" >> filelist.tmp
+echo "reverseproxy.py" >> filelist.tmp
+echo "restnames.wsgi" >> filelist.tmp
+echo "APIlayout" >> filelist.tmp
 #pip freeze > requirements.txt
-echo "requirements.txt" >> filelist.txt
+echo "requirements.txt" >> filelist.tmp
 
