@@ -46,7 +46,7 @@
                     {
                         "name": "exactnamepartwithoutauthorandyear",
                         "in": "query",
-                        "description": "Serach only for the first part of a name without authors and year. Only exact matches are returned.",
+                        "description": "Search only for the first part of a name without authors and year. Only exact matches are returned.",
                         "required": false,
                         "type": "string",
                         "format": "string"
