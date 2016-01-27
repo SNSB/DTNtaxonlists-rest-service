@@ -42,7 +42,16 @@
                         "required": false,
                         "type": "string",
                         "format": "string"
-                    }                     
+                    },
+                    {
+                        "name": "exactnamepartwithoutauthorandyear",
+                        "in": "query",
+                        "description": "Serach only for the first part of a name without authors and year. Only exact matches are returned.",
+                        "required": false,
+                        "type": "string",
+                        "format": "string"
+                    }
+                    
                 ],
                 "tags": [
                     "taxonnames"
