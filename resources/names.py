@@ -49,7 +49,7 @@ class names(restful.Resource):
                     cn=cn.strip()
                 temprow['commonname'] = cn
                 temprow['name'] = row['TaxonNameCache']
-                temprow['uri'] = url_for('name', database=row['DatabaseName'], id = row['NameID'], _external=True)
+                temprow['url'] = url_for('name', database=row['DatabaseName'], id = row['NameID'], _external=True)
                 results.append(temprow)
         if args['nameid']:
             temp = findNameID(args['nameid'])
@@ -63,7 +63,7 @@ class names(restful.Resource):
                     cn=cn.strip()
                 temprow['commonname'] = cn
                 temprow['name'] = row['TaxonNameCache']
-                temprow['uri'] = url_for('name', database=row['DatabaseName'], id = row['NameID'], _external=True)
+                temprow['url'] = url_for('name', database=row['DatabaseName'], id = row['NameID'], _external=True)
                 results.append(temprow)
         if args['exactnamepartwithoutauthorandyear']:
             temp = findNamePartly(args['exactnamepartwithoutauthorandyear'])
@@ -77,7 +77,7 @@ class names(restful.Resource):
                     cn=cn.strip()
                 temprow['commonname'] = cn
                 temprow['name'] = row['TaxonNameCache']
-                temprow['uri'] = url_for('name', database=row['DatabaseName'], id = row['NameID'], _external=True)
+                temprow['url'] = url_for('name', database=row['DatabaseName'], id = row['NameID'], _external=True)
                 results.append(temprow)                
         return results
         #namelist = getAllNames()
@@ -116,7 +116,7 @@ class findexactcommanname(restful.Resource):
         for row in results:
             newid = u"[%s#%s#%s#%s]" % (row['CommonName'], row['LanguageCode'], row['CountryCode'], row['ReferenceTitle'])
             url = url_for('commonname', database=row['DatabaseName'], nameid=row['NameID'], cid=newid, _external=True)
-            row['uri'] = url
+            row['url'] = url
         return results
 
 
@@ -220,9 +220,12 @@ class hierarchy(restful.Resource):
         for row in hlist:
             links=[]
             if row['NameParentID']:
-                links.append(makelink('parent', 'related', url_for('name', database=row['DatabaseName'], id=row['NameParentID'], _external=True)))
-                links.append(makelink('allparents', 'related', url_for('hierarchyfull', database=row['DatabaseName'], projectid=row['ProjectID'], nameid=row['NameID'], _external=True)))
-            links.append(makelink('project', 'related', url_for('project', id=row['ProjectID'], _external=True)))                     
+                if int(row['NameParentID'])>0:
+                    links.append(makelink('parent', 'related', url_for('name', database=row['DatabaseName'], id=row['NameParentID'], _external=True)))
+                    links.append(makelink('allparents', 'related', url_for('hierarchyfull', database=row['DatabaseName'], projectid=row['ProjectID'], nameid=row['NameID'], _external=True)))
+                else:
+                    row['NameParentID'] = None
+            links.append(makelink('project', 'related', url_for('project', id=row['ProjectID'], _external=True))) 
             row['links'] = links
         return hlist
 
@@ -232,7 +235,10 @@ class hierarchyfull(restful.Resource):
         for row in hlist:
             links=[]
             if row['NameParentID']:
-                links.append(makelink('parent', 'related', url_for('name', database=database, id=row['NameParentID'], _external=True)))
+                if int(row['NameParentID'])>0:
+                    links.append(makelink('parent', 'related', url_for('name', database=database, id=row['NameParentID'], _external=True)))
+                else:
+                    row['NameParentID'] = None
             links.append(makelink('project', 'related', url_for('project', id=row['ProjectID'], _external=True)))                     
             row['links'] = links
         return hlist
