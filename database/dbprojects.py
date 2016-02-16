@@ -79,7 +79,7 @@ def getProjectAgents(database, projectid):
         return []
     database=diversitydatabase(database)
     query = u''' select ProjectID, AgentName, AgentURI, AgentRole, Notes from [%s].[dbo].[ProjectAgent] \
-                 where ProjectID=%s''' % (database, projectid)
+                 where ProjectID=%s order by AgentSequence''' % (database, projectid)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         tagentlist = conn.execute(query)
