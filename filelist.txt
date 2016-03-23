@@ -1,5 +1,7 @@
 static
 static/style.css
+static/dwc
+static/dwc/build.txt
 static/swagger.json
 static/lib
 static/lib/swagger-oauth.js

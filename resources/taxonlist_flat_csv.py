@@ -14,7 +14,7 @@ from flask.ext import restful
 from flask import Flask,g, request, render_template
 from flask import url_for
 from flask.ext.restful import Resource, fields, marshal_with
-from flask import url_for, Response
+from flask import url_for, Response, redirect
 
 class taxonlist_flat_csv(restful.Resource):
     def get(self, database, id):
@@ -43,7 +43,7 @@ class taxonlist_flat_csv(restful.Resource):
         response.headers['content-type'] = 'text/comma-separated-values'
         return response
 
-class   darwin_core_zip( restful.Resource ):
+class  darwin_core_offline( restful.Resource ):
     def get(self, database, id):
         
         thisurl = url_for('darwin_core_zip', database=database, id = id, _external=True)
@@ -123,9 +123,14 @@ class   darwin_core_zip( restful.Resource ):
         inMemoryOutputFile.seek(0)
 
         return send_file(inMemoryOutputFile,
-                     attachment_filename="".join(["DTNtaxonlist_",database, "_" , str(id) , "_" , timestr ,".zip"]),
+                     attachment_filename="".join(["DTNtaxonlist_",database, "_" , str(id) ,".zip"]),
                      mimetype =  'application/zip',
                      as_attachment=True)    
     
         response.headers['content-type'] = 'application/zip'
         return response
+
+class darwin_core_zip( restful.Resource ):
+    def get(self, database, id):        
+        filename=url_for('static', filename="".join(["dwc/", "DTNtaxonlist_",database, "_" , str(id) ,".zip"]))
+        return redirect(filename, code=302)
