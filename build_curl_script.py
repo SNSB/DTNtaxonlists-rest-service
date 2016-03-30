@@ -9,11 +9,12 @@ if resp.status_code == 200:
     with open("/root/curlscript.sh", "w") as tf:
         tf.write("#!/bin/bash\n")
         tf.write("cd /var/www/localhost/static/dwc\n")
+        tf.write("rm -f /var/www/localhost/static/dwc/*.zip\n")
         data = resp.json()
         for listitem in data :
             for link in listitem['links'] :
                 if link['name'] == "taxonnamelist":
-                    tf.write('curl -s -O -J -L '+ link['uri'] +'dwc_offline\n')
+                    tf.write('curl -s -S -O -J -L '+ link['uri'] +'dwc_offline\n')
     print "Regenerating DWC-Archives"
     os.system('. /root/curlscript.sh')
 else:
