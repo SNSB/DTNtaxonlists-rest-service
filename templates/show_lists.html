@@ -3,6 +3,9 @@
 <h2 class="swagger-ui-wrap">Overview on Published Lists</h2>
 <div class="project">
 </div>
+<div class="waiting">
+<p>Generating summaries from databases, this will take some seconds.</p>
+</div>
 <script>
 function insensitive(s1, s2) {
   var s1lower = s1.toLowerCase();
@@ -88,6 +91,7 @@ $.getJSON("{{ url_for('taxonlists', __external=T) }}", function(data) {
         "class": "container",
         html: items2.join( "" )
         }).appendTo( ".project" );
+    $(".waiting").remove();
 });   
 </script>
 
