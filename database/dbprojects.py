@@ -2,7 +2,7 @@
 
 from flask import current_app
 from database.management import get_db, getDBs, cleanDatabasename, diversitydatabase
-
+from datetime import datetime
 
 DWB_MODULE='DiversityProjects'
 
@@ -101,4 +101,17 @@ def getProjectReferences(database, projectid):
             referenceslist=R2L(tagentlist)
     return referenceslist    
 
-#
+def getProjectLastChange(database, projectid):
+    mdate=''
+    if not cleanDatabasename(database):
+        return ''
+    database=diversitydatabase(database)
+    query=u''' DECLARE @ProjectID int; DECLARE @lastmodification datetime = NULL; set @ProjectID=%s; EXECUTE [%s].[dbo].[procLastProjectModification] @ProjectID,@lastmodification OUTPUT; select @lastmodification;''' % (projectid,database)
+    current_app.logger.debug("Query %s " % (query))
+    with get_db().connect() as conn:
+        q = conn.execute(query)
+        if q:
+            v = q.fetchone()
+            current_app.logger.debug("Time %s " % (str(v)))
+            mdate = v[0].isoformat()
+    return mdate

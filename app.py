@@ -48,7 +48,7 @@ from resources.lists import taxonlist, taxonlistproject, taxonlists, taxonlistfl
 from resources.taxonlist_flat_csv import taxonlist_flat_csv, darwin_core_zip, darwin_core_offline
 from resources.names import *
 from resources.agents import agent, agentsTNT, agentRelations, agentTNT, agentRelationsTNT
-from resources.projects import project, projects, projectAgents, projectReferences, projectLicense
+from resources.projects import project, projects, projectAgents, projectReferences, projectLicense, projectLastChange
 from resources.contacts import contact
 from resources.commonnames import commonname, commonnames
 from resources.references import references, reference, referenceTNT, referencerelations, referencerelation
@@ -116,6 +116,8 @@ api.add_resource(project, '/projects/<int:id>/', '/Projects/<int:id>/', '/Projec
 api.add_resource(projectAgents, '/projects/<int:id>/agents', '/Projects_TNT/<int:id>/agents')
 api.add_resource(projectReferences, '/projects/<int:id>/references', '/Projects_TNT/<int:id>/references')
 api.add_resource(projectLicense, '/projects/<int:id>/licenses', '/Projects_TNT/<int:id>/licenses')
+api.add_resource(projectLastChange, '/projects/<int:id>/modificationdate', '/Projects_TNT/<int:id>/modificationdate')
+
 
 api.add_resource(references, '/references/')
 api.add_resource(reference, '/references/<string:database>/<int:id>/')

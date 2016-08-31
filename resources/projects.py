@@ -3,7 +3,7 @@
 
 from flask.ext import restful
 from flask import url_for
-from database.project import getproject, getprojectagents, getprojectreferences, getprojectlicense
+from database.project import getproject, getprojectagents, getprojectreferences, getprojectlicense, getprojectlastchange
 from urlparse import urlparse
 #import urllib2
 
@@ -79,3 +79,8 @@ class projectReferences(restful.Resource):
             links.append(makelink('reference', 'details', url_for('reference', database=referencedb, id=referenceid, _external=True)))
             row['links'] = links
         return projectreferencelist
+
+class projectLastChange(restful.Resource):
+    def get(self, id):
+        mdate = getprojectlastchange('DiversityProjects_TNT', id)
+        return mdate

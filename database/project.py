@@ -56,3 +56,10 @@ def getprojectlicense(database, id):
     lists = getProjectLicense(database,id)
     return lists
     
+def getprojectlastchange(database,id):
+    lists=[]
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+    mdate = getProjectLastChange(database, id)
+    return mdate
