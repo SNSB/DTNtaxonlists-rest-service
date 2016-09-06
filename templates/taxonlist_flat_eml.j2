@@ -7,14 +7,14 @@
     <title>{{ project.ProjectTitle }}</title>
     {% for editor in agents -%}
     {% if editor.AgentRole == 'editor' -%}
-    <person id="{{ editor.AgentID }}" scope="document">
+    <creator id="{{ editor.AgentID }}" scope="document">
         <individualName>
             {% if editor.AgentTitel -%}<Salutation>{{ editor.AgentTitel }}</Salutation>{%- endif -%}
             <surName>{{ editor.InheritedNamePrefix | default('', True) }}{{ editor.InheritedName }}{{ editor.InheritedNamePostfix | default('', True) }}</surName>
             <givenName>{{ editor.GivenName }}{{ editor.GivenNamePostfix | default('', True) }}</givenName>
         </individualName>
-        <RoleType>{{ editor.AgentRole }}</RoleType>
-    </person>
+        <!-- <RoleType>{{ editor.AgentRole }}</RoleType> -->
+    </creator>
     {% endif -%}
     {% endfor %}
     <abstract>
@@ -27,12 +27,28 @@
     </distribution>
     <intellectualRights>
       {% for license in licenses -%}
-      <para>{{ license.LicenseDisplayText }}: {{ license.LicenseType }}{% if license.LicenseURI %} ({{ license.LicenseURI }}){% endif %}{% if license.LicenseHolder %}; License holder: {{ license.LicenseHolder }}{% endif %}</para>
+      <para>{{ license.LicenseDisplayText }}: {{ license.LicenseType }}{% if license.LicenseURI %} (<ulink url="{{ license.LicenseURI }}">{{ license.LicenseURI }}</ulink>){% endif %}{% if license.LicenseHolder %}; License holder: {{ license.LicenseHolder }}{% endif %}</para>
       {% endfor %}
     </intellectualRights>
     <additionalInfo function="information">
        <para>{{ project.ProjectURL }}</para>
     </additionalInfo>
+    
+    {% if agents | length == 0 -%}
+    <contact id="43111" scope="document">
+        <individualName>
+            <Salutation>Dr.</Salutation>
+            <surName>Monje</surName>
+            <givenName>Juan Carlos</givenName>
+        </individualName>
+    </contact>    
+    <contact id="43760" scope="document">
+        <individualName>
+            <surName>Weibulat</surName>
+            <givenName>Tanja</givenName>
+        </individualName>
+    </contact>
+    {% endif %}
 </dataset>
 
 <additionalMetadata>
@@ -40,7 +56,7 @@
     <gbif>
       <dateStamp>{{ currentdate }}</dateStamp>
       <citation>
-        {% for license in licenses %}{{ license.LicenseHolder }}{% if not loop.last %}, {% endif %}{% endfor %}: {{ project.ProjectTitle }}
+        {% for license in licenses %}{{ license.LicenseHolder | default('Anonymous', True) }}{% if not loop.last %}, {% endif %}{% endfor %}: {{ project.ProjectTitle }}
       </citation>
     </gbif>
    </metadata>
