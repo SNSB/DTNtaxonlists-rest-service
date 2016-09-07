@@ -58,11 +58,11 @@ def getReference(database, refid):
         return [] 
     database = diversitydatabase(database)
     query = u''' select '%s' as DatabaseName, RefID, RefType, RefDescription_Cache, Title, DateYear, \
-                 DateMonth, DateDay,  SourceTitle, SeriesTitle, Periodical, Volume, Issue, Pages, Publisher, \
-                 PublPlace, Edition, ISSN_ISBN, Miscellaneous1, Miscellaneous2, UserDef1, UserDef2, UserDef3, \
-                 Language \
+                 DateMonth, DateDay, DateSuppl, SourceTitle, SeriesTitle, Periodical, Volume, Issue, Pages, Publisher, \
+                 PublPlace, Edition, ISSN_ISBN, Miscellaneous1, Miscellaneous2, Miscellaneous3, Weblinks, LinkToPDF, UserDef1, UserDef2, UserDef3, \
+                 Language, [%s].[dbo].RefAutoDescription_2(RefID) as fullref \
                  from [%s].[dbo].[ReferenceTitle] \
-                 where RefID='%s' ''' % (database, database, refid)
+                 where RefID='%s' ''' % (database, database, database, refid)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         treflist = conn.execute(query)

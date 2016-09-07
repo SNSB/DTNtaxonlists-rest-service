@@ -7,9 +7,9 @@ import urllib2
 from resources.lists import taxonlistflat
 
 from database.dbtaxonname import getAllTaxonNamesFromListFlat, getTaxonNameAllAcceptedNames, getAllCommonNamesFromListFlat
-from database.dbprojects import getProject, getProjectAgents, getProjectLicense
+from database.dbprojects import getProject, getProjectAgents, getProjectLicense, getProjectReferences
 from database.dbagents import getAgent
-
+from database.dbreferences import getReference
 from flask.ext import restful
 from flask import Flask,g, request, render_template
 from flask import url_for
@@ -82,6 +82,30 @@ class  darwin_core_offline( restful.Resource ):
         import time
         currentdate = time.strftime("%Y-%m-%dT%H:%M:%S%z")
         
+             
+        citations=''
+        gbifcitation=''
+        restcitation=''
+        projectreferences = getProjectReferences('DiversityProjects_TNT', id)
+        for preference in projectreferences:
+            if preference['ReferenceType'] == "GBIF":
+               referenceuri = urlparse(preference['ReferenceURI']).path
+               referencedb, referenceid = referenceuri.strip(' /').split('/')
+               ref = getReference('DiversityReferences_TNT', referenceid)
+               for row in ref:
+                   gbifcitation = row["fullref"] + '. Accessed via ' + row['Weblinks'] + ', Data Publisher: ' +  row['Publisher'] + ', ' + row["Miscellaneous3"]
+            if preference['ReferenceType'] == "REST Api":
+               referenceuri = urlparse(preference['ReferenceURI']).path
+               referencedb, referenceid = referenceuri.strip(' /').split('/')
+               ref = getReference('DiversityReferences_TNT', referenceid)
+               for row in ref:
+                   restcitation = row["fullref"] + '. Accessed via the REST service descibed at ' + row['Weblinks'] + ', Data Publisher: ' +  row['Publisher'] + '.'
+
+        if len(gbifcitation) > 0:
+            citation = gbifcitation
+        else:
+            citation = restcitation
+        
         projectagentlist = getProjectAgents('DiversityProjects_TNT', id)
         for row in projectagentlist:
             agenturi = urlparse(row['AgentURI']).path
@@ -100,7 +124,7 @@ class  darwin_core_offline( restful.Resource ):
                 row['AgentType'] = agent[0]['AgentType']
                 
         projectlicencelist = getProjectLicense('DiversityProjects_TNT', id)
-        taxonlist_eml = render_template("taxonlist_flat_eml.j2", database=database, id=id, agents=projectagentlist, project=project[0], licenses=projectlicencelist, currentdate=currentdate, thisurl=thisurl) 
+        taxonlist_eml = render_template("taxonlist_flat_eml.j2", database=database, id=id, agents=projectagentlist, project=project[0], licenses=projectlicencelist, currentdate=currentdate, thisurl=thisurl, citation=citation) 
         
         taxonlist_meta = render_template("meta.xml.j2", database=database, id=id, project=project[0], commonnamesexist=(len(taxoncommonnamelist) > 0) )
         

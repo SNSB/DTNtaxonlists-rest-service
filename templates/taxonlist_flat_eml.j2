@@ -56,7 +56,11 @@
     <gbif>
       <dateStamp>{{ currentdate }}</dateStamp>
       <citation>
-        {% for license in licenses %}{{ license.LicenseHolder | default('Anonymous', True) }}{% if not loop.last %}, {% endif %}{% endfor %}: {{ project.ProjectTitle }}
+        {% if citation | length == 0 -%}
+            {% for license in licenses %}{{ license.LicenseHolder | default('Anonymous', True) }}{% if not loop.last %}, {% endif %}{% endfor %}: {{ project.ProjectTitle }}
+        {% else -%}
+            {{ citation }}
+        {% endif -%}
       </citation>
     </gbif>
    </metadata>

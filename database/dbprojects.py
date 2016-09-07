@@ -92,7 +92,7 @@ def getProjectReferences(database, projectid):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query = u''' select ProjectID, ReferenceTitle, ReferenceURI, ReferenceDetails, Notes from [%s].[dbo].[ProjectReference] \
+    query = u''' select ProjectID, ReferenceTitle, ReferenceURI, ReferenceDetails, Notes, ReferenceType from [%s].[dbo].[ProjectReference] \
                  where ProjectID=%s''' % (database, projectid)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
