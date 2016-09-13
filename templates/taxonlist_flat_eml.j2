@@ -57,7 +57,7 @@
       <dateStamp>{{ currentdate }}</dateStamp>
       <citation>
         {% if citation | length == 0 -%}
-            {% for license in licenses %}{{ license.LicenseHolder | default('Anonymous', True) }}{% if not loop.last %}, {% endif %}{% endfor %}: {{ project.ProjectTitle }}
+            {% for license in licenses %}{{ license.LicenseHolder | default('Anonymus', True) }}{% if not loop.last %}, {% endif %}{% endfor %}: {{ project.ProjectTitle }}
         {% else -%}
             {{ citation }}
         {% endif -%}
