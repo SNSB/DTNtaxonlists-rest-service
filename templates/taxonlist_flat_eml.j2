@@ -16,24 +16,22 @@
         <!-- <RoleType>{{ editor.AgentRole }}</RoleType> -->
     </creator>
     {% endif -%}
-    {% endfor %}
+    {% endfor %}  
+    <!-- <pubDate> </pubDate> -->
     <abstract>
         <para>The DTN Taxon lists services concept is described under http://www.diversitymobile.net/wiki/DTN_Taxon_Lists_Services. The taxon lists are offered via several open and freely accessible services with a dynamic data flow involving DTN data bases DTN Software and DTN Information model.</para>
     </abstract>
+    <intellectualRights>
+      {% for license in licenses -%}
+      <para>{{ license.LicenseDisplayText }}: {{ license.LicenseType }}{% if license.LicenseURI %} (<ulink url="{{ license.LicenseURI }}">{{ license.LicenseURI }}</ulink>){% endif %}{% if license.LicenseHolder %}; License holder: {{ license.LicenseHolder }}{% endif %}</para>
+      {% endfor %}
+    </intellectualRights>
     <distribution scope="document">
         <online>
            <url function="resource">{{ thisurl }}</url>
+           <url function="information">{{ project.ProjectURL }}</url>
         </online>
     </distribution>
-    <intellectualRights>
-      {% for license in licenses -%}
-      <para>{{ license.LicenseDisplayText }}: {{ license.LicenseType }}{% if license.LicenseURI %} (<ulink url="{{ license.LicenseURI }}">{{ license.LicenseURI 
-}}</ulink>){% endif %}{% if license.LicenseHolder %}; License holder: {{ license.LicenseHolder }}{% endif %}</para>
-      {% endfor %}
-    </intellectualRights>
-    <additionalInfo function="information">
-       <para>{{ project.ProjectURL }}</para>
-    </additionalInfo>
     
     {% if agents | length == 0 -%}
     <contact id="43111" scope="document">
@@ -50,6 +48,8 @@
         </individualName>
     </contact>
     {% endif %}
+    
+    
 </dataset>
 
 <additionalMetadata>
