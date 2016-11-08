@@ -118,7 +118,7 @@ class  darwin_core_offline( restful.Resource ):
                referencedb, referenceid = referenceuri.strip(' /').split('/')
                ref = getReference('DiversityReferences_TNT', referenceid)
                for row in ref:
-                   gbifcitation = row["fullref"] + '. Accessed via ' + row['Weblinks'] + ', Data Publisher: ' +  row['Publisher'] + ', ' + row["Miscellaneous3"]
+                   gbifcitation = row["fullref"] + '. Accessed via ' + row['Weblinks'] + ', Data Publisher: ' +  row['Publisher'] + ', ' + row["UserDef1"]
             if preference['ReferenceType'] == "REST Api":
                referenceuri = urlparse(preference['ReferenceURI']).path
                referencedb, referenceid = referenceuri.strip(' /').split('/')
