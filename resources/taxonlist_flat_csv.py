@@ -15,6 +15,7 @@ from flask import Flask,g, request, render_template
 from flask import url_for
 from flask.ext.restful import Resource, fields, marshal_with
 from flask import url_for, Response, redirect
+from flask import current_app
 
 class taxonlist_flat_csv(restful.Resource):
     def get(self, database, id):
@@ -43,6 +44,31 @@ class taxonlist_flat_csv(restful.Resource):
         response.headers['content-type'] = 'text/comma-separated-values'
         return response
 
+import six
+def quote_xml_string(myitem):
+    if myitem:
+        myitem=myitem.replace("&", "&amp;")
+        myitem=myitem.replace('"', "&quot;")
+        myitem=myitem.replace("'", "&apos;")
+        myitem=myitem.replace('<', "&lt;")
+        myitem=myitem.replace('>', "&gt;")
+    return myitem
+            
+def quote_xml(mylist):
+    if isinstance(mylist,six.string_types):
+        mylist=quote_xml_string(mylist)
+        return mylist
+    if isinstance(mylist,list):
+        for item in mylist:
+           item=quote_xml(item)
+        return mylist
+    if isinstance(mylist, dict):
+        for k,v in mylist.items():
+           v=quote_xml(v)
+           mylist[k]=v
+        return mylist
+    
+            
 class  darwin_core_offline( restful.Resource ):
     def get(self, database, id):
         
@@ -72,7 +98,6 @@ class  darwin_core_offline( restful.Resource ):
         taxon_csv = render_template("taxonlist_flat_csv.j2", database=database, id=id, taxonnames=taxonnamelist, project=project[0]) 
 
         taxoncommonnamelist = getAllCommonNamesFromListFlat(database, id)
-        print(len(taxoncommonnamelist))
         for row in taxoncommonnamelist:
             uri =  url_for('name', database=database, id = row['NameID'], _external=True)
             row['taxonID'] = uri
@@ -124,6 +149,17 @@ class  darwin_core_offline( restful.Resource ):
                 row['AgentType'] = agent[0]['AgentType']
                 
         projectlicencelist = getProjectLicense('DiversityProjects_TNT', id)
+        quote_xml(projectlicencelist)
+        quote_xml(projectagentlist)
+        citation=quote_xml(citation)
+        quote_xml(project[0])
+        quote_xml(database)
+        
+        current_app.logger.debug("Licencelist: %s " % (projectlicencelist)) 
+        current_app.logger.debug("Agentlist %s " % (projectagentlist))
+        current_app.logger.debug("citation %s " % (citation))
+        current_app.logger.debug("project %s " % (project[0]))
+        current_app.logger.debug("project %s " % (database))
         taxonlist_eml = render_template("taxonlist_flat_eml.j2", database=database, id=id, agents=projectagentlist, project=project[0], licenses=projectlicencelist, currentdate=currentdate, thisurl=thisurl, citation=citation) 
         
         taxonlist_meta = render_template("meta.xml.j2", database=database, id=id, project=project[0], commonnamesexist=(len(taxoncommonnamelist) > 0) )

@@ -1,6 +1,6 @@
 <eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.1.1"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.1 http://rs.gbif.org/schema/eml-gbif-profile/1.0.2/eml.xsd"
+         xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.1 http://rs.gbif.org/schema/eml-gbif-profile/1.1/eml.xsd"
          packageId=""  system="http://services.snsb.info/DTNtaxonlists/rest/v0.1/" scope="system"
          xml:lang="en">
 <dataset>
@@ -9,7 +9,7 @@
     {% if editor.AgentRole == 'editor' -%}
     <creator id="{{ editor.AgentID }}" scope="document">
         <individualName>
-            {% if editor.AgentTitel -%}<Salutation>{{ editor.AgentTitel }}</Salutation>{%- endif -%}
+            {% if editor.AgentTitel -%}<!-- <Salutation>{{ editor.AgentTitel }}</Salutation> -->{%- endif -%}
             <surName>{{ editor.InheritedNamePrefix | default('', True) }}{{ editor.InheritedName }}{{ editor.InheritedNamePostfix | default('', True) }}</surName>
             <givenName>{{ editor.GivenName }}{{ editor.GivenNamePostfix | default('', True) }}</givenName>
         </individualName>
@@ -27,7 +27,8 @@
     </distribution>
     <intellectualRights>
       {% for license in licenses -%}
-      <para>{{ license.LicenseDisplayText }}: {{ license.LicenseType }}{% if license.LicenseURI %} (<ulink url="{{ license.LicenseURI }}">{{ license.LicenseURI }}</ulink>){% endif %}{% if license.LicenseHolder %}; License holder: {{ license.LicenseHolder }}{% endif %}</para>
+      <para>{{ license.LicenseDisplayText }}: {{ license.LicenseType }}{% if license.LicenseURI %} (<ulink url="{{ license.LicenseURI }}">{{ license.LicenseURI 
+}}</ulink>){% endif %}{% if license.LicenseHolder %}; License holder: {{ license.LicenseHolder }}{% endif %}</para>
       {% endfor %}
     </intellectualRights>
     <additionalInfo function="information">
@@ -37,7 +38,7 @@
     {% if agents | length == 0 -%}
     <contact id="43111" scope="document">
         <individualName>
-            <Salutation>Dr.</Salutation>
+            <!-- <Salutation>Dr.</Salutation> -->
             <surName>Monje</surName>
             <givenName>Juan Carlos</givenName>
         </individualName>
@@ -57,7 +58,8 @@
       <dateStamp>{{ currentdate }}</dateStamp>
       <citation>
         {% if citation | length == 0 -%}
-            {% for license in licenses %}{{ license.LicenseHolder | default('Anonymus', True) }}{% if not loop.last %}, {% endif %}{% endfor %}: {{ project.ProjectTitle }}
+            {% for license in licenses %}{{ license.LicenseHolder | default('Anonymus', True) }}{% if not loop.last %}, {% endif %}{% endfor %}: {{ 
+project.ProjectTitle }}
         {% else -%}
             {{ citation }}
         {% endif -%}
