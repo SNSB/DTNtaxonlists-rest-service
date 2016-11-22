@@ -120,9 +120,9 @@ def getAllTaxonNamesFromListFlat(databasename, listid):
                 (case when hi.IgnoreButKeepForReference is null or hi.IgnoreButKeepForReference = 0 then hi.ProjectID else null end) as HierarchieProject \
                 from [%s].[dbo].[TaxonName] a inner join [%s].[dbo].[TaxonNameList] b on  \
                 a.NameID=b.NameID left join [%s].[dbo].[TaxonNameTaxonomicRank_Enum] c on a.TaxonomicRank=c.Code left join \
-                [%s].[dbo].[TaxonAcceptedName] an on an.NameID = a.NameID  left join \
-                [%s].[dbo].[TaxonHierarchy] hi on hi.NameID = a.NameID left join \
-                [%s].[dbo].[TaxonSynonymy] sy on sy.NameID = a.NameID \
+                [%s].[dbo].[TaxonAcceptedName] an on an.NameID = a.NameID  and (an.IgnoreButKeepForReference is null or an.IgnoreButKeepForReference = 0) left join \
+                [%s].[dbo].[TaxonHierarchy] hi on hi.NameID = a.NameID and (hi.IgnoreButKeepForReference is null or hi.IgnoreButKeepForReference = 0) left join \
+                [%s].[dbo].[TaxonSynonymy] sy on sy.NameID = a.NameID and (sy.IgnoreButKeepForReference is null or sy.IgnoreButKeepForReference = 0) \
                 where b.ProjectID=%s and \
                 (a.RevisionLevel is Null or a.RevisionLevel='final revision') and \
                 (a.IgnoreButKeepForReference is Null or a.IgnoreButKeepForReference=0) and \

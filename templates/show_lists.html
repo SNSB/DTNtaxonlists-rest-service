@@ -57,7 +57,9 @@ $.getJSON("{{ url_for('taxonlists', __external=T) }}", function(data) {
                 });
             });    
         });
-        var item = "<div title='" + databasename + "' id='" + projectdescr + "' class='content' style='padding: 0 0 10px;'> <a href='" + projectURI + "'><h2 style='color: #0f6ab4;'>" + projectdescr + "</h2></a>  <div class='markdown' style='margin-left:2em; padding:3px;'> <h4>TaxRefCode: </h4><p style='color: #333333; line-height: 1.4em; padding: 3px 0; margin-left:2em;'>" + projectname + "</p>"
+        var dwcvalidator=encodeURI(listlink+"dwc")
+        
+        var item = "<div title='" + databasename + "' id='" + projectdescr + "' class='content' style='padding: 0 0 10px;'> <a href='" + projectURI + "'><h2 style='color: #0f6ab4;'>" + projectdescr + "</h2></a>  <div class='markdown' style='margin-left:2em; padding:3px;'> <h4>TaxRefCode: </h4><p style='color: #333333; line-height: 1.4em; padding: 3px 0; margin-left:2em;'>" + projectname + "<a style='color: #eeeeee' href='http://tools.gbif.org/dwca-validator/validate.do?archiveUrl=" + dwcvalidator + "'> °</a></p>"
         if (agentitems.length > 0) {
            if (agentitems.length > 1) {
               item = item + "<h4> Curators: </h4>";
