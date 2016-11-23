@@ -106,6 +106,19 @@ def getAllTaxonNamesFromListFlat(databasename, listid):
     if not cleanDatabasename(databasename):
         return []
     databasename=diversitydatabase(databasename)
+    query0 = u'''select DefaultProjectID from [%s].[dbo].[TaxonNameListProjectProxy] where projectID=%s''' % (databasename, listid)
+    current_app.logger.debug("Query DefaultProjectID %s " % (query0))
+    defaultproject=""
+    with get_db().connect() as conn:
+        defaultproxy = conn.execute(query0)
+        if defaultproxy and defaultproxy:
+            defaultproject=defaultproxy.scalar() 
+ 
+    if defaultproject:
+        subjoin = ''' and hi.ProjectID=%s ''' % defaultproject
+    else:
+        subjoin = ''
+    current_app.logger.debug("Limiting hierarchy to DefaultProjectID '%s' " % (subjoin))    
     query = u'''select '%s' as DatabaseName, a.NameID, a.TaxonNameCache, a.Version, a.TaxonomicRank as TaxonomicRankCode, c.DisplayText as TaxonomicRank, a.GenusOrSupragenericName, \
                 a.InfragenericEpithet, a.SpeciesEpithet, a.InfraspecificEpithet, a.BasionymAuthors, \
                 a.CombiningAuthors, a.PublishingAuthors, a.SanctioningAuthor, a.NonNomenclaturalNameSuffix, a.IsRecombination, \
@@ -121,13 +134,13 @@ def getAllTaxonNamesFromListFlat(databasename, listid):
                 from [%s].[dbo].[TaxonName] a inner join [%s].[dbo].[TaxonNameList] b on  \
                 a.NameID=b.NameID left join [%s].[dbo].[TaxonNameTaxonomicRank_Enum] c on a.TaxonomicRank=c.Code left join \
                 [%s].[dbo].[TaxonAcceptedName] an on an.NameID = a.NameID  and (an.IgnoreButKeepForReference is null or an.IgnoreButKeepForReference = 0) left join \
-                [%s].[dbo].[TaxonHierarchy] hi on hi.NameID = a.NameID and (hi.IgnoreButKeepForReference is null or hi.IgnoreButKeepForReference = 0) left join \
+                [%s].[dbo].[TaxonHierarchy] hi on hi.NameID = a.NameID and (hi.IgnoreButKeepForReference is null or hi.IgnoreButKeepForReference = 0) %s left join \
                 [%s].[dbo].[TaxonSynonymy] sy on sy.NameID = a.NameID and (sy.IgnoreButKeepForReference is null or sy.IgnoreButKeepForReference = 0) \
                 where b.ProjectID=%s and \
                 (a.RevisionLevel is Null or a.RevisionLevel='final revision') and \
                 (a.IgnoreButKeepForReference is Null or a.IgnoreButKeepForReference=0) and \
                 (a.DataWithholdingReason is Null or a.DataWithholdingReason='') \
-                and b.ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154, 923, 924, 925, 926, 927, 854, 856, 858, 867, 863, 715, 711, 703, 708 ,707, 702, 706, 712, 713, 716, 710, 705, 1138, 714, 876, 881, 866, 857, 860, 874, 878, 868, 880, 869, 877, 859, 861, 872, 879, 873, 381, 862, 870, 871) ''' % (databasename, databasename, databasename, databasename, databasename, databasename, databasename, listid)
+                and b.ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154, 923, 924, 925, 926, 927, 854, 856, 858, 867, 863, 715, 711, 703, 708 ,707, 702, 706, 712, 713, 716, 710, 705, 1138, 714, 876, 881, 866, 857, 860, 874, 878, 868, 880, 869, 877, 859, 861, 872, 879, 873, 381, 862, 870, 871) ''' % (databasename, databasename, databasename, databasename, databasename, databasename, subjoin ,databasename, listid)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         namelistproxy = conn.execute(query)
