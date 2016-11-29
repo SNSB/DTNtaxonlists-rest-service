@@ -1140,6 +1140,10 @@
                 "DatabaseName": {
                     "type": "string"
                 },
+                "DefaultProjectID": {
+                    "type": "integer",
+                    "description": "Default Project-id to use for accepted name, hierarchy and synonymy if more than one is supplied"
+                },                
                 "GenusOrSupragenericName": {
                     "type": "string"
                 },
@@ -1226,7 +1230,7 @@
                     "items": {
                         "$ref": "#/definitions/Link"
                     },
-                    "description": "Links to common names, accepted names, synonyms, hierarchies and the list project"
+                    "description": "Links to common names, accepted names, synonyms, hierarchies, the list project and to the list containing this name"
                 }
             }
         },
@@ -1234,6 +1238,10 @@
             "properties": {
                 "DatabaseName": {
                     "type": "string"
+                },
+                "DefaultProject": {
+                    "type": "string",
+                    "description": "Exists only and set to 'True' if there are more hierarchy providing projects available and the current hierarchy is the default one in this list"
                 },
                 "IgnoreButKeepForReference": {
                     "type": "integer"
@@ -1257,6 +1265,10 @@
                 "DatabaseName": {
                     "type": "string"
                 },
+                "DefaultProject": {
+                    "type": "string",
+                    "description": "Exists only and set to 'True' if there are more projects available which provide accepted names and the current accepted name is the default one in this list"
+                },
                 "IgnoreButKeepForReference": {
                     "type": "integer"
                 },
@@ -1279,6 +1291,10 @@
                 "DatabaseName": {
                     "type": "string"
                 },
+                "DefaultProject": {
+                    "type": "string",
+                    "description": "Exists only and set to 'True' if there are more synonym providing projects available and the current synonymy is the default one in this list"
+                },                
                 "IgnoreButKeepForReference": {
                     "type": "integer"
                 },

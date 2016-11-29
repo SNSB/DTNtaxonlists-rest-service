@@ -144,6 +144,8 @@ class name(restful.Resource):
             links.append(makelink('synonyms', 'related', url_for('namesynonyms', database=row['DatabaseName'], id=row['NameID'], _external=True) ))
             links.append(makelink('hierarchies', 'related', url_for('namehierarchies', database=row['DatabaseName'], id=row['NameID'], _external=True) ))
             links.append(makelink('listproject', 'related', url_for('project', id=row['ProjectID'], _external=True) ))
+            # assumption: a name is in a database only in one list!
+            links.append(makelink('taxonomiclist', 'list', url_for('taxonlist', database=row['DatabaseName'], id=row['ProjectID'], _external=True) ))            
             row['links'] = links
         return nameinfo
 
