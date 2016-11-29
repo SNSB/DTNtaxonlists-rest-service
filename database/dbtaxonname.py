@@ -44,7 +44,7 @@ def getTaxonNameLists(databasename):
     if not cleanDatabasename(databasename):
         return []
     databasename=diversitydatabase(databasename)
-    query = u'''select distinct a.ProjectID, a.ProjectURI from [%s].[dbo].[TaxonNameListProjectProxy] a \
+    query = u'''select distinct a.ProjectID, a.ProjectURI, a.DefaultProjectID from [%s].[dbo].[TaxonNameListProjectProxy] a \
                 where a.ProjectID in (select distinct c.ProjectID  from [%s].[dbo].[TaxonName] b inner \
                 join [%s].[dbo].[TaxonNameList] c on b.NameID=c.NameID \
                 where (b.RevisionLevel is null or b.RevisionLevel = 'final revision') and \
@@ -58,7 +58,7 @@ def getTaxonNameLists(databasename):
         if projectURI != None:
             for uri in projectURI:
                 if uri['ProjectURI'] != None:
-                    urilist.append({'projectid':uri['ProjectID'], 'projecturi':uri['ProjectURI'], 'DatabaseName': databasename})
+                    urilist.append({'projectid':uri['ProjectID'], 'projecturi':uri['ProjectURI'], 'DatabaseName': databasename, 'DefaultProjectID':uri['DefaultProjectID']})
     return urilist
 
 # get the Project uri for the given list
@@ -67,7 +67,7 @@ def getTaxonNameListsProjectUri(databasename, id):
     if not cleanDatabasename(databasename):
         return []
     databasename=diversitydatabase(databasename)
-    query = u'select distinct ProjectURI from [%s].[dbo].[TaxonNameListProjectProxy] where ProjectID=%s and ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154, 923, 924, 925, 926, 927, 854, 856, 858, 867, 863, 715, 711, 703, 708 ,707, 702, 706, 712, 713, 716, 710, 705, 1138, 714, 876, 881, 866, 857, 860, 874, 878, 868, 880, 869, 877, 859, 861, 872, 879, 873, 381, 862, 870, 871)' % (databasename, id)
+    query = u'select distinct ProjectURI, DefaultProjectID from [%s].[dbo].[TaxonNameListProjectProxy] where ProjectID=%s and ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154, 923, 924, 925, 926, 927, 854, 856, 858, 867, 863, 715, 711, 703, 708 ,707, 702, 706, 712, 713, 716, 710, 705, 1138, 714, 876, 881, 866, 857, 860, 874, 878, 868, 880, 869, 877, 859, 861, 872, 879, 873, 381, 862, 870, 871)' % (databasename, id)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         projectURI = conn.execute(query)
@@ -198,14 +198,15 @@ def getTaxonName(databasename, nameid):
                 a.CombiningAuthors, a.PublishingAuthors, a.SanctioningAuthor, a.NonNomenclaturalNameSuffix, a.IsRecombination, \
                 a.ReferenceTitle, a.ReferenceURI, \
                 a.Volume, a.Issue, a.Pages, a.YearOfPubl, a.NomenclaturalCode, a.NomenclaturalStatus, a.NomenclaturalComment, \
-                a.AnamorphTeleomorph, a.TypistNotes, a.RevisionLevel, a.IgnoreButKeepForReference, b.ProjectID \
+                a.AnamorphTeleomorph, a.TypistNotes, a.RevisionLevel, a.IgnoreButKeepForReference, b.ProjectID, d.DefaultProjectID \
                 from [%s].[dbo].[TaxonName] a inner join [%s].[dbo].[TaxonNameList] b on  \
-                a.NameID=b.NameID left join [%s].[dbo].[TaxonNameTaxonomicRank_Enum] c on a.TaxonomicRank=c.Code
+                a.NameID=b.NameID left join [%s].[dbo].[TaxonNameTaxonomicRank_Enum] c on a.TaxonomicRank=c.Code left join [%s].[dbo].[TaxonNameListProjectProxy] d on
+                b.ProjectID=d.ProjectID
                 where a.NameID=%s and \
                 (a.RevisionLevel is Null or a.RevisionLevel='final revision') and \
                 (a.IgnoreButKeepForReference is Null or a.IgnoreButKeepForReference=0) and \
                 (a.DataWithholdingReason is Null or a.DataWithholdingReason='') \
-                and ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154, 923, 924, 925, 926, 927, 854, 856, 858, 867, 863, 715, 711, 703, 708 ,707, 702, 706, 712, 713, 716, 710, 705, 1138, 714, 876, 881, 866, 857, 860, 874, 878, 868, 880, 869, 877, 859, 861, 872, 879, 873, 381, 862, 870, 871) ''' % (databasename, databasename, databasename, databasename, nameid)
+                and b.ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154, 923, 924, 925, 926, 927, 854, 856, 858, 867, 863, 715, 711, 703, 708 ,707, 702, 706, 712, 713, 716, 710, 705, 1138, 714, 876, 881, 866, 857, 860, 874, 878, 868, 880, 869, 877, 859, 861, 872, 879, 873, 381, 862, 870, 871) ''' % (databasename, databasename, databasename, databasename, databasename, nameid)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         namelistproxy = conn.execute(query)
@@ -380,6 +381,14 @@ def getTaxonNameAllAcceptedNames(databasename, nameid):
         cnamelist = conn.execute(query)
         if cnamelist != None:
             acceptednamelist=R2L(cnamelist)
+            if len(acceptednamelist)>0:
+                defaultProjectList = getTaxonNameDefaultProject(databasename, nameid)
+                defaultProject = None
+                if len(defaultProjectList)>0:
+                    defaultProject = defaultProjectList[0]['DefaultProjectID']                
+                for ac in acceptednamelist:
+                    if ac['ProjectID'] == defaultProject:
+                        ac['DefaultProject']='True'             
     return acceptednamelist                    
     
 #def getTaxonNameAllAcceptedNames(databasename, nameid):
@@ -407,14 +416,40 @@ def getTaxonNameAllSynonyms(databasename, nameid):
         snamelist = conn.execute(query)
         if snamelist != None:
             synonmylist=R2L(snamelist)
+            if len(synonmylist)>0:
+                defaultProjectList = getTaxonNameDefaultProject(databasename, nameid)
+                defaultProject = None
+                if len(defaultProjectList)>0:
+                    defaultProject = defaultProjectList[0]['DefaultProjectID'] 
+                for sy in synonmylist:
+                    if sy['ProjectID'] == defaultProject:
+                        sy['DefaultProject']='True'            
     return synonmylist  
+
+def getTaxonNameDefaultProject(databasename, nameid):
+    defaultProjectList =[]
+    if not cleanDatabasename(databasename):
+        return []
+    databasename=diversitydatabase(databasename)
+    query = u'''select distinct b.DefaultProjectID \
+               from [%s].[dbo].[TaxonNameList] a inner join [%s].[dbo].[TaxonNameListProjectProxy] b \
+               on a.ProjectID=b.ProjectID \
+               where a.NameID = %s \
+               ''' % (databasename, databasename, nameid)
+    current_app.logger.debug("Query %s " % (query))
+    with get_db().connect() as conn:
+        defProjects = conn.execute(query)
+        if defProjects != None:
+            defaultProjectList=R2L(defProjects)
+    return defaultProjectList                    
+    
 
 def getTaxonNameAllHierarchies(databasename, nameid):
     hierarchylist =[]
     if not cleanDatabasename(databasename):
         return []
     databasename=diversitydatabase(databasename)
-    query = u'''select '%s' as DatabaseName, NameID, ProjectID, IgnoreButKeepForReference
+    query = u'''select '%s' as DatabaseName, NameID, ProjectID, IgnoreButKeepForReference 
                from [%s].[dbo].[TaxonHierarchy] where NameID = %s and \
                (IgnoreButKeepForReference is Null or IgnoreButKeepForReference=0) \
                ''' % (databasename, databasename, nameid)
@@ -423,6 +458,14 @@ def getTaxonNameAllHierarchies(databasename, nameid):
         snamelist = conn.execute(query)
         if snamelist != None:
             hierarchylist=R2L(snamelist)
+            if len(hierarchylist)>0:
+                defaultProjectList = getTaxonNameDefaultProject(databasename, nameid)
+                defaultProject = None
+                if len(defaultProjectList)>0:
+                    defaultProject = defaultProjectList[0]['DefaultProjectID']                
+                for hi in hierarchylist:
+                    if hi['ProjectID'] == defaultProject:
+                        hi['DefaultProject']='True'
     return hierarchylist  
     
 ################################
