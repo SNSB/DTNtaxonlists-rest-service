@@ -244,6 +244,20 @@ class hierarchyfull(restful.Resource):
             links.append(makelink('project', 'related', url_for('project', id=row['ProjectID'], _external=True)))                     
             row['links'] = links
         return hlist
+
+class hierarchynarrowerfull(restful.Resource):
+    def get(self, database, projectid, nameid):
+        hlist = getTaxonHierarchyNarrowerFull(database, projectid, nameid, 0)
+        for row in hlist:
+            links=[]
+            if row['NameParentID']:
+                if int(row['NameParentID'])>0:
+                    links.append(makelink('parent', 'related', url_for('name', database=database, id=row['NameParentID'], _external=True)))
+                else:
+                    row['NameParentID'] = None
+            links.append(makelink('project', 'related', url_for('project', id=row['ProjectID'], _external=True)))                     
+            row['links'] = links
+        return hlist
     
 class namewww(restful.Resource):
     def get(self, database, id):

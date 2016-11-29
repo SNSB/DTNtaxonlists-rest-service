@@ -109,6 +109,7 @@ api.add_resource(synonymy, '/synonymy/<string:database>/<int:projectid>/<int:nam
 
 api.add_resource(hierarchy, '/hierarchy/<string:database>/<int:projectid>/<int:nameid>/')
 api.add_resource(hierarchyfull, '/hierarchy/<string:database>/<int:projectid>/<int:nameid>/full')
+api.add_resource(hierarchynarrowerfull, '/hierarchy/<string:database>/<int:projectid>/<int:nameid>/fullnarrow')
 
 
 api.add_resource(projects, '/projects/')

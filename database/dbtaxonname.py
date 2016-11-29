@@ -570,3 +570,33 @@ def getTaxonHierarchyFull(database, projectid,  nameid, ignorebutkeepforreferenc
             anamelist=R2L(tanamelist)
     return anamelist
 
+def getTaxonHierarchyNarrowerFull(database, projectid,  nameid, ignorebutkeepforreferences):
+    anamelist=[]
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+    
+    query = ('''with hierachy as (
+                   select NameID as baseNameID, NameID, NameParentID, 0 as level, ProjectID 
+                   from [%s].dbo.TaxonHierarchy
+                   where NameID=%s and IgnoreButKeepForReference = %s
+                 union all
+                 select child.baseNameID, name.NameID, name.NameParentID, child.level -1 as level, child.ProjectID
+                   from hierachy as child
+                     inner join %s.dbo.TaxonHierarchy as name
+                       on child.NameID = name.NameParentID and child.ProjectID = name.ProjectID
+                   where name.IgnoreButKeepForReference = %s
+                )
+                select a.*, n.TaxonNameCache, n.TaxonomicRank as TaxonomicRankCode, c.DisplayText as TaxonomicRank 
+                    from hierachy a 
+                        left join %s.dbo.TaxonName n 
+                        on a.NameID=n.nameID 
+                        left join %s.dbo.TaxonNameTaxonomicRank_Enum c on
+                        n.TaxonomicRank=c.Code
+                order by baseNameID, level;''')  % (database, nameid, ignorebutkeepforreferences, database, ignorebutkeepforreferences, database, database)
+    current_app.logger.debug("Query %s " % (query))
+    with get_db().connect() as conn:
+        tanamelist = conn.execute(query)
+        if tanamelist != None:
+            anamelist=R2L(tanamelist)
+    return anamelist
