@@ -11,4 +11,5 @@ echo "restnames.wsgi" >> filelist.tmp
 echo "APIlayout" >> filelist.tmp
 #pip freeze > requirements.txt
 echo "requirements.txt" >> filelist.tmp
-
+echo "update_varnish_cache.py" >> filelist.tmp
+echo "build_curl_script.py" >> filelist.tmp
