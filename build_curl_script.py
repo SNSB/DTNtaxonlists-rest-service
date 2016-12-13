@@ -16,9 +16,12 @@ if resp.status_code == 200:
                 if link['name'] == "taxonnamelist":
                     tf.write('curl -s -S -O -J -L '+ link['uri'] +'dwc_offline\n')
     print "Regenerating DWC-Archives"
-    os.system('''varnishadm 'ban req.url ~ ".*dwc_offline$"''')
+    # invalidate dwc_offline urls
+    os.system('''varnishadm 'ban req.url ~ ".*dwc_offline$"' ''')
+    # recreate archives (they use direct DB-access only, no web-cacheing...)
     os.system('. /root/curlscript.sh')
+    # invlaidate cahche for dwc redirection and zip-files
     os.system('''varnishadm 'ban req.url ~ ".*dwc$"' ''')
+    os.system('''varnishadm 'ban req.url ~ ".*zip$"' ''')
 else:
     print "Could not retrieve lists/"
-                  
