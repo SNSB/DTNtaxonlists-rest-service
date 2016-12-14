@@ -1,6 +1,7 @@
 #!/bin/python
 import requests
 import datetime
+import time
 import multiprocessing
 import sys
 
@@ -8,26 +9,45 @@ import sys
 # Query all lists and dig to the full (broader) hierarchy for each name by following the links
 
 def getList(listmemberlink):
-    namedetails = requests.get(listmemberlink).json()
+    namedetailsr = requests.get(listmemberlink)
+    try:
+        namedetails=namedetailsr.json()
+    except:
+        print(namedetailsr.text)
+        time.sleep(2)
+        return
     for namedetail in namedetails: # only one...
         # save the name details somewhere now...
         defaultProject=namedetail["DefaultProjectID"]
         for namedetaillink in namedetail['links']:
             # here we query only hierarchies, extend this to synonyms, common names, acceptedname
             if namedetaillink['name'] == 'hierarchies':
-                hierarchyselection = requests.get(namedetaillink['uri'])
-                for hierarchydetails in hierarchyselection.json():
+                hierarchyselectionr = requests.get(namedetaillink['uri'])
+                try:
+                    hierarchyselection = hierarchyselectionr.json()
+                except:
+                    print hierarchyselectionr.text
+                    time.sleep(2)
+                    return
+                
+                for hierarchydetails in hierarchyselection:
                     # if there are more hierarchies-projects use the defaultProjektID
                     if not defaultProject or defaultProject==hierarchydetails['ProjectID']:
                         for hierarchydetail in hierarchydetails['links']:
                             if hierarchydetail['name'] == 'hierarchy':
-                                hierarchydescrtiption = requests.get(hierarchydetail['uri']).json()
+                                hierarchydescrtiptionr = requests.get(hierarchydetail['uri'])
+                                try:
+                                    hierarchydescrtiption=hierarchydescrtiptionr.json()
+                                except:
+                                    print(hierarchydescrtiptionr.text)
+                                    time.sleep(2)
+                                    return
                                 for hierarchy in hierarchydescrtiption: # only one...
                                     for hlinks in hierarchy['links']:
                                         if hlinks['name'] == 'allparents':
-                                            allparentmembers = requests.get(hlinks['uri']).json()
+                                            allparentmembersr = requests.get(hlinks['uri'])
                                             # save the hierarchy details somewhere now...
-    
+
 
 if __name__ == '__main__':
     updateuris = []
@@ -54,10 +74,10 @@ if __name__ == '__main__':
             print("List %s is  %s days old with %s items" % (list['projectid'], moddist, itemscount))
     print("Updateable items: %s" % len(updateuris))
     #print(updateuris)
-    pool = multiprocessing.Pool(processes=30)
+    pool = multiprocessing.Pool(processes=10)
     pool.map(getList, updateuris)
-    pool.close()
     pool.join()    
+    pool.close()
 
     
                         

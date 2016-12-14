@@ -99,3 +99,5 @@ reverseproxy.py
 restnames.wsgi
 APIlayout
 requirements.txt
+update_varnish_cache.py
+build_curl_script.py
