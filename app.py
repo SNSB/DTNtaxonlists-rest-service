@@ -55,6 +55,8 @@ from resources.references import references, reference, referenceTNT, referencer
 import json
 import urllib2, urlparse
 
+from resources.analysis import analysiscategories, analysiscategorie, analysiscategoryvalues
+
 
 from resources.webinterface import wwwtaxonlist
 
@@ -125,6 +127,12 @@ api.add_resource(reference, '/references/<string:database>/<int:id>/')
 api.add_resource(referenceTNT, '/References_TNT/<int:id>/')
 api.add_resource(referencerelations, '/references/<string:database>/<int:id>/relations' )
 api.add_resource(referencerelation, '/referencerelation/<string:database>/<int:id>/<string:role>/<int:sequence>/')
+
+api.add_resource(analysiscategories, '/analysiscategories/')
+api.add_resource(analysiscategorie, '/analysiscategories/<string:database>/<int:analysisid>')
+
+api.add_resource(analysiscategoryvalues, '/analysiscategorievalues/<string:database>/<int:analysisid>')
+
 
 api.add_resource(regenrateindex, '/indexneubauen' ) 
 #TODO: References testen
