@@ -661,7 +661,7 @@ def getAnalysisValue(database, analysisid, analysisvalue):
                       DisplayText, DisplayOrder, Notes
                    from [%s].[dbo].[TaxonNameListAnalysisCategoryValue]
                    where AnalysisID = :analid and AnalysisValue = :avalue;''') % (database, database)
-    current_app.logger.debug("Query %s with analid %s and avalue 'analysisvalue'" % (query, analysisid, analysisvalue))
+    current_app.logger.debug("Query %s with analid %s and avalue '%s'" % (query, analysisid, analysisvalue))
     with get_db().connect() as conn:
         tanamelist = conn.execute(text(query), analid=analysisid, avalue=analysisvalue)
         if tanamelist != None:
@@ -680,7 +680,7 @@ def getAnalysisInProject(database,projectid):
                    where ProjectID = :pvalue;''') % (database, database)
     current_app.logger.debug("Query %s with pvalue %s " % (query, projectid))
     with get_db().connect() as conn:
-        tanamelist = conn.execute(query, pvalue=projectid)
+        tanamelist = conn.execute(text(query), pvalue=projectid)
         if tanamelist != None:
             aclist=R2L(tanamelist)
     return aclist
@@ -695,25 +695,41 @@ def getAnalysisAll(database, projectid, analysisid):
                    NameID, AnalysisValue, Notes, TaxonNameListRefID
                    from [%s].[dbo].[TaxonNameListAnalysis]
                    where ProjectID = :pvalue and AnalysisID= :avalue;''') % (database, database)
-    current_app.logger.debug("Query %s with pvalue %s " % (query, projectid))
+    current_app.logger.debug("Query %s with pvalue %s and avalue %s" % (query, projectid, analysisid))
     with get_db().connect() as conn:
-        tanamelist = conn.execute(query, pvalue=projectid, avalue=analysisid)
+        tanamelist = conn.execute(text(query), pvalue=projectid, avalue=analysisid)
         if tanamelist != None:
             aclist=R2L(tanamelist)
     return aclist
 
-
-def getAnalysis(database, projectid, analysisid, nameid, taxonnamelistrefid):
-    # returns the analysis for the given name in the refenence SubjectContext
-    # if reference context is -1 it is normally ignored in the database
-    # if taxnameref is -1 we ignore the key in the query
+def getAnalysisAllTaxRef(database, projectid, analysisid, taxref):
     # returns all nameids (and extrafields) with the given analysisid
     aclist = []
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
+    query = ('''select distinct '%s' as DatabaseName, ProjectID, AnalysisID,
+                   NameID, AnalysisValue, Notes, TaxonNameListRefID
+                   from [%s].[dbo].[TaxonNameListAnalysis]
+                   where ProjectID = :pvalue and AnalysisID= :avalue and TaxonNAmeListRefID = :tref;''') % (database, database)
+    current_app.logger.debug("Query %s with pvalue %s ans avalue %s, tref: %s" % (query, projectid, analysisid, taxref))
+    with get_db().connect() as conn:
+        tanamelist = conn.execute(text(query), pvalue=projectid, avalue=analysisid, tref=taxref)
+        if tanamelist != None:
+            aclist=R2L(tanamelist)
+    return aclist
+
+def getAnalysis(database, projectid, analysisid, nameid, taxonnamelistrefid):
+    # returns the analysis for the given name in the refenence SubjectContext
+    # if reference context is -1 it is normally ignored in the database
+    # if taxnameref is -1 we ignore the key in the query
+    # returns all analysvalues (and extrafields) with the given analysisid
+    aclist = []
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
     if taxonnamelistrefid < 0:
-        query = ('''select distinct '%s' as DatabaseName, ProjectID, AnalysisID,
+        query = ('''select '%s' as DatabaseName, ProjectID, AnalysisID,
                     NameID, AnalysisValue, Notes, TaxonNameListRefID
                     from [%s].[dbo].[TaxonNameListAnalysis]
                     where ProjectID = :pvalue and 
@@ -721,11 +737,11 @@ def getAnalysis(database, projectid, analysisid, nameid, taxonnamelistrefid):
                             NameID = :nvalue;''') % (database, database)
         current_app.logger.debug("Query %s with pvalue %s " % (query, projectid))
         with get_db().connect() as conn:
-            tanamelist = conn.execute(query, pvalue=projectid, avalue=analysisid, nvalue=nameid)
+            tanamelist = conn.execute(text(query), pvalue=projectid, avalue=analysisid, nvalue=nameid)
             if tanamelist != None:
                 aclist=R2L(tanamelist)
     else:
-        query = ('''select distinct '%s' as DatabaseName, ProjectID, AnalysisID,
+        query = ('''select '%s' as DatabaseName, ProjectID, AnalysisID,
                     NameID, AnalysisValue, Notes, TaxonNameListRefID
                     from [%s].[dbo].[TaxonNameListAnalysis]
                     where ProjectID = :pvalue and 
@@ -734,9 +750,45 @@ def getAnalysis(database, projectid, analysisid, nameid, taxonnamelistrefid):
                             TaxonNameListRefID = :tvalue;''') % (database, database)
         current_app.logger.debug("Query %s with pvalue %s " % (query, projectid))
         with get_db().connect() as conn:
-            tanamelist = conn.execute(query, pvalue=projectid, avalue=analysisid, nvalue=nameid, tvalue=taxonnamelistrefid)
+            tanamelist = conn.execute(text(query), pvalue=projectid, avalue=analysisid, nvalue=nameid, tvalue=taxonnamelistrefid)
             if tanamelist != None:
                 aclist=R2L(tanamelist)        
     return aclist
 
+def getAnalysisfilter(database, projectid, analysisid, taxonnamelistrefid, analysisvalue, operator='=', opnot = ''):
+    # returns the analysis for the given name in the refenence SubjectContext
+    # if reference context is -1 it is normally ignored in the database
+    # if taxnameref is -1 we ignore the key in the query
+    # returns all nameids (and extrafields) with the given analysisid
+    # filtered by the analysisvalue
+    aclist = []
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+    if taxonnamelistrefid < 0:
+        query = ('''select '%s' as DatabaseName, ProjectID, AnalysisID,
+                    NameID, AnalysisValue, Notes, TaxonNameListRefID
+                    from [%s].[dbo].[TaxonNameListAnalysis]
+                    where ProjectID = :pvalue and 
+                            AnalysisID = :avalue and %s
+                            AnalysisValue %s :analvalue;''') % (database, database, opnot, operator)
+        current_app.logger.debug("Query %s with pvalue %s, avalue %s, analvalue '%s'" % (query, projectid, analysisid, analysisvalue))
+        with get_db().connect() as conn:
+            tanamelist = conn.execute(text(query), pvalue=projectid, avalue=analysisid, analvalue=analysisvalue)
+            if tanamelist != None:
+                aclist=R2L(tanamelist)
+    else:
+        query = ('''select '%s' as DatabaseName, ProjectID, AnalysisID,
+                    NameID, AnalysisValue, Notes, TaxonNameListRefID
+                    from [%s].[dbo].[TaxonNameListAnalysis]
+                    where ProjectID = :pvalue and 
+                            AnalysisID = :avalue and
+                            TaxonNameListRefID = :tvalue and
+                            AnalysisValue %s :analvalue;''') % (database, database, operator)
+        current_app.logger.debug("Query %s with pvalue %s, avalue %s, analvalue '%s', tvalue %s" % (query, projectid, analysisid, analysisvalue, taxonnamelistrefid))
+        with get_db().connect() as conn:
+            tanamelist = conn.execute(text(query), pvalue=projectid, avalue=analysisid, tvalue=taxonnamelistrefid, analvalue=analysisvalue)
+            if tanamelist != None:
+                aclist=R2L(tanamelist)        
+    return aclist
 

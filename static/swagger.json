@@ -441,6 +441,102 @@
                 }
             }
         },
+        "/lists/{database}/{listid}/analysis": {
+            "get": {
+                "summary": "link to analysisids",
+                "description": "A list with all analysis categories associated with this list",
+                "parameters": [
+                    {
+                        "name": "database",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "listid",
+                        "in": "path",
+                        "description": "database unique id of the list",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "lists"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array listing all analysis category IDs with links to the category definition and to the items of the list associated with this analysis category",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ListAnalysisCategorieslink"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/lists/{database}/{listid}/analysis/{analysisid}": {
+            "get": {
+                "summary": "link to all list items with the analysis category",
+                "description": "A list with all list items associated with this analysis id",
+                "parameters": [
+                    {
+                        "name": "database",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "listid",
+                        "in": "path",
+                        "description": "database unique id of the list",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    {
+                        "name": "analysisid",
+                        "in": "path",
+                        "description": "database unique id of the analysis category",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    }                    
+                ],
+                "tags": [
+                    "lists"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array listing all list items having a analysis value assignd in that analysis categroy",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ListAnalysisNames"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/projects": {
             "get": {
                 "summary": "returns null",
@@ -1079,8 +1175,237 @@
                     }
                 }
             }
+        },
+        "/analysiscategories/": {
+            "get": {
+                "summary": "all used analysis categories in all lists",
+                "description": "An array with the analysis category definitions and links to the analysis category, a parent category if given and optional defined categorial analysis values",
+                "parameters": [
+                ],
+                "tags": [
+                    "analysis"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with all used analysis categories",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/LinksAnalysisCategories"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        
+        },
+        "/analysiscategories/{databaseid}/{analysisid}": {
+            "get": {
+                "summary": "a specific analysis category definition",
+                "description": "Definiton the analysis category with the given analysis ID",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "analysisid",
+                        "in": "path",
+                        "description": "database unique id of the analysis category",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "analysis"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with one analysis category definition and links to an otional parent analysis category and to optional defined nominal analysis values for this analysis category",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/AnalysisCategories"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/analysiscategories/{databaseid}/{analysisid}/valuedefinitions": {
+            "get": {
+                "summary": "link to a list with predefined analysis values",
+                "description": "Link to a list with all predefined (categorial) analysis values",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "analysisid",
+                        "in": "path",
+                        "description": "database unique id of the analysis category",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "analysis"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with all analysis value definitions.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/AnalysisCategoryValues"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },        
+        "/analysiscategorievalues/{databaseid}/{analysisid}/{analyisvalue}": {
+            "get": {
+                "summary": "predefined analysis value",
+                "description": "A predefined (categorial) analysis values in this analysis category",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "analysisid",
+                        "in": "path",
+                        "description": "database unique id of the analysis category",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    {
+                        "name": "analyisvalue",
+                        "in": "path",
+                        "description": "analysis value url-encoded",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    }                    
+                ],
+                "tags": [
+                    "analysis"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with the analysis value definition.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/AnalysisCategoryValues"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/analysis/{databaseid}/{projectid}/{analysisid}/{nameid}": {
+            "get": {
+                "summary": "link to a list with analysis values for the given name",
+                "description": "A list with the assigned analysis value in the given analysis category for the given NameID",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "projectid",
+                        "in": "path",
+                        "description": "ProejctID of the list ",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    },                    {
+                        "name": "analysisid",
+                        "in": "path",
+                        "description": "database unique id of the analysis category",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    {
+                        "name": "nameid",
+                        "in": "path",
+                        "description": "NameID of the list item (the txonomic name)",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "analysis"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with all analysis values for that name and links to the analysis category definition, to optional categorial analyis value definitions, to the list project and the taxonomic name.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/AnalysisValues"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
         }
     },
+    
     "definitions": {
         "Error": {
             "properties": {
@@ -1860,6 +2185,143 @@
                 },
                 "Name": {
                     "type": "string"
+                }
+            }
+        },
+        "ListAnalysisCategorieslink": {
+            "properties": {
+                "DatabaseName": {
+                    "type": "string"
+                },
+                "ProjectID": {
+                    "type": "integer"
+                },
+                "AnalysisID": {
+                    "type": "integer"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },
+        "ListAnalysisNames": {
+            "properties": {
+                "DatabaseName": {
+                    "type": "string"
+                },
+                "ProjectID": {
+                    "type": "integer"
+                },
+                "AnalysisID": {
+                    "type": "integer"
+                },
+                "AnalysisValue": {
+                    "type": "string"
+                },
+                "NameID": {
+                    "type": "integer"
+                },
+                "TaxonNameListRefID": {
+                    "type": "integer"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },
+        "LinksAnalysisCategories": {
+            "properties": {
+                "AnalysisID": {
+                    "type": "integer"
+                },
+                "AnalysisParentID": {
+                    "type": "integer"
+                },
+                "DatabaseName": {
+                    "type": "String"
+                },
+                "Description": {
+                    "type": "string"
+                },
+                "DisplayText": {
+                    "type": "string"
+                },
+                "Notes": {
+                    "type": "string"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },
+        "AnalysisCategoryValues": {
+            "properties": {
+                "AnalysisID": {
+                    "type": "integer"
+                },
+                "AnalysisValue": {
+                    "type": "string"
+                },
+                "DatabaseName": {
+                    "type": "String"
+                },
+                "Description": {
+                    "type": "string"
+                },
+                "DisplayOrder": {
+                    "type": "integer"
+                },
+                "DisplayText": {
+                    "type": "string"
+                },
+                "Notes": {
+                    "type": "string"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },
+        "AnalysisValues": {
+            "properties": {
+                "AnalysisID": {
+                    "type": "integer"
+                },
+                "AnalysisValue": {
+                    "type": "string"
+                },
+                "DatabaseName": {
+                    "type": "string"
+                },
+                "NameID": {
+                    "type": "integer"
+                },
+                "Notes": {
+                    "type": "string"
+                },
+                "ProjectID": {
+                    "type": "integer"
+                },
+                "TaxonNameListRefID": {
+                    "type": "integer"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
                 }
             }
         }
