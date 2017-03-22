@@ -68,9 +68,9 @@ templates/taxonlist_internal.html
 templates/show_lists.html
 templates/taxonlistcommonnames_flat_csv.j2
 templates/taxonlist_flat_eml.j2
+resources/analysis.py
 resources/agents.py
 resources/__init__.py
-resources/analysis.py
 resources/lists.py
 resources/names.py
 resources/taxonlist_flat_csv.py
@@ -80,10 +80,10 @@ resources/intro.py
 resources/commonnames.py
 resources/references.py
 resources/webinterface.py
+database/analysis.py
 database/project.py
 database/list.py
 database/__init__.py
-database/analysis.py
 database/dbtaxonname.py
 database/commonname.py
 database/dbreferences.py

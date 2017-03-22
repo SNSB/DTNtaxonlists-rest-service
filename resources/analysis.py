@@ -2,7 +2,7 @@ from flask.ext import restful
 from flask import url_for
 
 from database.analysis import getAllAnalysisCategories
-from database.dbtaxonname import getAnalysisCategorie, getAnalysisValuesAll, getAnalysisValue
+from database.dbtaxonname import getAnalysisCategorie, getAnalysisValuesAll, getAnalysisValue, getAnalysisCategoriesforName
 from database.dbtaxonname import getAnalysisInProject, getAnalysisAll, getAnalysisAllTaxRef, getAnalysis, getAnalysisfilter
 
 from flask_restful import reqparse
@@ -194,8 +194,8 @@ class analysisinprojectfilter(restful.Resource):
 
     
 class analysis(restful.Resource):
-    def get(self, database, analysisid, projectid, nameid):
-        analysislist = getAnalysis(database, projectid,  analysisid, nameid, -1)
+    def get(self, database, projectid, nameid, analysisid):
+        analysislist = getAnalysis(database, projectid, nameid, analysisid, -1)
         for row in analysislist:
             links = []
             if row['AnalysisID']:
@@ -210,3 +210,16 @@ class analysis(restful.Resource):
             row['links'] = links
         return analysislist
     
+class analysiscategoriesforname(restful.Resource):
+    def get(self, database, projectid, nameid):
+        analysislist = getAnalysisCategoriesforName(database, projectid, nameid)
+        for row in analysislist:
+            links = []
+            if row['AnalysisID']:
+                if int(row['AnalysisID'])>0:
+                    ref = url_for('analysiscategorie', database=database, analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysiscategory', 'category', ref))
+                    ref = url_for('analysis', database=database, projectid=projectid, nameid=nameid, analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysisvalues', 'details', ref))
+            row['links'] = links
+        return analysislist

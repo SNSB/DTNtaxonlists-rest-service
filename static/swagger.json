@@ -72,7 +72,7 @@
         "/names/{database}/{nameid}": {
             "get": {
                 "summary": "specific taxonomic name",
-                "description": "Get one taxonomic name data set",
+                "description": "Get one taxonomic name data set with link to further information",
                 "parameters": [
                     {
                         "name": "database",
@@ -244,51 +244,7 @@
                     }
                 }
             }
-        },
-        "/names/{database}/{nameid}/acceptednames": {
-            "get": {
-                "summary": "Accepted names",
-                "description": "A list of accepted names for this taxonomic name",
-                "parameters": [
-                    {
-                        "name": "database",
-                        "in": "path",
-                        "description": "database name",
-                        "required": true,
-                        "type": "string",
-                        "format": "string"
-                    },
-                    {
-                        "name": "nameid",
-                        "in": "path",
-                        "description": "database unique id of the taxonomic name",
-                        "required": true,
-                        "type": "number",
-                        "format": "integer"
-                    }
-                ],
-                "tags": [
-                    "taxonnames"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "An array with links to the accepted names with the ProjectID indicating the context in which this accepted names is valid.",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Acceptednamelink"
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            }
-        },        
+        },       
         "/names/{database}/{nameid}/hierarchies": {
             "get": {
                 "summary": "the parents of all available hierachies for this taxonomic name",
@@ -513,7 +469,34 @@
                         "required": true,
                         "type": "number",
                         "format": "integer"
-                    }                    
+                    },
+                    {
+                        "name": "value",
+                        "in": "query",
+                        "description": "analysis value to seach for",
+                        "required": false,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "op",
+                        "in": "query",
+                        "description": "comparison operator for the seach (eq, lt, gt, le, ge, ne, like, notlike)",
+                        "required": false,
+                        "type": "string",
+                        "format": "string",
+                        "default": "="
+                    },
+                    {
+                        "name": "refid",
+                        "in": "query",
+                        "description": "optional reference id to limit the results to a specific TaxonNAmeListReferenceID",
+                        "required": false,
+                        "type": "number",
+                        "format": "integer",
+                        "default": -1
+                    }
+                    
                 ],
                 "tags": [
                     "lists"
@@ -1345,7 +1328,59 @@
                 }
             }
         },
-        "/analysis/{databaseid}/{projectid}/{analysisid}/{nameid}": {
+        "/analysis/{databaseid}/{projectid}/{nameid}": {
+            "get": {
+                "summary": "link to a list with analysis categories for the given name",
+                "description": "A list with the assigned analysis category for the given NameID",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "projectid",
+                        "in": "path",
+                        "description": "ProejctID of the list ",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    {
+                        "name": "nameid",
+                        "in": "path",
+                        "description": "NameID of the list item (the txonomic name)",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "analysis"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with all analysis categories which are assigned to the given name with links to teh analysis categoriy definition and to the analysis values.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ListAnalysisCategoriesfornamelink"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/analysis/{databaseid}/{projectid}/{nameid}/{analysisid}": {
             "get": {
                 "summary": "link to a list with analysis values for the given name",
                 "description": "A list with the assigned analysis value in the given analysis category for the given NameID",
@@ -1365,18 +1400,18 @@
                         "required": true,
                         "type": "number",
                         "format": "integer"
-                    },                    {
-                        "name": "analysisid",
-                        "in": "path",
-                        "description": "database unique id of the analysis category",
-                        "required": true,
-                        "type": "number",
-                        "format": "integer"
                     },
                     {
                         "name": "nameid",
                         "in": "path",
                         "description": "NameID of the list item (the txonomic name)",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    },                    {
+                        "name": "analysisid",
+                        "in": "path",
+                        "description": "database unique id of the analysis category",
                         "required": true,
                         "type": "number",
                         "format": "integer"
@@ -1926,9 +1961,6 @@
                 "SynNameID": {
                     "type": "integer"
                 },
-                "SynTypistsNotes": {
-                    "type": "string"
-                },
                 "SynRefDetail": {
                     "type": "string"
                 },
@@ -2207,6 +2239,28 @@
                 }
             }
         },
+        "ListAnalysisCategoriesfornamelink": {
+            "properties": {
+                "DatabaseName": {
+                    "type": "string"
+                },
+                "ProjectID": {
+                    "type": "integer"
+                },
+                "AnalysisID": {
+                    "type": "integer"
+                },
+                "NameID": {
+                    "type": "integer"
+                },                
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },
         "ListAnalysisNames": {
             "properties": {
                 "DatabaseName": {
@@ -2244,7 +2298,7 @@
                     "type": "integer"
                 },
                 "DatabaseName": {
-                    "type": "String"
+                    "type": "string"
                 },
                 "Description": {
                     "type": "string"
@@ -2272,7 +2326,7 @@
                     "type": "string"
                 },
                 "DatabaseName": {
-                    "type": "String"
+                    "type": "string"
                 },
                 "Description": {
                     "type": "string"

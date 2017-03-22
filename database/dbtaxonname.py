@@ -719,11 +719,11 @@ def getAnalysisAllTaxRef(database, projectid, analysisid, taxref):
             aclist=R2L(tanamelist)
     return aclist
 
-def getAnalysis(database, projectid, analysisid, nameid, taxonnamelistrefid):
+def getAnalysis(database, projectid, nameid, analysisid, taxonnamelistrefid):
     # returns the analysis for the given name in the refenence SubjectContext
     # if reference context is -1 it is normally ignored in the database
     # if taxnameref is -1 we ignore the key in the query
-    # returns all analysvalues (and extrafields) with the given analysisid
+    # returns all analysvalues (and extrafields) with the given nameid and analysisid
     aclist = []
     if not cleanDatabasename(database):
         return []
@@ -753,6 +753,25 @@ def getAnalysis(database, projectid, analysisid, nameid, taxonnamelistrefid):
             tanamelist = conn.execute(text(query), pvalue=projectid, avalue=analysisid, nvalue=nameid, tvalue=taxonnamelistrefid)
             if tanamelist != None:
                 aclist=R2L(tanamelist)        
+    return aclist
+
+def getAnalysisCategoriesforName(database, projectid, nameid):
+    # returns the analysis for the given name in the refenence SubjectContext
+    # returns all analysvalues (and extrafields) with the given nameid
+    aclist = []
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+    query = ('''select distinct '%s' as DatabaseName, ProjectID, AnalysisID,
+                NameID
+                from [%s].[dbo].[TaxonNameListAnalysis]
+                where ProjectID = :pvalue and 
+                        NameID = :nvalue;''') % (database, database)
+    current_app.logger.debug("Query %s with pvalue %s, nvalue %s" % (query, projectid, nameid))
+    with get_db().connect() as conn:
+        tanamelist = conn.execute(text(query), pvalue=projectid, nvalue=nameid)
+        if tanamelist != None:
+            aclist=R2L(tanamelist)
     return aclist
 
 def getAnalysisfilter(database, projectid, analysisid, taxonnamelistrefid, analysisvalue, operator='=', opnot = ''):

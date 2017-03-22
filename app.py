@@ -55,8 +55,8 @@ from resources.references import references, reference, referenceTNT, referencer
 import json
 import urllib2, urlparse
 
-from resources.analysis import analysiscategories, analysiscategorie, analysiscategoryvalues, analysisvalue, analysiscategoriesinproject, analysis
-from resources.analysis import analysisinprojectfilter, analysisinprojectequal, analysisinprojectlower, analysisinprojectgreater
+from resources.analysis import analysiscategories, analysiscategorie, analysiscategoryvalues, analysisvalue, analysiscategoriesinproject, analysiscategoriesforname, analysis
+from resources.analysis import analysisinprojectfilter
 
 
 from resources.webinterface import wwwtaxonlist
@@ -137,7 +137,8 @@ api.add_resource(analysisvalue, '/analysiscategorievalues/<string:database>/<int
 api.add_resource(analysiscategoriesinproject, '/lists/<string:database>/<int:projectid>/analysis')
 api.add_resource(analysisinprojectfilter, '/lists/<string:database>/<int:projectid>/analysis/<int:analysisid>')
 
-api.add_resource(analysis, '/analysis/<string:database>/<int:projectid>/<int:analysisid>/<int:nameid>')
+api.add_resource(analysiscategoriesforname, '/analysis/<string:database>/<int:projectid>/<int:nameid>')
+api.add_resource(analysis, '/analysis/<string:database>/<int:projectid>/<int:nameid>/<int:analysisid>')
 
 
 api.add_resource(regenrateindex, '/indexneubauen' ) 
