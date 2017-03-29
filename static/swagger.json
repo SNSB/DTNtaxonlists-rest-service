@@ -443,8 +443,8 @@
         },
         "/lists/{database}/{listid}/analysis/{analysisid}": {
             "get": {
-                "summary": "link to all list items with the analysis category",
-                "description": "A list with all list items associated with this analysis id",
+                "summary": "link to all list items with the given analysis category",
+                "description": "<p>A list with all list items associated with this analysis id, optinal limiting query parameters can be provided.</p><p>The parameters can limit the resultset to a specific TaxonNameListReferenceID which is otherwise ignored.</p><p>The operator and the value parameters represents simple SQL-like result limiting possiblity</p>",
                 "parameters": [
                     {
                         "name": "database",
@@ -490,7 +490,7 @@
                     {
                         "name": "refid",
                         "in": "query",
-                        "description": "optional reference id to limit the results to a specific TaxonNAmeListReferenceID",
+                        "description": "optional reference id to limit the results to a specific TaxonNameListReferenceID",
                         "required": false,
                         "type": "number",
                         "format": "integer",
@@ -1215,7 +1215,51 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An array with one analysis category definition and links to an otional parent analysis category and to optional defined nominal analysis values for this analysis category",
+                        "description": "An array with one analysis category definition and links to optional parent and child analysis categories and to optional defined nominal analysis values for this analysis category",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/AnalysisCategories"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },        
+        "/analysiscategories/{databaseid}/{analysisid}/childs": {
+            "get": {
+                "summary": "List of all sub analysis category definitions",
+                "description": "Generates a list of sub (child) analysis categories for the given analysis ID",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "analysisid",
+                        "in": "path",
+                        "description": "database unique id of the analysis category",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "analysis"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with analysis category definitions and links to optional parent and child analysis categories and to optional defined nominal analysis values for this analysis category",
                         "schema": {
                             "type": "array",
                             "items": {

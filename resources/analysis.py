@@ -2,7 +2,7 @@ from flask.ext import restful
 from flask import url_for
 
 from database.analysis import getAllAnalysisCategories
-from database.dbtaxonname import getAnalysisCategorie, getAnalysisValuesAll, getAnalysisValue, getAnalysisCategoriesforName
+from database.dbtaxonname import getAnalysisCategorie, getAnalysisCategorieChilds, getAnalysisValuesAll, getAnalysisValue, getAnalysisCategoriesforName
 from database.dbtaxonname import getAnalysisInProject, getAnalysisAll, getAnalysisAllTaxRef, getAnalysis, getAnalysisfilter
 
 from flask_restful import reqparse
@@ -24,12 +24,14 @@ class analysiscategories(restful.Resource):
                 if int(row['AnalysisID'])>0:
                     ref = url_for('analysiscategorie', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
                     links.append(makelink('analysiscategory', 'category', ref))
+                    ref = url_for('analysiscategoryvalues', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysiscategoryvalues', 'valueset', ref))
+                    ref = url_for('analysiscategoriechilds', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysiscategoriechilds', 'valueset', ref))
             if row['AnalysisParentID']:
                 if int(row['AnalysisParentID'])>0:
                     ref = url_for('analysiscategorie', database=row['DatabaseName'], analysisid=row['AnalysisParentID'], _external=True)
                     links.append(makelink('parent', 'category', ref))
-            ref = url_for('analysiscategoryvalues', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
-            links.append(makelink('analysiscategoryvalues', 'valueset', ref))
             row['links'] = links
         return analysiscategorylist
     
@@ -42,10 +44,32 @@ class analysiscategorie(restful.Resource):
                 if int(row['AnalysisParentID'])>0:
                     ref = url_for('analysiscategorie', database=row['DatabaseName'], analysisid=row['AnalysisParentID'], _external=True)
                     links.append(makelink('parent', 'category', ref))
-            ref = url_for('analysiscategoryvalues', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
-            links.append(makelink('analysiscategoryvalues', 'valueset', ref))                    
+            if row['AnalysisID']:
+                if int(row['AnalysisID'])>0:
+                    ref = url_for('analysiscategoryvalues', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysiscategoryvalues', 'valueset', ref))                    
+                    ref = url_for('analysiscategoriechilds', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysiscategoriechilds', 'valueset', ref))
             row['links'] = links
         return analysiscategorylist
+
+class analysiscategoriechilds(restful.Resource):
+    def get(self, database, analysisid):
+        analysiscategorylist = getAnalysisCategorieChilds(database, analysisid)
+        for row in analysiscategorylist:
+            links = []
+            if row['AnalysisParentID']:
+                if int(row['AnalysisParentID'])>0:
+                    ref = url_for('analysiscategorie', database=row['DatabaseName'], analysisid=row['AnalysisParentID'], _external=True)
+                    links.append(makelink('parent', 'category', ref))
+            if row['AnalysisID']:
+                if int(row['AnalysisID'])>0:
+                    ref = url_for('analysiscategoryvalues', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysiscategoryvalues', 'valueset', ref))  
+                    ref = url_for('analysiscategoriechilds', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysiscategoriechilds', 'valueset', ref))
+            row['links'] = links
+        return analysiscategorylist    
     
 class  analysiscategoryvalues(restful.Resource):
     def get(self, database, analysisid):

@@ -56,7 +56,7 @@ import json
 import urllib2, urlparse
 
 from resources.analysis import analysiscategories, analysiscategorie, analysiscategoryvalues, analysisvalue, analysiscategoriesinproject, analysiscategoriesforname, analysis
-from resources.analysis import analysisinprojectfilter
+from resources.analysis import analysisinprojectfilter, analysiscategoriechilds
 
 
 from resources.webinterface import wwwtaxonlist
@@ -131,6 +131,7 @@ api.add_resource(referencerelation, '/referencerelation/<string:database>/<int:i
 
 api.add_resource(analysiscategories, '/analysiscategories/')
 api.add_resource(analysiscategorie, '/analysiscategories/<string:database>/<int:analysisid>')
+api.add_resource(analysiscategoriechilds, '/analysiscategories/<string:database>/<int:analysisid>/childs')
 
 api.add_resource(analysiscategoryvalues, '/analysiscategories/<string:database>/<int:analysisid>/valuedefinitions')
 api.add_resource(analysisvalue, '/analysiscategorievalues/<string:database>/<int:analysisid>/<string:analysisvalue>')

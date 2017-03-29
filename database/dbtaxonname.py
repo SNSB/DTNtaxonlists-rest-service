@@ -636,6 +636,22 @@ def getAnalysisCategorie(database, analysisid):
     return aclist
 
 
+def getAnalysisCategorieChilds(database, analysisparentid):
+    aclist = []
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+    query = ('''select '%s' as DatabaseName, AnalysisID, AnalysisParentID, DisplayText, Description, AnalysisURI, Notes
+                   from [%s].[dbo].[TaxonNameListAnalysisCategory]
+                   where AnalysisParentID= :analid;''') % (database, database)
+    current_app.logger.debug("Query %s with analid %s" % (query, analysisparentid))
+    with get_db().connect() as conn:
+        tanamelist = conn.execute(text(query), analid=analysisparentid)
+        if tanamelist != None:
+            aclist=R2L(tanamelist)
+    return aclist
+
+
 def getAnalysisValuesAll(database, analysisid):
     aclist = []
     if not cleanDatabasename(database):
@@ -651,6 +667,7 @@ def getAnalysisValuesAll(database, analysisid):
         if tanamelist != None:
             aclist=R2L(tanamelist)
     return aclist
+
 
 def getAnalysisValue(database, analysisid, analysisvalue):
     aclist = []
