@@ -45,14 +45,14 @@ def getTaxonNameLists(databasename):
     if not cleanDatabasename(databasename):
         return []
     databasename=diversitydatabase(databasename)
-    query = u'''select distinct a.ProjectID, a.ProjectURI, a.DefaultProjectID from [%s].[dbo].[TaxonNameListProjectProxy] a \
+    query = u'''select distinct '%s' as DatabaseName, a.ProjectID, a.ProjectURI, a.DefaultProjectID from [%s].[dbo].[TaxonNameListProjectProxy] a \
                 where a.ProjectID in (select distinct c.ProjectID  from [%s].[dbo].[TaxonName] b inner \
                 join [%s].[dbo].[TaxonNameList] c on b.NameID=c.NameID \
                 where (b.RevisionLevel is null or b.RevisionLevel = 'final revision') and \
                 (b.IgnoreButKeepForReference is Null or b.IgnoreButKeepForReference=0) and \
                 (b.DataWithholdingReason is Null or b.DataWithholdingReason='')) and \
                 a.ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154, 923, 924, 925, 926, 927, 854, 856, 858, 867, 863, 715, 711, 703, 708 ,707, 702, 706, 712, 713, 716, 710, 705, 1138, 714, 876, 881, 866, 857, 860, 874, 878, 868, 880, 869, 877, 859, 861, 872, 879, 873, 381, 862, 870, 871, 864, 865) \
-                ''' % (databasename, databasename,databasename) # TODO: Revision level has to be 'final revision'
+                ''' % (databasename,databasename, databasename,databasename) # TODO: Revision level has to be 'final revision'
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         projectURI = conn.execute(query)
@@ -84,12 +84,12 @@ def getAllTaxonNamesFromList(databasename, listid):
     if not cleanDatabasename(databasename):
         return []
     databasename=diversitydatabase(databasename)
-    query = u'''select distinct a.NameID, a.Notes from [%s].[dbo].[TaxonNameList] a inner join [%s].[dbo].[TaxonName] b on a.NameID=b.NameID where \
+    query = u'''select distinct '%s' as 'DatabaseName', a.NameID, a.Notes from [%s].[dbo].[TaxonNameList] a inner join [%s].[dbo].[TaxonName] b on a.NameID=b.NameID where \
                 (b.RevisionLevel is Null or b.RevisionLevel='final revision') and \
                 (b.IgnoreButKeepForReference is Null or b.IgnoreButKeepForReference=0) and \
                 (b.DataWithholdingReason is Null or b.DataWithholdingReason='') \
                 and ProjectID=%s and \
-                ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154, 923, 924, 925, 926, 927, 854, 856, 858, 867, 863, 715, 711, 703, 708 ,707, 702, 706, 712, 713, 716, 710, 705, 1138, 714, 876, 881, 866, 857, 860, 874, 878, 868, 880, 869, 877, 859, 861, 872, 879, 873, 381, 862, 870, 871, 864, 865)''' % (databasename, databasename, listid)
+                ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154, 923, 924, 925, 926, 927, 854, 856, 858, 867, 863, 715, 711, 703, 708 ,707, 702, 706, 712, 713, 716, 710, 705, 1138, 714, 876, 881, 866, 857, 860, 874, 878, 868, 880, 869, 877, 859, 861, 872, 879, 873, 381, 862, 870, 871, 864, 865)''' % (databasename, databasename, databasename, listid)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         nameids = conn.execute(query)
@@ -120,7 +120,7 @@ def getAllTaxonNamesFromListFlat(databasename, listid):
     else:
         subjoin = ''
     current_app.logger.debug("Limiting hierarchy to DefaultProjectID '%s' " % (subjoin))    
-    query = u'''select '%s' as DatabaseName, a.NameID, a.TaxonNameCache, a.Version, a.TaxonomicRank as TaxonomicRankCode, c.DisplayText as TaxonomicRank, a.GenusOrSupragenericName, \
+    query = u'''select distinct '%s' as DatabaseName, a.NameID, a.TaxonNameCache, a.Version, a.TaxonomicRank as TaxonomicRankCode, c.DisplayText as TaxonomicRank, a.GenusOrSupragenericName, \
                 a.InfragenericEpithet, a.SpeciesEpithet, a.InfraspecificEpithet, a.BasionymAuthors, \
                 a.CombiningAuthors, a.PublishingAuthors, a.SanctioningAuthor, a.NonNomenclaturalNameSuffix, a.IsRecombination, \
                 a.ReferenceTitle, a.ReferenceURI, \
@@ -154,7 +154,7 @@ def getAllCommonNamesFromListFlat(databasename, listid):
     if not cleanDatabasename(databasename):
         return []
     databasename=diversitydatabase(databasename)
-    query = u'''select '%s' as DatabaseName, a.NameID, c.CommonName, c.CountryCode, c.LanguageCode, b.ProjectID \
+    query = u'''select distinct '%s' as DatabaseName, a.NameID, c.CommonName, c.CountryCode, c.LanguageCode, b.ProjectID \
                 from [%s].[dbo].[TaxonName] a inner join [%s].[dbo].[TaxonNameList] b on  \
                 a.NameID = b.NameID \
                 inner join [%s].[dbo].[TaxonCommonName] c on a.NameID = c.NameID
@@ -171,6 +171,23 @@ def getAllCommonNamesFromListFlat(databasename, listid):
     return namelist 
 ###################
 
+def getAllTaxonNameListForName(databasename, nameid):
+    listlist = []
+    if not cleanDatabasename(databasename):
+        return []
+    databasename=diversitydatabase(databasename)
+    query = u'''select distinct '%s' as DatabaseName, a.NameID, a.Notes, a.ProjectID from [%s].[dbo].[TaxonNameList] a inner join [%s].[dbo].[TaxonName] b on a.NameID=b.NameID where \
+                (b.RevisionLevel is Null or b.RevisionLevel='final revision') and \
+                (b.IgnoreButKeepForReference is Null or b.IgnoreButKeepForReference=0) and \
+                (b.DataWithholdingReason is Null or b.DataWithholdingReason='') \
+                and a.NameID=%s and \
+                a.ProjectID in (701, 704, 1137, 855, 1143, 1144, 849, 1140, 1129, 853, 852, 851, 1154, 923, 924, 925, 926, 927, 854, 856, 858, 867, 863, 715, 711, 703, 708 ,707, 702, 706, 712, 713, 716, 710, 705, 1138, 714, 876, 881, 866, 857, 860, 874, 878, 868, 880, 869, 877, 859, 861, 872, 879, 873, 381, 862, 870, 871, 864, 865)''' % (databasename,databasename, databasename, nameid)
+    current_app.logger.debug("Query %s " % (query))
+    with get_db().connect() as conn:
+        nameids = conn.execute(query)
+        if nameids != None:
+            listlist = R2L(nameids)
+    return listlist
 
 # get all taxonname in this db
 def getTaxonNames(databasename):
@@ -194,12 +211,12 @@ def getTaxonName(databasename, nameid):
     if not cleanDatabasename(databasename):
         return []
     databasename=diversitydatabase(databasename)
-    query = u'''select '%s' as DatabaseName, a.NameID, a.TaxonNameCache, a.Version, a.TaxonomicRank as TaxonomicRankCode, c.DisplayText as TaxonomicRank, a.GenusOrSupragenericName, \
+    query = u'''select distinct '%s' as DatabaseName, a.NameID, a.TaxonNameCache, a.Version, a.TaxonomicRank as TaxonomicRankCode, c.DisplayText as TaxonomicRank, a.GenusOrSupragenericName, \
                 a.InfragenericEpithet, a.SpeciesEpithet, a.InfraspecificEpithet, a.BasionymAuthors, \
                 a.CombiningAuthors, a.PublishingAuthors, a.SanctioningAuthor, a.NonNomenclaturalNameSuffix, a.IsRecombination, \
-                a.ReferenceTitle, a.ReferenceURI, \
+                a.ReferenceTitle, a.ReferenceURI,  d.DefaultProjectID, \
                 a.Volume, a.Issue, a.Pages, a.YearOfPubl, a.NomenclaturalCode, a.NomenclaturalStatus, a.NomenclaturalComment, \
-                a.AnamorphTeleomorph, a.TypistNotes, a.RevisionLevel, a.IgnoreButKeepForReference, b.ProjectID, d.DefaultProjectID \
+                a.AnamorphTeleomorph, a.TypistNotes, a.RevisionLevel, a.IgnoreButKeepForReference  \
                 from [%s].[dbo].[TaxonName] a inner join [%s].[dbo].[TaxonNameList] b on  \
                 a.NameID=b.NameID left join [%s].[dbo].[TaxonNameTaxonomicRank_Enum] c on a.TaxonomicRank=c.Code left join [%s].[dbo].[TaxonNameListProjectProxy] d on
                 b.ProjectID=d.ProjectID
@@ -220,12 +237,12 @@ def getTaxonName_for_search_only(databasename, nameid):
     if not cleanDatabasename(databasename):
         return []
     databasename=diversitydatabase(databasename)
-    query = u'''select '%s' as DatabaseName, a.NameID, a.TaxonNameCache, a.Version, a.TaxonomicRank as TaxonomicRankCode, c.DisplayText as TaxonomicRank, a.GenusOrSupragenericName, \
+    query = u'''select distinct '%s' as DatabaseName, a.NameID, a.TaxonNameCache, a.Version, a.TaxonomicRank as TaxonomicRankCode, c.DisplayText as TaxonomicRank, a.GenusOrSupragenericName, \
                 a.InfragenericEpithet, a.SpeciesEpithet, a.InfraspecificEpithet, a.BasionymAuthors, \
                 a.CombiningAuthors, a.PublishingAuthors, a.SanctioningAuthor, a.NonNomenclaturalNameSuffix, a.IsRecombination, \
                 a.ReferenceTitle, a.ReferenceURI, \
                 a.Volume, a.Issue, a.Pages, a.YearOfPubl, a.NomenclaturalCode, a.NomenclaturalStatus, a.NomenclaturalComment, \
-                a.AnamorphTeleomorph, a.TypistNotes, a.RevisionLevel, a.IgnoreButKeepForReference, b.ProjectID, \
+                a.AnamorphTeleomorph, a.TypistNotes, a.RevisionLevel, a.IgnoreButKeepForReference, \
                 a.GenusOrSupragenericName + \
                 case when a.InfragenericEpithet is null or a.InfragenericEpithet = '' then '' else \
                     case when a.NomenclaturalCode = 3 \
@@ -273,7 +290,7 @@ def findTaxonNames(databasename, namestring):
         current_app.logger.debug("ERROR ATTACK! %s " % namestring)
         return []
     databasename=diversitydatabase(databasename)
-    query = u'''select '%s' as DatabaseName, b.NameID, b.TaxonNameCache, a.ProjectID from [%s].[dbo].[TaxonName] b inner join [%s].[dbo].[TaxonNameList] a on a.NameID=b.NameID where \
+    query = u'''select distinct '%s' as DatabaseName, b.NameID, b.TaxonNameCache from [%s].[dbo].[TaxonName] b inner join [%s].[dbo].[TaxonNameList] a on a.NameID=b.NameID where \
                 (b.RevisionLevel is Null or b.RevisionLevel='final revision') and \
                 (b.IgnoreButKeepForReference is Null or b.IgnoreButKeepForReference=0) and \
                 (b.DataWithholdingReason is Null or b.DataWithholdingReason='') \
@@ -296,7 +313,7 @@ def findTaxonNamePartly(databasename, namestring):
         return []
     
     databasename=diversitydatabase(databasename)
-    query = u'''select '%s' as DatabaseName, a.NameID, a.TaxonNameCache, a.TypistNotes, a.RevisionLevel, a.IgnoreButKeepForReference, b.ProjectID \
+    query = u'''select distinct '%s' as DatabaseName, a.NameID, a.TaxonNameCache, a.TypistNotes, a.RevisionLevel, a.IgnoreButKeepForReference \
                 from [%s].[dbo].[TaxonName] a inner join [%s].[dbo].[TaxonNameList] b on  \
                 a.NameID=b.NameID left join [%s].[dbo].[TaxonNameTaxonomicRank_Enum] c on a.TaxonomicRank=c.Code
                 where \

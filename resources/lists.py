@@ -65,11 +65,12 @@ class taxonlists(restful.Resource):
         listlist = getAllLists()
         for row in listlist:
             links = []
-            listurl = url_for('taxonlist',  database=row['DatabaseName'], id=row['projectid'], _external=True)
-            links.append(makelink('taxonnamelist', 'elements', listurl)) #u"http://tnt.diversityworkbench.de/lists/%s/%s"  % (row['DatabaseName'], row['projectid'])
             row["projecturi"] = urlparse(row["projecturi"]).path
             projecturi = url_for('project', id=row['projectid'], _external=True)
             links.append(makelink('listproject', 'related', projecturi))
+            listurl = url_for('taxonlist',  database=row['DatabaseName'], id=row['projectid'], _external=True)
+            links.append(makelink('taxonnamelist', 'elements', listurl)) #u"http://tnt.diversityworkbench.de/lists/%s/%s"  % (row['DatabaseName'], row['projectid'])
+            links.append(makelink('analysiscategories', 'related', url_for('analysiscategoriesinproject',  database=row['DatabaseName'], projectid=row['projectid'], _external=True)))
             row['links'] = links
         return listlist
     

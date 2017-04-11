@@ -20,6 +20,14 @@ def getName(database, id):
     namelist = getTaxonName(database, id)
     return namelist
 
+def getTaxonNameListsForName(database, id):
+    namelist = []
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+    namelist = getAllTaxonNameListForName(database, id)
+    return namelist
+
 def getAllNames():
     lists=[]
     dbList = getDBs('DiversityTaxonNames')

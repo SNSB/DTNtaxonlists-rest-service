@@ -87,7 +87,7 @@
                         "in": "path",
                         "description": "database unique id of the taxonomic name",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -131,7 +131,7 @@
                         "in": "path",
                         "description": "database unique id of the taxonomic name",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -175,7 +175,7 @@
                         "in": "path",
                         "description": "database unique id of the taxonomic name",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -219,7 +219,7 @@
                         "in": "path",
                         "description": "database unique id of the taxonomic name",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -263,7 +263,7 @@
                         "in": "path",
                         "description": "database unique id of the taxonomic name",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -277,6 +277,50 @@
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/Hierarchylink"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },        
+        "/names/{database}/{nameid}/lists": {
+            "get": {
+                "summary": "A list of all taxonomic lists in this database which contain this taxonomic name",
+                "description": "A list of links to taxonomic lists which contain this taxonomic name in this database. Additionally a link to possible analysis categories is given.",
+                "parameters": [
+                    {
+                        "name": "database",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "nameid",
+                        "in": "path",
+                        "description": "database unique id of the taxonomic name",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "taxonnames"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with links to the lists or an empty array if the name is in no list in this database",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/listslink"
                             }
                         }
                     },
@@ -327,7 +371,7 @@
                         "in": "path",
                         "description": "database unique id of the list",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -371,7 +415,7 @@
                         "in": "path",
                         "description": "database unique id of the list",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -415,7 +459,7 @@
                         "in": "path",
                         "description": "database unique id of the list",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -459,7 +503,7 @@
                         "in": "path",
                         "description": "database unique id of the list",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     },
                     {
@@ -467,7 +511,7 @@
                         "in": "path",
                         "description": "database unique id of the analysis category",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     },
                     {
@@ -492,7 +536,7 @@
                         "in": "query",
                         "description": "optional reference id to limit the results to a specific TaxonNameListReferenceID",
                         "required": false,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer",
                         "default": -1
                     }
@@ -547,7 +591,7 @@
                         "in": "path",
                         "description": "server unique id of the project",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -583,7 +627,7 @@
                         "in": "path",
                         "description": "server unique id of the project",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -619,7 +663,7 @@
                         "in": "path",
                         "description": "server unique id of the project",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -655,7 +699,7 @@
                         "in": "path",
                         "description": "server unique id of the agent",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -735,7 +779,7 @@
                         "in": "path",
                         "description": "database unique id of the taxonomic name",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     },
                     {
@@ -787,7 +831,7 @@
                         "in": "path",
                         "description": "database unique id of the project in which this name is defined as accepted",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     },
                     {
@@ -839,7 +883,7 @@
                         "in": "path",
                         "description": "database unique id of the project in which this synonym is defined",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     },
                     {
@@ -899,7 +943,7 @@
                         "in": "path",
                         "description": "database unique id of the project which defined the hierarchy",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     },
                     {
@@ -951,7 +995,7 @@
                         "in": "path",
                         "description": "database unique id of the project which defined the hierarchy",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     },
                     {
@@ -1029,7 +1073,7 @@
                         "in": "path",
                         "description": "database unique id of the reference",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -1073,7 +1117,7 @@
                         "in": "path",
                         "description": "database unique id of the reference",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -1117,7 +1161,7 @@
                         "in": "path",
                         "description": "database unique id of the reference",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     },
                     {
@@ -1133,7 +1177,7 @@
                         "in": "path",
                         "description": "sequence number of the reference, like number of the author",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -1206,7 +1250,7 @@
                         "in": "path",
                         "description": "database unique id of the analysis category",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -1250,7 +1294,7 @@
                         "in": "path",
                         "description": "database unique id of the analysis category",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -1294,7 +1338,7 @@
                         "in": "path",
                         "description": "database unique id of the analysis category",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -1338,7 +1382,7 @@
                         "in": "path",
                         "description": "database unique id of the analysis category",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     },
                     {
@@ -1390,7 +1434,7 @@
                         "in": "path",
                         "description": "ProejctID of the list ",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     },
                     {
@@ -1398,7 +1442,7 @@
                         "in": "path",
                         "description": "NameID of the list item (the txonomic name)",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -1442,7 +1486,7 @@
                         "in": "path",
                         "description": "ProejctID of the list ",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     },
                     {
@@ -1450,14 +1494,14 @@
                         "in": "path",
                         "description": "NameID of the list item (the txonomic name)",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     },                    {
                         "name": "analysisid",
                         "in": "path",
                         "description": "database unique id of the analysis category",
                         "required": true,
-                        "type": "number",
+                        "type": "integer",
                         "format": "integer"
                     }
                 ],
@@ -1583,9 +1627,6 @@
                 },
                 "Pages": {
                     "type": "string"
-                },
-                "ProjectID": {
-                    "type": "integer"
                 },
                 "PublishingAuthors": {
                     "type": "string"
@@ -1769,6 +1810,28 @@
                     "type": "integer"
                 },
                 "projecturi": {
+                    "type": "string"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },
+        "listslink": {
+            "properties": {
+                "DatabaseName": {
+                    "type": "string"
+                },
+                "ProjectID": {
+                    "type": "integer"
+                },                
+                "NameID": {
+                    "type": "integer"
+                },
+                "Notes": {
                     "type": "string"
                 },
                 "links": {
@@ -2045,10 +2108,6 @@
                 "TaxonNameCache": {
                     "type": "string",
                     "description": "Cached name of this parent"
-                },
-                "TaxonomicRankCode": {
-                    "type": "string",
-                    "description": "Abbreviation of the rank"
                 },
                 "TaxonomicRankCode": {
                     "type": "string",

@@ -92,6 +92,7 @@ api.add_resource(namecommonnames, '/names/<string:database>/<int:id>/commonnames
 api.add_resource(nameAcceptedNames, '/names/<string:database>/<int:id>/acceptednames' ) # urls to ACCEPTEDNAMES,
 api.add_resource(nameSynonyms, '/names/<string:database>/<int:id>/synonyms' ) # urls to SYNONYMS
 api.add_resource(nameHierarchies, '/names/<string:database>/<int:id>/hierarchies' ) # urls to HIERARCHIES
+api.add_resource(namelistprojects, '/names/<string:database>/<int:id>/lists' ) # urls to lists containing this name
 
 api.add_resource(agentsTNT, '/agents/', '/Agents_TNT/')
 api.add_resource(agent,  '/agents/<string:database>/<int:id>' ) # urls to all agents or info on this agent including links to _all_ CONTACTS
