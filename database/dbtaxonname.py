@@ -627,7 +627,8 @@ def getAnalysisCategoriesAll(database):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query = ('''select '%s' as DatabaseName, AnalysisID, AnalysisParentID, DisplayText, Description, AnalysisURI, Notes
+    query = ('''select '%s' as DatabaseName, AnalysisID, AnalysisParentID, DisplayText, Description, AnalysisURI,
+                   ReferenceTitle, ReferenceURI, Notes
                    from [%s].[dbo].[TaxonNameListAnalysisCategory];''') % (database, database)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
@@ -642,7 +643,8 @@ def getAnalysisCategorie(database, analysisid):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query = ('''select '%s' as DatabaseName, AnalysisID, AnalysisParentID, DisplayText, Description, AnalysisURI, Notes
+    query = ('''select '%s' as DatabaseName, AnalysisID, AnalysisParentID, DisplayText, Description, AnalysisURI, 
+                   ReferenceTitle, ReferenceURI, Notes
                    from [%s].[dbo].[TaxonNameListAnalysisCategory]
                    where AnalysisID= :analid;''') % (database, database)
     current_app.logger.debug("Query %s with analid %s" % (query, analysisid))
@@ -658,7 +660,8 @@ def getAnalysisCategorieChilds(database, analysisparentid):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query = ('''select '%s' as DatabaseName, AnalysisID, AnalysisParentID, DisplayText, Description, AnalysisURI, Notes
+    query = ('''select '%s' as DatabaseName, AnalysisID, AnalysisParentID, DisplayText, Description, AnalysisURI,
+                   ReferenceTitle, ReferenceURI, Notes
                    from [%s].[dbo].[TaxonNameListAnalysisCategory]
                    where AnalysisParentID= :analid;''') % (database, database)
     current_app.logger.debug("Query %s with analid %s" % (query, analysisparentid))
