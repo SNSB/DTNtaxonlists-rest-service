@@ -62,12 +62,10 @@ def getreferencerelation(database, id, role, sequence):
 # 
 # fur jede Datenbank auszufuehren:
 #
-# select a.* from INFORMATION_SCHEMA.COLUMNS a inner join INFORMATION_SCHEMA.TABLES b 
-# on a.TABLE_CATALOG=b.TABLE_CATALOG and a.TABLE_SCHEMA=b.TABLE_SCHEMA and a.TABLE_NAME=b.TABLE_NAME
-# where b.TABLE_TYPE='BASE TABLE' and 
-#       a.TABLE_CATALOG like 'Diversity%' and
-#       a.COLUMN_NAME = 'ReferenceURI' and 
-#       not a.Table_Name like '%_log'
+#select a.* from INFORMATION_SCHEMA.COLUMNS a inner join INFORMATION_SCHEMA.TABLES b 
+#on a.TABLE_CATALOG=b.TABLE_CATALOG and a.TABLE_SCHEMA=b.TABLE_SCHEMA and a.TABLE_NAME=b.TABLE_NAME
+#where b.TABLE_TYPE='BASE TABLE' and a.TABLE_CATALOG like 'Diversity%' and 
+#(a.COLUMN_NAME = 'ReferenceURI' or a.COLUMN_NAME like '%Ref%URI') and not a.Table_Name like '%_log'
 #
 # woher bekommt man den link? /project_tnt/id, /agents/id, /commonnames/id
 # TaxonNames:

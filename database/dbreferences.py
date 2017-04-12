@@ -104,6 +104,8 @@ def getReferenceRelation(database, refid, role, sequence):
             reflist=R2L(treflist)
     return reflist
 
+###
+
 def makeReferenceURI(database, id):
     query = u'''select dbo.BaseURL() & :itemid;'''
     current_app.logger.debug("Query %s " % (query))
@@ -112,4 +114,8 @@ def makeReferenceURI(database, id):
         if treflist != None:
             reflist=R2L(treflist)
     return reflist         
+
+def queryReferenceLinksNames(database, id):
+    
+    return None
     

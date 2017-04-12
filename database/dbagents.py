@@ -87,3 +87,16 @@ def getAgentRelations(database, agentid):
         if tagentlist != None:
             agentlist=R2L(tagentlist)
     return agentlist
+
+def findAgentsWithReference(database, referenceurl):
+    agnetlist = []
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+    query=u''' select '%s' as DatabaseName, AgentID from [%s].[dbo].[AgentReference] where [ReferenceURI] = :refuri; ''' % (database, database)
+    current_app.logger.debug("Query %s with refuri = '%s'" % (query, referenceurl))
+    with get_db().connect() as conn:
+        alist = conn.execute(query, refuri=referenceurl)
+        if alist != None
+           agnetlist = R2L(alist)
+    return agnetlist

@@ -115,3 +115,16 @@ def getProjectLastChange(database, projectid):
             current_app.logger.debug("Time %s " % (str(v)))
             mdate = v[0].isoformat()
     return mdate
+
+def findProjectsWithReference(database, referenceurl):
+    projectlists = []
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+    query=u''' select '%s' as DatabaseName, ProjectID from [%s].[dbo].[ProjectReference] where [ReferenceURI] = :refuri; ''' % (database, database)
+    current_app.logger.debug("Query %s with refuri = '%s'" % (query, referenceurl))
+    with get_db().connect() as conn:
+        plist = conn.execute(query, refuri=referenceurl)
+        if plist != None
+           projectlists = R2L(plist)
+    return projectlists
