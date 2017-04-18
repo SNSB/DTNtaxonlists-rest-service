@@ -93,10 +93,10 @@ def findAgentsWithReference(database, referenceurl):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query=u''' select '%s' as DatabaseName, AgentID from [%s].[dbo].[AgentReference] where [ReferenceURI] = :refuri; ''' % (database, database)
+    query=u''' select '%s' as DatabaseName, AgentID from [%s].[dbo].[AgentReference] where [ReferenceURI] = '%s'; ''' % (database, database, referenceurl)
     current_app.logger.debug("Query %s with refuri = '%s'" % (query, referenceurl))
     with get_db().connect() as conn:
         alist = conn.execute(query, refuri=referenceurl)
-        if alist != None
+        if alist != None:
            agnetlist = R2L(alist)
     return agnetlist

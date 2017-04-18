@@ -145,3 +145,38 @@ def gettaxonhierachyfull(database,projectid, nameid, ignore):
     lists=getTaxonHierarchyFull(database, projectid, nameid, ignore)
     return lists
 
+
+# referencesearch
+def getAllReferencingTaxonNames(referenceuri):
+    lists=[]
+    dbList = getDBs('DiversityTaxonNames')
+    for db in dbList:
+        lists += findTaxonnameWithReference(db, referenceuri)
+    return lists
+
+
+def getAllReferenceingAcceptedNames(referenceuri):
+    lists=[]
+    dbList = getDBs('DiversityTaxonNames')
+    for db in dbList:
+        lists += findTaxonAcceptednameWithReference(db, referenceuri)
+    return lists
+
+
+def getAllReferenceingSynonyms(referenceuri):
+    lists=[]
+    dbList = getDBs('DiversityTaxonNames')
+    for db in dbList:
+        lists += findTaxonSynonymWithReference(db, referenceuri)
+    return lists
+
+
+def getAllReferenceingHierarchies(referenceuri):
+    lists=[]
+    dbList = getDBs('DiversityTaxonNames')
+    for db in dbList:
+        lists += findTaxonHierarchyWithReference(db, referenceuri)
+    return lists
+
+
+

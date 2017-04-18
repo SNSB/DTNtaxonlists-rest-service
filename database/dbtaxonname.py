@@ -3,6 +3,7 @@
 from flask import current_app
 from database.management import get_db, getDBs, cleanDatabasename, diversitydatabase
 from sqlalchemy import text
+from sqlalchemy.exc import ProgrammingError
 import re
 
 DWB_MODULE='DiversityTaxonNames'
@@ -860,18 +861,18 @@ def findTaxonnameWithReference(database, referenceurl):
     database=diversitydatabase(database)
     query=u''' 
     select '%s' as DatabaseName, NameID from [%s].[dbo].[TaxonName] 
-              where [ReferenceURI] = :refuri or TypificationReferenceURI = :refuri 
+              where [ReferenceURI] = '%s' or TypificationReferenceURI = '%s' 
     union
-    select '%s' as DatabaseName, NameID from [%s].[dbo].[TaxonNameReference] 
-              where [TaxonNameRefURI] = :refuri;
+    select '%s' as DatabaseName, NameID from [%s].[dbo].[TaxonName] 
+              where [TypificationReferenceURI] = '%s'
     union
-    select '%s' as DatabaseName, NameID from [%s].[dbo].[TaxonNameTypification]]
-              where [TypificationReferenceURI] = :refuri;
-    ''' % (database, database, database, database, database, database)
-    current_app.logger.debug("Query %s with refuri = '%s'" % (query, referenceurl))
+    select '%s' as DatabaseName, NameID from [%s].[dbo].[TaxonNameTypification]
+              where [TypificationReferenceURI] = '%s';
+    ''' % (database, database, referenceurl, database, database, referenceurl, database, database, referenceurl)
+    current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         alist = conn.execute(query, refuri=referenceurl)
-        if alist != None
+        if alist != None:
            taxonnamelist = R2L(alist)
     return taxonnamelist
 
@@ -881,11 +882,11 @@ def findTaxonnamelistWithReference(database, referenceurl):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query=u''' select '%s' as DatabaseName, NameID, ProjectID from [%s].[dbo].[TaxonNameListReference] where [TaxonNameListRefURI] = :refuri; ''' % (database, database)
+    query=u''' select distinct '%s' as DatabaseName, ProjectID from [%s].[dbo].[TaxonNameListReference] where [TaxonNameListRefURI] = '%s'; ''' % (database, database, referenceurl)
     current_app.logger.debug("Query %s with refuri = '%s'" % (query, referenceurl))
     with get_db().connect() as conn:
         alist = conn.execute(query, refuri=referenceurl)
-        if alist != None
+        if alist != None:
            taxonnamelist = R2L(alist)
     return taxonnamelist
 
@@ -895,12 +896,12 @@ def findTaxonCommonnameWithReference(database, referenceurl):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query=u''' select '%s' as DatabaseName, NameID, CommonName, LanguageCode, CountryCode, ReferenceTitle from [%s].[dbo].[TaxonNameListReference] where [ReferenceURI] = :refuri; ''' % (database, database)
+    query=u''' select '%s' as DatabaseName, NameID, CommonName, LanguageCode, CountryCode, ReferenceTitle from [%s].[dbo].[TaxonCommonName] where [ReferenceURI] = '%s'; ''' % (database, database, referenceurl)
     current_app.logger.debug("Query %s with refuri = '%s'" % (query, referenceurl))
     with get_db().connect() as conn:
         alist = conn.execute(query, refuri=referenceurl)
-        if alist != None
-           taxonnamelist = R2L(alist)
+        if alist != None:
+            taxonnamelist = R2L(alist)
     return taxonnamelist
 
 
@@ -909,11 +910,11 @@ def findTaxonAcceptednameWithReference(database, referenceurl):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query=u''' select '%s' as DatabaseName, NameID, ProjectID from [%s].[dbo].[TaxonAcceptedName] where [RefURI] = :refuri; ''' % (database, database)
+    query=u''' select '%s' as DatabaseName, NameID, ProjectID from [%s].[dbo].[TaxonAcceptedName] where [RefURI] = '%s'; ''' % (database, database, referenceurl)
     current_app.logger.debug("Query %s with refuri = '%s'" % (query, referenceurl))
     with get_db().connect() as conn:
         alist = conn.execute(query, refuri=referenceurl)
-        if alist != None
+        if alist != None:
            taxonnamelist = R2L(alist)
     return taxonnamelist
 
@@ -923,11 +924,11 @@ def findTaxonSynonymWithReference(database, referenceurl):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query=u''' select '%s' as DatabaseName, NameID, ProjectID from [%s].[dbo].[TaxonSynonymy] where [SynRefURI] = :refuri; ''' % (database, database)
+    query=u''' select '%s' as DatabaseName, NameID, ProjectID from [%s].[dbo].[TaxonSynonymy] where [SynRefURI] = '%s'; ''' % (database, database, referenceurl)
     current_app.logger.debug("Query %s with refuri = '%s'" % (query, referenceurl))
     with get_db().connect() as conn:
         alist = conn.execute(query, refuri=referenceurl)
-        if alist != None
+        if alist != None:
            taxonnamelist = R2L(alist)
     return taxonnamelist
 
@@ -937,11 +938,11 @@ def findTaxonHierarchyWithReference(database, referenceurl):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query=u''' select '%s' as DatabaseName, NameID, ProjectID from [%s].[dbo].[TaxonHierarchy] where [HierarchyRefURI] = :refuri; ''' % (database, database)
+    query=u''' select '%s' as DatabaseName, NameID, ProjectID from [%s].[dbo].[TaxonHierarchy] where [HierarchyRefURI] = '%s'; ''' % (database, database, referenceurl)
     current_app.logger.debug("Query %s with refuri = '%s'" % (query, referenceurl))
     with get_db().connect() as conn:
         alist = conn.execute(query, refuri=referenceurl)
-        if alist != None
+        if alist != None:
            taxonnamelist = R2L(alist)
     return taxonnamelist
 
@@ -950,10 +951,13 @@ def findAnalysisCategoryWithReference(database, referenceurl):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query=u''' select '%s' as DatabaseName, AnalysisID,  from [%s].[dbo].[AgentReference] where [ReferenceURI] = :refuri; ''' % (database, database)
+    query=u''' select '%s' as DatabaseName, AnalysisID from [%s].[dbo].[TaxonNameListAnalysisCategory] where [ReferenceURI] = '%s'; ''' % (database, database, referenceurl)
     current_app.logger.debug("Query %s with refuri = '%s'" % (query, referenceurl))
     with get_db().connect() as conn:
-        alist = conn.execute(query, refuri=referenceurl)
-        if alist != None
-           agnetlist = R2L(alist)
+        try:
+            alist = conn.execute(query, refuri=referenceurl)
+            if alist != None:
+                agnetlist = R2L(alist)
+        except ProgrammingError:
+            return agnetlist
     return agnetlist

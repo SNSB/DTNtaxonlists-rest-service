@@ -121,10 +121,10 @@ def findProjectsWithReference(database, referenceurl):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query=u''' select '%s' as DatabaseName, ProjectID from [%s].[dbo].[ProjectReference] where [ReferenceURI] = :refuri; ''' % (database, database)
+    query=u''' select '%s' as DatabaseName, ProjectID from [%s].[dbo].[ProjectReference] where [ReferenceURI] = '%s'; ''' % (database, database, referenceurl)
     current_app.logger.debug("Query %s with refuri = '%s'" % (query, referenceurl))
     with get_db().connect() as conn:
         plist = conn.execute(query, refuri=referenceurl)
-        if plist != None
+        if plist != None:
            projectlists = R2L(plist)
     return projectlists

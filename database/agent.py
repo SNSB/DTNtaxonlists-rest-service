@@ -43,3 +43,9 @@ def getagentrelations(database, id):
     return agentlist
 
     
+def getAllReferenceingAgents(referenceuri):
+    lists=[]
+    dbList = getDBs('DiversityAgents')
+    for db in dbList:
+        lists += findAgentsWithReference(db, referenceuri)
+    return lists

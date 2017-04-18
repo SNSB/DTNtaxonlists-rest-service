@@ -52,6 +52,7 @@ from resources.projects import project, projects, projectAgents, projectReferenc
 from resources.contacts import contact
 from resources.commonnames import commonname, commonnames
 from resources.references import references, reference, referenceTNT, referencerelations, referencerelation
+from resources.references import referencingitems, namesreferencing, acceptednamesreferencing, synonymsreferencing, hierarchiesreferencing, analysiscategoriesreferencing, commonnamesreferencing, taxonlistsreferencing, projectsreferencing, agentsreferencing
 import json
 import urllib2, urlparse
 
@@ -129,6 +130,17 @@ api.add_resource(reference, '/references/<string:database>/<int:id>/')
 api.add_resource(referenceTNT, '/References_TNT/<int:id>/')
 api.add_resource(referencerelations, '/references/<string:database>/<int:id>/relations' )
 api.add_resource(referencerelation, '/referencerelation/<string:database>/<int:id>/<string:role>/<int:sequence>/')
+
+api.add_resource(referencingitems, '/references/<string:database>/<int:refid>/referencing/')
+api.add_resource(namesreferencing, '/references/<string:database>/<int:refid>/referencing/names/')
+api.add_resource(acceptednamesreferencing, '/references/<string:database>/<int:refid>/referencing/acceptednames/')
+api.add_resource(synonymsreferencing, '/references/<string:database>/<int:refid>/referencing/synonyms/')
+api.add_resource(hierarchiesreferencing, '/references/<string:database>/<int:refid>/referencing/hierarchies/')
+api.add_resource(analysiscategoriesreferencing, '/references/<string:database>/<int:refid>/referencing/analysis/')
+api.add_resource(commonnamesreferencing, '/references/<string:database>/<int:refid>/referencing/commonnames')
+api.add_resource(taxonlistsreferencing, '/references/<string:database>/<int:refid>/referencing/taxonlists')
+api.add_resource(projectsreferencing, '/references/<string:database>/<int:refid>/referencing/projects')
+api.add_resource(agentsreferencing, '/references/<string:database>/<int:refid>/referencing/agents')
 
 api.add_resource(analysiscategories, '/analysiscategories/')
 api.add_resource(analysiscategorie, '/analysiscategories/<string:database>/<int:analysisid>')

@@ -6,6 +6,13 @@ from database.management import get_db, getDBs, cleanDatabasename, diversitydata
 
 DWB_MODULE='DiversityReferences'
 
+def isInt(s):
+    try: 
+        int(s)
+        return True
+    except ValueError:
+        return False
+
 def encoded_dict(in_dict):
     return in_dict
     #out_dict = {}
@@ -107,13 +114,15 @@ def getReferenceRelation(database, refid, role, sequence):
 ###
 
 def makeReferenceURI(database, id):
-    query = u'''select dbo.BaseURL() & :itemid;'''
-    current_app.logger.debug("Query %s " % (query))
-    with get_db().connect() as conn:
-        treflist = conn.execute(query, itemid=id)
-        if treflist != None:
-            reflist=R2L(treflist)
-    return reflist         
+    if isInt(id):
+        query = u'''select [Diversity%s].[dbo].BaseURL() + cast(%s as nvarchar) as ReferenceURI;''' % (database, id)
+        current_app.logger.debug("Query %s " % (query))
+        with get_db().connect() as conn:
+            treflist = conn.execute(query)
+            if treflist != None:
+                reflist=treflist.fetchone()
+                return reflist['ReferenceURI']
+    return []
 
 def queryReferenceLinksNames(database, id):
     

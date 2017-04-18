@@ -57,3 +57,5 @@ class agentRelationsTNT(restful.Resource):
         return relationslist
 
 
+
+

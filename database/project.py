@@ -63,3 +63,11 @@ def getprojectlastchange(database,id):
     database=diversitydatabase(database)
     mdate = getProjectLastChange(database, id)
     return mdate
+
+def getAllProjectsWithReference(referenceuri):
+    lists=[]
+    dbList = getDBs('DiversityProjects')
+    for db in dbList:
+        lists += findProjectsWithReference(db, referenceuri)
+    return lists
+    

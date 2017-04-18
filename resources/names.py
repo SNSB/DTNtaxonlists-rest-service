@@ -279,3 +279,6 @@ class namewww(restful.Resource):
         response.headers['content-type'] = 'text/html'
         return response    
 
+
+
+    

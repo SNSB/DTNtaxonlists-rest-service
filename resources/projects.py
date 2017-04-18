@@ -84,3 +84,5 @@ class projectLastChange(restful.Resource):
     def get(self, id):
         mdate = getprojectlastchange('DiversityProjects_TNT', id)
         return mdate
+
+

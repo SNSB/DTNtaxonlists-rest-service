@@ -39,3 +39,9 @@ def getListProject(database, id):
     return projecturi
 
     
+def getAllReferenceingTaxonLists(referenceuri):
+    lists=[]
+    dbList = getDBs('DiversityTaxonNames')
+    for db in dbList:
+        lists += findTaxonnamelistWithReference(db, referenceuri)
+    return lists

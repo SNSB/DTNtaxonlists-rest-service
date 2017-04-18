@@ -44,10 +44,11 @@ class analysiscategories(restful.Resource):
                     links.append(makelink('analysiscategoryvalues', 'valueset', ref))
                     ref = url_for('analysiscategoriechilds', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
                     links.append(makelink('analysiscategoriechilds', 'valueset', ref))
-                    row['ReferenceURI'] = urlparse(row['ReferenceURI']).path
-                    referenceid = extractReferenceID(row['ReferenceURI'])
-                    if referenceid:
-                        links.append(makelink('reference', 'related', url_for('referencetnt', id=referenceid, _external=True) ))
+                    if row['ReferenceURI']:
+                        row['ReferenceURI'] = urlparse(row['ReferenceURI']).path
+                        referenceid = extractReferenceID(row['ReferenceURI'])
+                        if referenceid:
+                            links.append(makelink('reference', 'related', url_for('referencetnt', id=referenceid, _external=True) ))
                     
             if row['AnalysisParentID']:
                 if int(row['AnalysisParentID'])>0:
@@ -71,10 +72,11 @@ class analysiscategorie(restful.Resource):
                     links.append(makelink('analysiscategoryvalues', 'valueset', ref))                    
                     ref = url_for('analysiscategoriechilds', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
                     links.append(makelink('analysiscategoriechilds', 'valueset', ref))
-                    row['ReferenceURI'] = urlparse(row['ReferenceURI']).path
-                    referenceid = extractReferenceID(row['ReferenceURI'])
-                    if referenceid:
-                        links.append(makelink('reference', 'related', url_for('referencetnt', id=referenceid, _external=True) ))
+                    if row['ReferenceURI']:
+                        row['ReferenceURI'] = urlparse(row['ReferenceURI']).path
+                        referenceid = extractReferenceID(row['ReferenceURI'])
+                        if referenceid:
+                            links.append(makelink('reference', 'related', url_for('referencetnt', id=referenceid, _external=True) ))
             row['links'] = links
         return analysiscategorylist
 
@@ -93,7 +95,8 @@ class analysiscategoriechilds(restful.Resource):
                     links.append(makelink('analysiscategoryvalues', 'valueset', ref))  
                     ref = url_for('analysiscategoriechilds', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
                     links.append(makelink('analysiscategoriechilds', 'valueset', ref))
-                    row['ReferenceURI'] = urlparse(row['ReferenceURI']).path
+                    if row['ReferenceURI']:
+                        row['ReferenceURI'] = urlparse(row['ReferenceURI']).path
             row['links'] = links
         return analysiscategorylist    
     
@@ -273,3 +276,4 @@ class analysiscategoriesforname(restful.Resource):
                     links.append(makelink('analysisvalues', 'details', ref))
             row['links'] = links
         return analysislist
+

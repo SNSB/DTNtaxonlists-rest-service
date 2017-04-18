@@ -3,8 +3,16 @@
 
 from flask.ext import restful
 from database.reference import getreferences, getreference, getreferencerelations, getreferencerelation
+from database.dbreferences import makeReferenceURI
 from flask import url_for
 #import urllib2
+
+from database.agent import getAllReferenceingAgents
+from database.analysis import getAllReferenceingCategories
+from database.commonname import getAllReferenceingCommonNames
+from database.list import getAllReferenceingTaxonLists
+from database.name import getAllReferencingTaxonNames, getAllReferenceingAcceptedNames, getAllReferenceingSynonyms, getAllReferenceingHierarchies
+from database.project import getAllProjectsWithReference
 
 def makelink(label, name, the_uri):
     link = {}
@@ -57,3 +65,137 @@ class referencerelation(restful.Resource):
         return relationslist
 
 
+# items with references
+
+class agentsreferencing(restful.Resource):    
+    def get(self, database, refid):
+        referenceuri = makeReferenceURI(database, refid)
+        agentlist = getAllReferenceingAgents(referenceuri)
+        for row in agentlist:
+            links = []
+            links.append(makelink('agent', 'item', url_for('agent',  database=row['DatabaseName'], id=row['AgentID'], _external=True)))
+            row['links'] = links
+        return agentlist
+    
+
+class analysiscategoriesreferencing(restful.Resource):
+    def get(self, database, refid):
+        referenceuri = makeReferenceURI(database, refid)
+        analysislist = getAllReferenceingCategories(referenceuri)
+        for row in analysislist:
+            links = []
+            if row['AnalysisID']:
+                if int(row['AnalysisID'])>0:
+                    ref = url_for('analysiscategorie', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysiscategory', 'item', ref))
+            row['links'] = links
+        return analysislist
+
+
+class commonnamesreferencing(restful.Resource):
+    def get(self, database, refid):
+        referenceuri = makeReferenceURI(database, refid)
+        results = getAllReferenceingCommonNames(referenceuri)
+        for row in results:
+            links = []
+            newid = u"[%s#%s#%s#%s]" % (row['CommonName'], row['LanguageCode'], row['CountryCode'], row['ReferenceTitle'])
+            #newid = urllib2.quote(newid.encode('utf-8')) # no utf8 but %xx encoding in urls 
+            #url = u"http://tnt.diversityworkbench.de/commonnames/%s/%s/%s" % (row['DatabaseName'], row['NameID'], newid )
+            url = url_for('commonname', database=row['DatabaseName'], nameid=row['NameID'], cid=newid, _external=True)
+            #print url
+            links.append(makelink('commonnames','details', url))
+            row['links'] = links
+        return results 
+
+
+class taxonlistsreferencing(restful.Resource):
+    def get(self, database, refid):
+        referenceuri = makeReferenceURI(database, refid)
+        listlist = getAllReferenceingTaxonLists(referenceuri)
+        for row in listlist:
+            links = []
+            links.append(makelink('listproject', 'detail', url_for('taxonlistproject',  database=row['DatabaseName'], id=row['ProjectID'], _external=True)))
+            links.append(makelink('list', 'items', url_for('taxonlist',  database=row['DatabaseName'], id=row['ProjectID'], _external=True)))
+            row['links'] = links
+        return listlist
+    
+    
+# referencing 
+class namesreferencing(restful.Resource):    
+    def get(self, database, refid):
+        referenceuri = makeReferenceURI(database, refid)
+        namelist = getAllReferencingTaxonNames(referenceuri)
+        for row in namelist:
+            links = []
+            links.append(makelink('name', 'details', url_for('name',  database=row['DatabaseName'], id=row['NameID'], _external=True)))
+            row['links'] = links
+        return namelist
+    
+    
+class acceptednamesreferencing(restful.Resource):    
+    def get(self, database, refid):
+        referenceuri = makeReferenceURI(database, refid)
+        namelist = getAllReferenceingAcceptedNames(referenceuri)
+        for row in namelist:
+            links = []
+            links.append(makelink('acceptedname', 'details', url_for('acceptedname', database=row['DatabaseName'], projectid=row['ProjectID'], nameid=row['NameID'], _external=True)))
+            row['links'] = links
+        return namelist
+
+
+class synonymsreferencing(restful.Resource):    
+    def get(self, database, refid):
+        referenceuri = makeReferenceURI(database, refid)
+        namelist = getAllReferenceingSynonyms(referenceuri)
+        for row in namelist:
+            links = []
+            links.append(makelink('synonymname', 'details', url_for('name', database=row['DatabaseName'], id=row['SynNameID'], _external=True)))
+            row['links'] = links
+        return namelist
+
+
+class hierarchiesreferencing(restful.Resource):    
+    def get(self, database, refid):
+        referenceuri = makeReferenceURI(database, refid)
+        hlist = getAllReferenceingHierarchies(referenceuri)
+        for row in hlist:
+            links=[]
+            links.append(makelink('hierarchy', 'details', url_for('hierarchy', database=row['DatabaseName'], projectid=row['ProjectID'], nameid=row['NameID'], _external=True)))
+            row['links'] = links
+        return hlist      
+    
+
+class projectsreferencing(restful.Resource):
+    def get(self, database, refid):
+        referenceuri = makeReferenceURI(database, refid)
+        projectlist = getAllProjectsWithReference(referenceuri)
+        for row in projectlist:
+            links = []
+            links.append(makelink('projects', 'item', url_for('project', id = row['ProjectID'], _external=True)))
+            row['links'] = links
+        return projectlist
+
+
+    
+class referencingitems(restful.Resource):
+    def get(self, database, refid):
+        referencingitemslist=[]
+        referencingitem={}
+        referencingitem['DatabaseName'] = database
+        referencingitem['ReferenceID'] = refid
+        referenceuri = makeReferenceURI(database, refid)
+        referencingitem['ReferenceURI'] = referenceuri
+        links =  []
+        links.append(makelink('agents', 'referencing', url_for('agentsreferencing',  database=database, refid=refid, _external=True)))
+        links.append(makelink('analysiscategories', 'referencing', url_for('analysiscategoriesreferencing',  database=database, refid=refid, _external=True)))
+        links.append(makelink('commonnames', 'referencing', url_for('commonnamesreferencing',  database=database, refid=refid, _external=True)))
+        links.append(makelink('taxonlists', 'referencing', url_for('taxonlistsreferencing',  database=database, refid=refid, _external=True)))
+        links.append(makelink('taxonnames', 'referencing', url_for('namesreferencing',  database=database, refid=refid, _external=True)))
+        links.append(makelink('acceptednames', 'referencing', url_for('acceptednamesreferencing',  database=database, refid=refid, _external=True)))        
+        links.append(makelink('synonyms', 'referencing', url_for('synonymsreferencing',  database=database, refid=refid, _external=True)))        
+        links.append(makelink('hierarchies', 'referencing', url_for('hierarchiesreferencing',  database=database, refid=refid, _external=True)))        
+        links.append(makelink('projects', 'referencing', url_for('projectsreferencing',  database=database, refid=refid, _external=True)))        
+        referencingitem['links'] = links
+        referencingitemslist.append(referencingitem)
+        return referencingitemslist
+        
