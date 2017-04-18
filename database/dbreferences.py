@@ -115,7 +115,7 @@ def getReferenceRelation(database, refid, role, sequence):
 
 def makeReferenceURI(database, id):
     if isInt(id):
-        query = u'''select [Diversity%s].[dbo].BaseURL() + cast(%s as nvarchar) as ReferenceURI;''' % (database, id)
+        query = u'''select [%s].[dbo].BaseURL() + cast(%s as nvarchar) as ReferenceURI;''' % (database, id)
         current_app.logger.debug("Query %s " % (query))
         with get_db().connect() as conn:
             treflist = conn.execute(query)

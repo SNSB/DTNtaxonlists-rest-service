@@ -38,6 +38,7 @@ class reference(restful.Resource):
         for row in referencelist:
             links = []
             links.append(makelink('relations', 'authors', url_for('referencerelations',  database=row['DatabaseName'], id=row['RefID'], _external=True)))
+            links.append(makelink('referencing', 'links', url_for('referencingitems',  database=row['DatabaseName'], refid=row['RefID'], _external=True)))
             row['links'] = links
         return referencelist
 
@@ -47,6 +48,7 @@ class referenceTNT(restful.Resource):
         for row in referencelist:
             links = []
             links.append(makelink('relations', 'authors', url_for('referencerelations',  database='DiversityReferences_TNT', id=row['RefID'], _external=True)))
+            links.append(makelink('referencing', 'links', url_for('referencingitems',  database='DiversityReferences_TNT', refid=row['RefID'], _external=True)))
             row['links'] = links
         return referencelist    
     
@@ -77,7 +79,16 @@ class agentsreferencing(restful.Resource):
             row['links'] = links
         return agentlist
     
-
+class agentsreferencingtnt(restful.Resource):    
+    def get(self, database, refid):
+        referenceuri = makeReferenceURI(database, refid)
+        agentlist = getAllReferenceingAgents(referenceuri)
+        for row in agentlist:
+            links = []
+            links.append(makelink('agent', 'item', url_for('agent',  database='DiversityAgents_TNT', id=row['AgentID'], _external=True)))
+            row['links'] = links
+        return agentlist
+    
 class analysiscategoriesreferencing(restful.Resource):
     def get(self, database, refid):
         referenceuri = makeReferenceURI(database, refid)

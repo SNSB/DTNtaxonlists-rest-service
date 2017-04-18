@@ -633,9 +633,12 @@ def getAnalysisCategoriesAll(database):
                    from [%s].[dbo].[TaxonNameListAnalysisCategory];''') % (database, database)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
-        tanamelist = conn.execute(text(query))
-        if tanamelist != None:
-            aclist=R2L(tanamelist)
+        try:
+            tanamelist = conn.execute(text(query))
+            if tanamelist != None:
+                aclist=R2L(tanamelist)
+        except ProgrammingError:
+            return []
     return aclist
 
 
@@ -650,9 +653,12 @@ def getAnalysisCategorie(database, analysisid):
                    where AnalysisID= :analid;''') % (database, database)
     current_app.logger.debug("Query %s with analid %s" % (query, analysisid))
     with get_db().connect() as conn:
-        tanamelist = conn.execute(text(query), analid=analysisid)
-        if tanamelist != None:
-            aclist=R2L(tanamelist)
+        try:
+            tanamelist = conn.execute(text(query), analid=analysisid)
+            if tanamelist != None:
+                aclist=R2L(tanamelist)
+        except ProgrammingError:
+            return []
     return aclist
 
 

@@ -28,8 +28,6 @@ def getAllReferenceingCommonNames(referenceuri):
     lists=[]
     dbList = getDBs('DiversityTaxonNames')
     for db in dbList:
-        print(len(lists))
         nl = findTaxonCommonnameWithReference(db, referenceuri)
-        print(len(nl))
         lists += nl
     return lists
