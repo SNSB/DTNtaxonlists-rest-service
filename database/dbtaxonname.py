@@ -890,7 +890,7 @@ def findTaxonnameWithReference(database, referenceurl):
     union
     select '%s' as DatabaseName, NameID from [%s].[dbo].[TaxonNameTypification]
               where [TypificationReferenceURI] = '%s';
-    ''' % (database, database, referenceurl, database, database, referenceurl, database, database, referenceurl)
+    ''' % (database, database, referenceurl, referenceurl, database, database, referenceurl, database, database, referenceurl)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         alist = conn.execute(query, refuri=referenceurl)
