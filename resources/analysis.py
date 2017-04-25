@@ -5,6 +5,7 @@ from urlparse import urlparse
 from database.analysis import getAllAnalysisCategories
 from database.dbtaxonname import getAnalysisCategorie, getAnalysisCategorieChilds, getAnalysisValuesAll, getAnalysisValue, getAnalysisCategoriesforName
 from database.dbtaxonname import getAnalysisInProject, getAnalysisAll, getAnalysisAllTaxRef, getAnalysis, getAnalysisfilter
+from database.dbtaxonname import getProjectsHavingAnalysis
 
 from flask_restful import reqparse
 
@@ -44,6 +45,8 @@ class analysiscategories(restful.Resource):
                     links.append(makelink('analysiscategoryvalues', 'valueset', ref))
                     ref = url_for('analysiscategoriechilds', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
                     links.append(makelink('analysiscategoriechilds', 'valueset', ref))
+                    ref = url_for('projectsreferencinganalysis', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('projects', 'related', ref))
                     if row['ReferenceURI']:
                         row['ReferenceURI'] = urlparse(row['ReferenceURI']).path
                         referenceid = extractReferenceID(row['ReferenceURI'])
@@ -72,6 +75,8 @@ class analysiscategorie(restful.Resource):
                     links.append(makelink('analysiscategoryvalues', 'valueset', ref))                    
                     ref = url_for('analysiscategoriechilds', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
                     links.append(makelink('analysiscategoriechilds', 'valueset', ref))
+                    ref = url_for('projectsreferencinganalysis', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('projects', 'related', ref))
                     if row['ReferenceURI']:
                         row['ReferenceURI'] = urlparse(row['ReferenceURI']).path
                         referenceid = extractReferenceID(row['ReferenceURI'])
@@ -95,6 +100,8 @@ class analysiscategoriechilds(restful.Resource):
                     links.append(makelink('analysiscategoryvalues', 'valueset', ref))  
                     ref = url_for('analysiscategoriechilds', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
                     links.append(makelink('analysiscategoriechilds', 'valueset', ref))
+                    ref = url_for('analysiscategorie', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysiscategorie', 'item', ref))
                     if row['ReferenceURI']:
                         row['ReferenceURI'] = urlparse(row['ReferenceURI']).path
             row['links'] = links
@@ -130,6 +137,24 @@ class analysisvalue(restful.Resource):
             row['links'] = links
         return analysiscategoryvaluelist
     
+
+class projectsreferencinganalysis(restful.Resource):
+    def get(self, database, analysisid):
+        analysisprojectlist = getProjectsHavingAnalysis(database, analysisid)
+        for row in analysisprojectlist:
+            links = []
+            if row['AnalysisID']:
+                if int(row['AnalysisID'])>0:
+                    ref = url_for('analysiscategorie', database=database, analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysiscategory', 'category', ref))
+                    ref = url_for('analysisinprojectfilter', database=database, projectid=row['ProjectID'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysis', 'items', ref))
+            if row['ProjectID']:
+                if int(row['ProjectID'])>0:
+                    ref = url_for('taxonlistproject', database=database, id=row['ProjectID'], _external=True)
+                    links.append(makelink('project', 'related', ref))
+            row['links'] = links
+        return analysisprojectlist
  
 class analysiscategoriesinproject(restful.Resource):
     def get(self, database, projectid):

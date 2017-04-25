@@ -1,7 +1,7 @@
 from flask import current_app
 
 from database.management import getDBs
-from database.dbtaxonname import getAnalysisCategoriesAll, findAnalysisCategoryWithReference
+from database.dbtaxonname import getAnalysisCategoriesAll, findAnalysisCategoryWithReference, getProjectsHavingAnalysis
 
 def getAllAnalysisCategories():
     lists=[]
@@ -17,3 +17,9 @@ def getAllReferenceingCategories(referenceuri):
         lists += findAnalysisCategoryWithReference(db, referenceuri)
     return lists
 
+def getAllProjectsReferencingAnalysisCategory(analysisid):
+    lists=[]
+    dbList = getDBs('DiversityTaxonNames')
+    for db in dbList:
+        lists += getProjectsHavingAnalysis(db, analysisid)
+    return lists    

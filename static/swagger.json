@@ -1363,6 +1363,50 @@
                     }
                 }
             }
+        },        
+        "/analysiscategories/{databaseid}/{analysisid}/projects": {
+            "get": {
+                "summary": "List of links to projects",
+                "description": "Provides links to projects/lists which have tis analysis catetgory assignd to some of their items",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "analysisid",
+                        "in": "path",
+                        "description": "database unique id of the analysis category",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "analysis"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with ",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ListAnalysisCategorieslink"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
         },
         "/analysiscategories/{databaseid}/{analysisid}/valuedefinitions": {
             "get": {

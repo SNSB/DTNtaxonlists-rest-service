@@ -729,6 +729,22 @@ def getAnalysisInProject(database,projectid):
             aclist=R2L(tanamelist)
     return aclist
 
+def getProjectsHavingAnalysis(database,analysisid):
+    # return all ProjectIDs which contain an AnalysisID
+    aclist = []
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+    query = ('''select distinct '%s' as DatabaseName, ProjectID, AnalysisID
+                   from [%s].[dbo].[TaxonNameListAnalysis]
+                   where AnalysisID = :avalue;''') % (database, database)
+    current_app.logger.debug("Query %s with avalue %s " % (query, analysisid))
+    with get_db().connect() as conn:
+        tanamelist = conn.execute(text(query), avalue=analysisid)
+        if tanamelist != None:
+            aclist=R2L(tanamelist)
+    return aclist
+
 def getAnalysisAll(database, projectid, analysisid):
     # returns all nameids (and extrafields) with the given analysisid
     aclist = []
@@ -755,7 +771,7 @@ def getAnalysisAllTaxRef(database, projectid, analysisid, taxref):
     query = ('''select distinct '%s' as DatabaseName, ProjectID, AnalysisID,
                    NameID, AnalysisValue, Notes, TaxonNameListRefID
                    from [%s].[dbo].[TaxonNameListAnalysis]
-                   where ProjectID = :pvalue and AnalysisID= :avalue and TaxonNAmeListRefID = :tref;''') % (database, database)
+                   where ProjectID = :pvalue and AnalysisID= :avalue and TaxonNameListRefID = :tref;''') % (database, database)
     current_app.logger.debug("Query %s with pvalue %s ans avalue %s, tref: %s" % (query, projectid, analysisid, taxref))
     with get_db().connect() as conn:
         tanamelist = conn.execute(text(query), pvalue=projectid, avalue=analysisid, tref=taxref)

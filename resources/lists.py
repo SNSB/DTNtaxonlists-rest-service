@@ -57,6 +57,8 @@ class taxonlistproject(restful.Resource):
             row["projecturi"] = urlparse(row["projecturi"]).path
             projecturi = url_for('project', id=id, _external=True)
             links.append(makelink('listproject', 'related', projecturi))
+            listurl = url_for('taxonlist',  database=database, id=id, _external=True)
+            links.append(makelink('taxonnamelist', 'elements', listurl)) #u"http://tnt.diversityworkbench.de/lists/%s/%s"  % (row['DatabaseName'], row['projectid'])
             row['links'] = links
         return listlist
     
