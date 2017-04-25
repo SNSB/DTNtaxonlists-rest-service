@@ -1187,6 +1187,446 @@
                 }
             }
         },
+        "/references/{databaseid}/{referenceid}/referencing": {
+            "get": {
+                "summary": "List of links to datasets",
+                "description": "A list of links which provide information on datasets citing this reference.",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "referenceid",
+                        "in": "path",
+                        "description": "database unique id of the reference",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "references"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list with links",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Referinglinks"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/references/{databaseid}/{referenceid}/referencing/agents": {
+            "get": {
+                "summary": "List of links to agents",
+                "description": "A list of links to agent-datasets citing this reference.",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "referenceid",
+                        "in": "path",
+                        "description": "database unique id of the reference",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "references"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list with links to agents",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Agentlists"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },        
+        "/references/{databaseid}/{referenceid}/referencing/analyisis": {
+            "get": {
+                "summary": "List of links to analysis categories",
+                "description": "A list of links to analysiscategorie-datasets citing this reference.",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "referenceid",
+                        "in": "path",
+                        "description": "database unique id of the reference",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "references"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list with links to analysis categories",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/AnalysisCategoryLinks"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },        
+        "/references/{databaseid}/{referenceid}/referencing/commonnames": {
+            "get": {
+                "summary": "List of links to common names",
+                "description": "A list of links to common name datasets citing this reference.",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "referenceid",
+                        "in": "path",
+                        "description": "database unique id of the reference",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "references"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list with links to common names",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Commonnamelinks"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },        
+        "/references/{databaseid}/{referenceid}/referencing/taxonlists": {
+            "get": {
+                "summary": "List of links to taxonnomic lists",
+                "description": "A list of links to taxonomic lists containing names citing this reference.",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "referenceid",
+                        "in": "path",
+                        "description": "database unique id of the reference",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "references"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list with links to taxonlists and list-projects",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/listslinks"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },        
+        "/references/{databaseid}/{referenceid}/referencing/names": {
+            "get": {
+                "summary": "List of links to taxonnomic names",
+                "description": "A list of links to taxonomic names citing this reference.",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "referenceid",
+                        "in": "path",
+                        "description": "database unique id of the reference",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "references"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list with links to taxonomic names",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Taxonnamelinks"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },        
+        "/references/{databaseid}/{referenceid}/referencing/acceptednames": {
+            "get": {
+                "summary": "List of links to accepted names",
+                "description": "A list of links to accepted names citing this reference.",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "referenceid",
+                        "in": "path",
+                        "description": "database unique id of the reference",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "references"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list with links to accepted names",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Acceptednamelinks"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },        
+        "/references/{databaseid}/{referenceid}/referencing/synonyms": {
+            "get": {
+                "summary": "List of links to synonyms",
+                "description": "A list of links to synonyms citing this reference.",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "referenceid",
+                        "in": "path",
+                        "description": "database unique id of the reference",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "references"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list with links to synonym names",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Synonymnamelinks"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },        
+        "/references/{databaseid}/{referenceid}/referencing/hierarchies": {
+            "get": {
+                "summary": "List of links to hierarchies",
+                "description": "A list of links to hierarchies citing this reference.",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "referenceid",
+                        "in": "path",
+                        "description": "database unique id of the reference",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "references"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list with links to hierarchies",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Hierarchylinks"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },        
+        "/references/{databaseid}/{referenceid}/referencing/projects": {
+            "get": {
+                "summary": "List of links to projects",
+                "description": "A list of links to projects citing this reference.",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "referenceid",
+                        "in": "path",
+                        "description": "database unique id of the reference",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "references"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list with links to projects",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Projectlinks"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },        
         "/referencerelation/{databaseid}/{referenceid}/{role}/{sequence}": {
             "get": {
                 "summary": "a specific literature reference relation",
@@ -1818,6 +2258,28 @@
                     }
                 }
             }
+        },  
+        "Acceptednamelinks": {
+            "properties": {
+                "DatabaseName": {
+                    "type": "string"
+                },
+                "NameID": {
+                    "type": "integer"
+                },
+                "ProjectID": {
+                    "type": "integer"
+                },
+                "IgnoreButKeepForReference": {
+                    "type": "integer"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
         },        
         "Synonymnamelink": {
             "properties": {
@@ -1839,6 +2301,28 @@
                 },
                 "SynNameID": {
                     "type": "string"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },
+        "Synonymnamelinks": {
+            "properties": {
+                "DatabaseName": {
+                    "type": "string"
+                },
+                "NameID": {
+                    "type": "integer"
+                },
+                "SynNameID": {
+                    "type": "string"
+                },
+                "IgnoreButKeepForReference": {
+                    "type": "integer"
                 },
                 "links": {
                     "type": "array",
@@ -1889,6 +2373,22 @@
                 }
             }
         },
+        "Taxonnamelinks": {
+            "properties": {
+                "DatabaseName": {
+                    "type": "string"
+                },
+                "NameID": {
+                    "type": "integer"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },
         "Listlist": {
             "properties": {
                 "DatabaseName": {
@@ -1922,6 +2422,22 @@
                 "Notes": {
                     "type": "string"
                 },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },
+        "listslinks": {
+            "properties": {
+                "DatabaseName": {
+                    "type": "string"
+                },
+                "ProjectID": {
+                    "type": "integer"
+                },                
                 "links": {
                     "type": "array",
                     "items": {
@@ -1981,8 +2497,8 @@
         },
         "Projectlink": {
             "properties": {
-                "projecturi": {
-                    "type": "string"
+                "ProjectID": {
+                    "type": "integer"
                 },
                 "links": {
                     "type": "array",
@@ -1992,6 +2508,22 @@
                 }
             }
         },
+        "Projectlinks": {
+            "properties": {
+                "DatabaseName": {
+                    "type": "string"
+                },
+                "ProjectID": {
+                    "type": "integer"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },        
         "Agentlist": {
             "properties": {
                 "AgentName": {
@@ -2006,7 +2538,7 @@
                 "Notes": {
                     "type": "string"
                 },
-                "ProjectID": {
+                "AgentID": {
                     "type": "integer"
                 },
                 "links": {
@@ -2017,6 +2549,22 @@
                 }
             }
         },
+        "Agentlists": {
+            "properties": {
+                "DatabaseName": {
+                    "type": "string"
+                },
+                "AgentID": {
+                    "type": "integer"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },        
         "Agent": {
             "properties": {
                 "Abbreviation": {
@@ -2098,6 +2646,35 @@
                 }
             }
         },
+        "Commonnamelinks": {
+            "properties": {
+                "CommonName": {
+                    "type": "string"
+                },
+                "CountryCode": {
+                    "type": "string"
+                },
+                "LanguageCode": {
+                    "type": "string"
+                },
+                "NameID": {
+                    "type": "integer"
+                },
+                "DatabaseName": {
+                    "type": "string"
+                },
+                "ReferenceTitle": {
+                    "type": "string"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    },
+                    "description": "Link to the refering taxonamic name"
+                }
+            }
+        },        
         "Acceptedname": {
             "properties": {
                 "ConceptNotes": {
@@ -2266,6 +2843,29 @@
                 }
             }
         },
+        "Hierarchylinks": {
+            "properties": {
+                "DatabaseName": {
+                    "type": "string"
+                },
+                "IgnoreButKeepForReference": {
+                    "type": "integer"
+                },
+                "NameID": {
+                    "type": "integer"
+                },
+                "ProjectID": {
+                    "type": "integer"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    },
+                    "description": "Links to hierarchies"
+                }
+            }
+        },
         "Referencelink": {
             "properties": {
                 "DatabaseName": {
@@ -2392,6 +2992,26 @@
                 }
             }
         },
+        "Referinglinks": {
+            "properties": {
+                "DatabaseName": {
+                    "type": "string"
+                },
+                "ReferenceID": {
+                    "type": "integer"
+                },
+                "ReferenceURI": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    },
+                    "description": "links to further dataset links citing this reference"
+                }
+            }
+        },        
         "Referencerelation": {
             "properties": {
                 "DatabaseName": {
@@ -2539,6 +3159,22 @@
                 }
             }
         },
+        "AnalysisCategoryLinks": {
+            "properties": {
+                "AnalysisID": {
+                    "type": "integer"
+                },
+                "DatabaseName": {
+                    "type": "string"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },        
         "AnalysisValues": {
             "properties": {
                 "AnalysisID": {

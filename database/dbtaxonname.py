@@ -932,7 +932,7 @@ def findTaxonAcceptednameWithReference(database, referenceurl):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query=u''' select '%s' as DatabaseName, NameID, ProjectID from [%s].[dbo].[TaxonAcceptedName] where [RefURI] = '%s'; ''' % (database, database, referenceurl)
+    query=u''' select '%s' as DatabaseName, NameID, ProjectID, IgnoreButKeepForReference from [%s].[dbo].[TaxonAcceptedName] where [RefURI] = '%s'; ''' % (database, database, referenceurl)
     current_app.logger.debug("Query %s with refuri = '%s'" % (query, referenceurl))
     with get_db().connect() as conn:
         alist = conn.execute(query, refuri=referenceurl)
@@ -946,7 +946,7 @@ def findTaxonSynonymWithReference(database, referenceurl):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query=u''' select '%s' as DatabaseName, NameID, ProjectID from [%s].[dbo].[TaxonSynonymy] where [SynRefURI] = '%s'; ''' % (database, database, referenceurl)
+    query=u''' select '%s' as DatabaseName, NameID, SynNameID, IgnoreButKeepForReference from [%s].[dbo].[TaxonSynonymy] where [SynRefURI] = '%s'; ''' % (database, database, referenceurl)
     current_app.logger.debug("Query %s with refuri = '%s'" % (query, referenceurl))
     with get_db().connect() as conn:
         alist = conn.execute(query, refuri=referenceurl)
@@ -960,7 +960,7 @@ def findTaxonHierarchyWithReference(database, referenceurl):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query=u''' select '%s' as DatabaseName, NameID, ProjectID from [%s].[dbo].[TaxonHierarchy] where [HierarchyRefURI] = '%s'; ''' % (database, database, referenceurl)
+    query=u''' select '%s' as DatabaseName, NameID, ProjectID, IgnoreButKeepForReference from [%s].[dbo].[TaxonHierarchy] where [HierarchyRefURI] = '%s'; ''' % (database, database, referenceurl)
     current_app.logger.debug("Query %s with refuri = '%s'" % (query, referenceurl))
     with get_db().connect() as conn:
         alist = conn.execute(query, refuri=referenceurl)
