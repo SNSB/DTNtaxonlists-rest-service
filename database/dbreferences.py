@@ -2,7 +2,7 @@
 
 from flask import current_app
 from database.management import get_db, getDBs, cleanDatabasename, diversitydatabase
-
+from sqlalchemy import text 
 
 DWB_MODULE='DiversityReferences'
 
@@ -60,13 +60,13 @@ def getReferences(database):
     return reflist
 
 def getReference(database, refid):
-    agentlist=[]
+    reflist=[]
     if not cleanDatabasename(database):
         return [] 
     database = diversitydatabase(database)
     query = u''' select '%s' as DatabaseName, RefID, RefType, RefDescription_Cache, Title, DateYear, \
                  DateMonth, DateDay, DateSuppl, SourceTitle, SeriesTitle, Periodical, Volume, Issue, Pages, Publisher, \
-                 PublPlace, Edition, ISSN_ISBN, Miscellaneous1, Miscellaneous2, Miscellaneous3, Weblinks, LinkToPDF, UserDef1, UserDef2, UserDef3, \
+                 PublPlace, Edition, ISSN_ISBN, Miscellaneous1, Miscellaneous2, Miscellaneous3, Weblinks, LinkToPDF, UserDef1, UserDef2, UserDef3, ParentRefID, \
                  Language, [%s].[dbo].RefAutoDescription_2(RefID) as fullref \
                  from [%s].[dbo].[ReferenceTitle] \
                  where RefID='%s' ''' % (database, database, database, refid)
@@ -78,7 +78,7 @@ def getReference(database, refid):
     return reflist
 
 def getReferenceRelations(database, refid):
-    agentlist=[]
+    reflist=[]
     if not cleanDatabasename(database):
         return []    
     database = diversitydatabase(database)
@@ -92,12 +92,26 @@ def getReferenceRelations(database, refid):
             reflist=R2L(treflist)
     return reflist
 
+def getReferenceChilds(database, refid):
+    reflist=[]
+    if not cleanDatabasename(database):
+        return []    
+    database = diversitydatabase(database)
+    query = text(''' select '%s' as DatabaseName, RefID, ParentRefID \
+                 from [%s].[dbo].[ReferenceTitle] \
+                 where ParentRefID = :rpid ''' % (database, database))
+    current_app.logger.debug("Query %s with rpid=%s' " % (query, refid))
+    with get_db().connect() as conn:
+        treflist = conn.execute(query, rpid=refid)
+        if treflist != None:
+            reflist=R2L(treflist)
+    return reflist
 
 ##########################
 # Subitems
 
 def getReferenceRelation(database, refid, role, sequence):
-    agentlist=[]
+    reflist=[]
     if not cleanDatabasename(database):
         return []    
     database = diversitydatabase(database)

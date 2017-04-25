@@ -53,6 +53,7 @@ from resources.contacts import contact
 from resources.commonnames import commonname, commonnames
 from resources.references import references, reference, referenceTNT, referencerelations, referencerelation
 from resources.references import referencingitems, namesreferencing, acceptednamesreferencing, synonymsreferencing, hierarchiesreferencing, analysiscategoriesreferencing, commonnamesreferencing, taxonlistsreferencing, projectsreferencing, agentsreferencing
+from resources.references import referencechilds, referencetntchilds
 import json
 import urllib2, urlparse
 
@@ -128,6 +129,9 @@ api.add_resource(projectLastChange, '/projects/<int:id>/modificationdate', '/Pro
 api.add_resource(references, '/references/')
 api.add_resource(reference, '/references/<string:database>/<int:id>/')
 api.add_resource(referenceTNT, '/References_TNT/<int:id>/')
+api.add_resource(referencetntchilds, '/References_TNT/<int:id>/childs/')
+api.add_resource(referencechilds, '/references/<string:database>/<int:refid>/childs/')
+
 api.add_resource(referencerelations, '/references/<string:database>/<int:id>/relations' )
 api.add_resource(referencerelation, '/referencerelation/<string:database>/<int:id>/<string:role>/<int:sequence>/')
 

@@ -3,7 +3,7 @@
 
 from flask.ext import restful
 from database.reference import getreferences, getreference, getreferencerelations, getreferencerelation
-from database.dbreferences import makeReferenceURI
+from database.dbreferences import makeReferenceURI, getReferenceChilds
 from flask import url_for
 #import urllib2
 
@@ -39,6 +39,10 @@ class reference(restful.Resource):
             links = []
             links.append(makelink('relations', 'authors', url_for('referencerelations',  database=row['DatabaseName'], id=row['RefID'], _external=True)))
             links.append(makelink('referencing', 'links', url_for('referencingitems',  database=row['DatabaseName'], refid=row['RefID'], _external=True)))
+            links.append(makelink('reference', 'childs', url_for('referencechilds',  database=row['DatabaseName'], refid=row['RefID'], _external=True)))
+            if row['ParentRefID']:
+                if (int(row['ParentRefID'])):
+                    links.append(makelink('reference', 'parent', url_for('reference',  database=row['DatabaseName'], id=row['ParentRefID'], _external=True)))             
             row['links'] = links
         return referencelist
 
@@ -49,8 +53,30 @@ class referenceTNT(restful.Resource):
             links = []
             links.append(makelink('relations', 'authors', url_for('referencerelations',  database='DiversityReferences_TNT', id=row['RefID'], _external=True)))
             links.append(makelink('referencing', 'links', url_for('referencingitems',  database='DiversityReferences_TNT', refid=row['RefID'], _external=True)))
+            links.append(makelink('reference', 'childs', url_for('referencechilds',  database='DiversityReferences_TNT', refid=row['RefID'], _external=True)))
+            if row['ParentRefID']:
+                if (int(row['ParentRefID'])):
+                    links.append(makelink('reference', 'parent', url_for('reference',  database='DiversityReferences_TNT', id=row['ParentRefID'], _external=True)))            
             row['links'] = links
         return referencelist    
+
+class referencechilds(restful.Resource):
+    def get(self, database, refid):
+        referencelist = getReferenceChilds(database, refid)
+        for row in referencelist:
+            links = []
+            links.append(makelink('reference', 'item', url_for('reference',  database=row['DatabaseName'], id=row['RefID'], _external=True)))
+            row['links'] = links
+        return referencelist
+
+class referencetntchilds(restful.Resource):
+    def get(self, id):
+        referencelist = getReferenceChilds(database, id)
+        for row in referencelist:
+            links = []
+            links.append(makelink('reference', 'item', url_for('reference',  database='DiversityReferences_TNT', id=row['RefID'], _external=True)))
+            row['links'] = links
+        return referencelist
     
 class referencerelations(restful.Resource):
     def get(self, database, id):
@@ -65,7 +91,6 @@ class referencerelation(restful.Resource):
     def get(self, database, id, role, sequence):
         relationslist = getreferencerelation(database, id, role, sequence)
         return relationslist
-
 
 # items with references
 

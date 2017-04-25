@@ -1142,6 +1142,50 @@
                     }
                 }
             }
+        },        
+        "/references/{databaseid}/{referenceid}/childs": {
+            "get": {
+                "summary": "links to sub/chapters or items in a series",
+                "description": "An array with links to possible child references which can be chapters, subchapters or items in a series.",
+                "parameters": [
+                    {
+                        "name": "databaseid",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "referenceid",
+                        "in": "path",
+                        "description": "database unique id of the reference",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "references"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with relations to the specific literature child reference",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Referencelink"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
         },
         "/referencerelation/{databaseid}/{referenceid}/{role}/{sequence}": {
             "get": {
