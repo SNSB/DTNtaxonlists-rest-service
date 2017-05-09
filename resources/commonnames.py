@@ -45,7 +45,8 @@ class commonnames(restful.Resource):
             for row in results:
                 links = []
                 links.append(makelink('name', 'related', url_for('name', database=row['DatabaseName'], id=row['NameID'], _external=True) ))
-                row['ReferenceURI'] = urlparse(row['ReferenceURI']).path
+                if row['ReferenceURI']:
+                    row['ReferenceURI'] = urlparse(row['ReferenceURI']).path
                 referenceid = extractReferenceID(row['ReferenceURI'])
                 if referenceid:
                     links.append(makelink('reference', 'related', url_for('referencetnt', id=referenceid, _external=True) ))
@@ -62,7 +63,8 @@ class commonname(restful.Resource):
         for row in results:
             links = []
             links.append(makelink('name', 'related', url_for('name', database=row['DatabaseName'], id=row['NameID'], _external=True) ))
-            row['ReferenceURI'] = urlparse(row['ReferenceURI']).path
+            if row['ReferenceURI']:
+               row['ReferenceURI'] = urlparse(row['ReferenceURI']).path
             referenceid = extractReferenceID(row['ReferenceURI'])
             if referenceid:
                 links.append(makelink('reference', 'related', url_for('referencetnt', id=referenceid, _external=True) ))
