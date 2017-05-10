@@ -24,14 +24,14 @@ app.config["APPLICATION_ROOT"] = "/DTNtaxonlists"
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
-    DATABASESERVER='''mssql+pymssql://TNT:***REMOVED***@tnt.diversityworkbench.de:5432''',
+    DATABASESERVER='''mssql+pymssql://TNT:unknown@tnt.diversityworkbench.de:5432''',
     DEBUG=False,
     SECRET_KEY='development key',
     USERNAME='admin',
     PASSWORD='default',
     DEFAULTDBUSER='TNT',
     DEFAULTDBPORT=5432,
-    DEFAULTDBPASSWORD='***REMOVED***',
+    DEFAULTDBPASSWORD='unkown',
     DEFAULTDBSERVER='tnt.diversityworkbench.de'
 ))
 
