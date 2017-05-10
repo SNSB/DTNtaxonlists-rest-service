@@ -71,6 +71,7 @@ templates/taxonlist_flat_eml.j2
 resources/analysis.py
 resources/agents.py
 resources/__init__.py
+resources/apitest.py
 resources/lists.py
 resources/names.py
 resources/taxonlist_flat_csv.py

@@ -71,7 +71,7 @@ class referencechilds(restful.Resource):
 
 class referencetntchilds(restful.Resource):
     def get(self, id):
-        referencelist = getReferenceChilds(database, id)
+        referencelist = getReferenceChilds('DiversityReferences_TNT', id)
         for row in referencelist:
             links = []
             links.append(makelink('reference', 'item', url_for('reference',  database='DiversityReferences_TNT', id=row['RefID'], _external=True)))
