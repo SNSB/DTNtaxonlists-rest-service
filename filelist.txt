@@ -96,6 +96,8 @@ database/management.py
 database/reference.py
 searchengine/suchen.py
 searchengine/__init__.py
+config/__init__.py
+config/config.py
 app.py
 __init__.py
 reverseproxy.py

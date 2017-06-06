@@ -9,6 +9,8 @@ from flask.ext.cors import CORS
 
 from reverseproxy import ReverseProxied
 
+from config import config
+
 #from flask.ext.restful.representations.json import output_json
 #output_json.func_globals['settings'] = {'ensure_ascii': False, 'encoding': 'utf8'}
 
@@ -34,6 +36,8 @@ app.config.update(dict(
     DEFAULTDBPASSWORD='unkown',
     DEFAULTDBSERVER='tnt.diversityworkbench.de'
 ))
+
+app.config.update(config.config)
 
 DIVERSITY_TAXON_NAMES='DiveristyTaxonNames'
 
