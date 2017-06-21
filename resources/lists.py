@@ -5,7 +5,7 @@ from flask.ext import restful
 from flask.ext.restful import fields, marshal_with
 from flask import url_for, Response
 from database.list import getList, getAllLists, getListProject
-from database.dbtaxonname import getAllTaxonNamesFromListFlat
+from database.dbtaxonname import getAllTaxonNamesFromListFlat, getAnalysisInProjectwithSubReferencing
 from urlparse import urlparse
 from flask import Flask,g, request, render_template
 
@@ -75,6 +75,25 @@ class taxonlists(restful.Resource):
             links.append(makelink('analysiscategories', 'related', url_for('analysiscategoriesinproject',  database=row['DatabaseName'], projectid=row['projectid'], _external=True)))
             row['links'] = links
         return listlist
-    
 
+    
+class getTaxonListAnalyisReferencingSUB(restful.Resource):
+    def get(self, database, projectid, referenceid):
+        listlist = getAnalysisInProjectwithSubReferencing(database, projectid, referenceid)
+        for row in listlist:
+            links = []
+            if row['AnalysisID']:
+                if int(row['AnalysisID'])>0:
+                    ref = url_for('analysiscategoryvalues', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysiscategoryvalues', 'valueset', ref))  
+                    ref = url_for('analysiscategoriechilds', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysiscategoriechilds', 'valueset', ref))
+                    ref = url_for('analysiscategorie', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysiscategorie', 'item', ref))
+                projecturi = url_for('project', id=row['ProjectID'], _external=True)
+                links.append(makelink('listproject', 'related', projecturi))
+            row['links'] = links
+        
+        return listlist
+    
     

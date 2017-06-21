@@ -5,7 +5,7 @@ from urlparse import urlparse
 from database.analysis import getAllAnalysisCategories
 from database.dbtaxonname import getAnalysisCategorie, getAnalysisCategorieChilds, getAnalysisValuesAll, getAnalysisValue, getAnalysisCategoriesforName
 from database.dbtaxonname import getAnalysisInProject, getAnalysisAll, getAnalysisAllTaxRef, getAnalysis, getAnalysisfilter
-from database.dbtaxonname import getProjectsHavingAnalysis
+from database.dbtaxonname import getProjectsHavingAnalysis, getAnalysisCategorieChildsAll
 
 from flask_restful import reqparse
 
@@ -106,7 +106,30 @@ class analysiscategoriechilds(restful.Resource):
                         row['ReferenceURI'] = urlparse(row['ReferenceURI']).path
             row['links'] = links
         return analysiscategorylist    
-    
+
+
+class analysiscategoriechildsall(restful.Resource):
+    def get(self, database, analysisid):
+        analysiscategorylist = getAnalysisCategorieChildsAll(database, analysisid)
+        for row in analysiscategorylist:
+            links = []
+            if row['AnalysisParentID']:
+                if int(row['AnalysisParentID'])>0:
+                    ref = url_for('analysiscategorie', database=row['DatabaseName'], analysisid=row['AnalysisParentID'], _external=True)
+                    links.append(makelink('parent', 'category', ref))
+            if row['AnalysisID']:
+                if int(row['AnalysisID'])>0:
+                    ref = url_for('analysiscategoryvalues', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysiscategoryvalues', 'valueset', ref))  
+                    ref = url_for('analysiscategoriechilds', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysiscategoriechilds', 'valueset', ref))
+                    ref = url_for('analysiscategorie', database=row['DatabaseName'], analysisid=row['AnalysisID'], _external=True)
+                    links.append(makelink('analysiscategorie', 'item', ref))
+                    if row['ReferenceURI']:
+                        row['ReferenceURI'] = urlparse(row['ReferenceURI']).path
+            row['links'] = links
+        return analysiscategorylist     
+
 class  analysiscategoryvalues(restful.Resource):
     def get(self, database, analysisid):
         analysiscategoryvalueslist = getAnalysisValuesAll(database, analysisid)

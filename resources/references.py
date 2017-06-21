@@ -3,7 +3,7 @@
 
 from flask.ext import restful
 from database.reference import getreferences, getreference, getreferencerelations, getreferencerelation
-from database.dbreferences import makeReferenceURI, getReferenceChilds
+from database.dbreferences import makeReferenceURI, getReferenceChilds, getReferenceChildsAll
 from flask import url_for
 #import urllib2
 
@@ -77,6 +77,16 @@ class referencetntchilds(restful.Resource):
             links.append(makelink('reference', 'item', url_for('reference',  database='DiversityReferences_TNT', id=row['RefID'], _external=True)))
             row['links'] = links
         return referencelist
+    
+class referenceschildsall(restful.Resource):
+    def get(self, database, refid):
+        referencelist = getReferenceChildsAll(database, refid)
+        for row in referencelist:
+            links = []
+            links.append(makelink('reference', 'item', url_for('reference',  database=row['DatabaseName'], id=row['RefID'], _external=True)))
+            row['links'] = links
+        return referencelist 
+    
     
 class referencerelations(restful.Resource):
     def get(self, database, id):

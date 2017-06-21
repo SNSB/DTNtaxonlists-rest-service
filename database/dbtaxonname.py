@@ -2,6 +2,7 @@
 
 from flask import current_app
 from database.management import get_db, getDBs, cleanDatabasename, diversitydatabase
+from database.dbreferences import makeReferenceURI, getReferenceChildsAll
 from sqlalchemy import text
 from sqlalchemy.exc import ProgrammingError
 import re
@@ -662,6 +663,37 @@ def getAnalysisCategorie(database, analysisid):
     return aclist
 
 
+def getAnalysisCategorieChildsAll(database, analysisparentid):
+    aclist = []
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+    query = text('''with hierachy as (
+                   select '%s' as DatabaseName, AnalysisID as baseAnalysisID, AnalysisID, AnalysisParentID,
+                   DisplayText, Description, AnalysisURI, 
+                   ReferenceTitle, ReferenceURI, Notes,
+                   0 as level 
+                   from [%s].[dbo].[TaxonNameListAnalysisCategory]
+                   where AnalysisID= :analid
+                 union all
+                 select '%s' as DatabaseName, child.baseAnalysisID, canid.AnalysisID, canid.AnalysisParentID,
+                   canid.DisplayText, canid.Description, canid.AnalysisURI, 
+                   canid.ReferenceTitle, canid.ReferenceURI, canid.Notes,
+                   child.level -1 as level
+                   from hierachy as child
+                     inner join [%s].[dbo].[TaxonNameListAnalysisCategory] as canid
+                       on child.AnalysisID = canid.AnalysisParentID 
+                )
+                select a.*
+                    from hierachy a 
+                order by baseAnalysisID, level desc;'''  % (database, database, database, database))
+    current_app.logger.debug("Query %s with analid %s" % (query, analysisparentid))
+    with get_db().connect() as conn:
+        tanamelist = conn.execute(query, analid=analysisparentid)
+        if tanamelist != None:
+            aclist=R2L(tanamelist)
+    return aclist
+
 def getAnalysisCategorieChilds(database, analysisparentid):
     aclist = []
     if not cleanDatabasename(database):
@@ -677,7 +709,6 @@ def getAnalysisCategorieChilds(database, analysisparentid):
         if tanamelist != None:
             aclist=R2L(tanamelist)
     return aclist
-
 
 def getAnalysisValuesAll(database, analysisid):
     aclist = []
@@ -725,6 +756,58 @@ def getAnalysisInProject(database,projectid):
     current_app.logger.debug("Query %s with pvalue %s " % (query, projectid))
     with get_db().connect() as conn:
         tanamelist = conn.execute(text(query), pvalue=projectid)
+        if tanamelist != None:
+            aclist=R2L(tanamelist)
+    return aclist
+
+def getAnalysisInProjectwithSubReferencing(database,projectid, refid):
+    # return all AnalysisIDs in that project
+    aclist = []
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+   # refuri = makeReferenceURI('DiversityReferences_TNT', refid)
+    references = getReferenceChildsAll('DiversityReferences_TNT', refid)
+    
+    refidlist = [x['RefID'] for x in references if x and ('RefID' in x)]
+    refurilist = map(lambda x: makeReferenceURI('DiversityReferences_TNT', x), refidlist)             
+    
+    refsqllist = "'" + "','".join(refurilist) + "'"
+    current_app.logger.debug("refuris: %s" % refsqllist)
+    
+    allAnalysisCategoriesQuery = ''' select distinct a. AnalysisID
+                from [%s].[dbo].[TaxonNameListAnalysisCategory] a 
+                where a.[ReferenceURI] in ( %s)
+                ''' % (database, refsqllist)  
+    with get_db().connect() as conn:
+        acrecords = conn.execute(text(allAnalysisCategoriesQuery))
+        if acrecords != None:
+            aclist=R2L(acrecords)
+    # extract the numbers from dict
+    aclist = [ x['AnalysisID'] for x in aclist]
+    # expand list with all childs of an analysis
+    all_analysis_with_childs = []
+    for analysisid in aclist:
+        print analysisid
+        childanalysis = getAnalysisCategorieChildsAll(database, analysisid)
+        child_analysis_ids = [x['AnalysisID'] for x in childanalysis]
+        current_app.logger.debug("Childs from %s: %s" % (analysisid, child_analysis_ids))
+        all_analysis_with_childs.extend(child_analysis_ids)
+        
+    
+    # remove duplicates
+    all_analysis_with_childs = list(set(all_analysis_with_childs))
+    all_analysis_with_childs = map(str,all_analysis_with_childs) 
+    analysisid_sql_list = ','.join(all_analysis_with_childs)
+    
+    query=''' select distinct '%s' as DatabaseName,  b.ProjectID, a.AnalysisID
+                from [%s].[dbo].[TaxonNameListAnalysisCategory] a join [%s].[dbo].[TaxonNameListAnalysis] b on 
+                a.AnalysisID=b.AnalysisID
+                where b.ProjectID=%s and b.AnalysisID in (%s); ''' % (database, database, database, projectid, analysisid_sql_list)
+    current_app.logger.debug("Query %s with pvalue %s " % (query, projectid))
+    aclist=[]
+    with get_db().connect() as conn:
+        tanamelist = conn.execute(text(query))
         if tanamelist != None:
             aclist=R2L(tanamelist)
     return aclist

@@ -107,6 +107,32 @@ def getReferenceChilds(database, refid):
             reflist=R2L(treflist)
     return reflist
 
+def getReferenceChildsAll(database, refid):
+    reflist=[]
+    if not cleanDatabasename(database):
+        return []    
+    database = diversitydatabase(database)
+
+    query = text('''with hierachy as (
+                   select '%s' as DatabaseName, RefID as baseRefID, RefID, ParentRefID, 0 as level 
+                   from [%s].[dbo].[ReferenceTitle]
+                   where RefID= :rpid
+                 union all
+                 select '%s' as DatabaseName, child.baseRefID, crefid.RefID, crefid.ParentRefID, child.level -1 as level
+                   from hierachy as child
+                     inner join [%s].[dbo].[ReferenceTitle] as crefid
+                       on child.RefID = crefid.ParentRefID 
+                )
+                select a.*
+                    from hierachy a 
+                order by baseRefID, level desc;'''  % (database, database, database, database))
+    current_app.logger.debug("Query %s with rpid=%s' " % (query, refid))
+    with get_db().connect() as conn:
+        treflist = conn.execute(query, rpid=refid)
+        if treflist != None:
+            reflist=R2L(treflist)
+    return reflist
+
 ##########################
 # Subitems
 

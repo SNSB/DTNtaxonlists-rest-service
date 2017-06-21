@@ -48,7 +48,7 @@ json.settings.setdefault('indent', 4)
 json.settings.setdefault('sort_keys', True)
 
 from resources.intro import intro
-from resources.lists import taxonlist, taxonlistproject, taxonlists, taxonlistflat
+from resources.lists import taxonlist, taxonlistproject, taxonlists, taxonlistflat, getTaxonListAnalyisReferencingSUB
 from resources.taxonlist_flat_csv import taxonlist_flat_csv, darwin_core_zip, darwin_core_offline
 from resources.names import *
 from resources.agents import agent, agentsTNT, agentRelations, agentTNT, agentRelationsTNT
@@ -57,12 +57,12 @@ from resources.contacts import contact
 from resources.commonnames import commonname, commonnames
 from resources.references import references, reference, referenceTNT, referencerelations, referencerelation
 from resources.references import referencingitems, namesreferencing, acceptednamesreferencing, synonymsreferencing, hierarchiesreferencing, analysiscategoriesreferencing, commonnamesreferencing, taxonlistsreferencing, projectsreferencing, agentsreferencing
-from resources.references import referencechilds, referencetntchilds
+from resources.references import referencechilds, referencetntchilds, referenceschildsall
 import json
 import urllib2, urlparse
 
 from resources.analysis import analysiscategories, analysiscategorie, analysiscategoryvalues, analysisvalue, analysiscategoriesinproject, analysiscategoriesforname, analysis
-from resources.analysis import analysisinprojectfilter, analysiscategoriechilds, projectsreferencinganalysis
+from resources.analysis import analysisinprojectfilter, analysiscategoriechilds, projectsreferencinganalysis, analysiscategoriechildsall
 
 
 from resources.webinterface import wwwtaxonlist
@@ -91,7 +91,7 @@ api.add_resource(taxonlistflat, '/lists/<string:database>/<int:id>/flat/') # all
 api.add_resource(taxonlist_flat_csv, '/lists/<string:database>/<int:id>/csv/') # all names of list in flat format
 api.add_resource(darwin_core_zip, '/lists/<string:database>/<int:id>/dwc/') # all names of list in darwin core zip  format
 api.add_resource(darwin_core_offline, '/lists/<string:database>/<int:id>/dwc_offline/') # precomputet darwin core zip format
-
+api.add_resource(getTaxonListAnalyisReferencingSUB, '/lists/<string:database>/<int:projectid>/analysisfromreference/<int:referenceid>')
 api.add_resource(names, '/names/' ) 
 api.add_resource(name, '/names/<string:database>/<int:id>/' ) # urls to all NAMES or info on this name including info and links to _all_ COMMONNAMES, PROJECTS, ACCEPTEDNAMES, HIERARCHIES, SYNONYMS
 api.add_resource(namewww, '/names/<string:database>/<int:id>/www/' ) # urls to all NAMES or info on this name including info and links to _all_ COMMONNAMES, PROJECTS, ACCEPTEDNAMES, HIERARCHIES, SYNONYMS
@@ -137,6 +137,7 @@ api.add_resource(reference, '/references/<string:database>/<int:id>/')
 api.add_resource(referenceTNT, '/References_TNT/<int:id>/')
 api.add_resource(referencetntchilds, '/References_TNT/<int:id>/childs/')
 api.add_resource(referencechilds, '/references/<string:database>/<int:refid>/childs/')
+api.add_resource(referenceschildsall, '/references/<string:database>/<int:refid>/allchilds/')
 
 api.add_resource(referencerelations, '/references/<string:database>/<int:id>/relations/' )
 api.add_resource(referencerelation, '/referencerelation/<string:database>/<int:id>/<string:role>/<int:sequence>/')
@@ -155,8 +156,10 @@ api.add_resource(agentsreferencing, '/references/<string:database>/<int:refid>/r
 api.add_resource(analysiscategories, '/analysiscategories/')
 api.add_resource(analysiscategorie, '/analysiscategories/<string:database>/<int:analysisid>/')
 api.add_resource(analysiscategoriechilds, '/analysiscategories/<string:database>/<int:analysisid>/childs/')
+api.add_resource(analysiscategoriechildsall, '/analysiscategories/<string:database>/<int:analysisid>/allchilds/')
 api.add_resource(projectsreferencinganalysis, '/analysiscategories/<string:database>/<int:analysisid>/projects/')
 
+                 
 api.add_resource(analysiscategoryvalues, '/analysiscategories/<string:database>/<int:analysisid>/valuedefinitions/')
 api.add_resource(analysisvalue, '/analysiscategorievalues/<string:database>/<int:analysisid>/<string:analysisvalue>/')
 api.add_resource(analysiscategoriesinproject, '/lists/<string:database>/<int:projectid>/analysis/')
