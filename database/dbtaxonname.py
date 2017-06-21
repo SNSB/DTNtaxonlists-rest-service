@@ -768,8 +768,10 @@ def getAnalysisInProjectwithSubReferencing(database,projectid, refid):
     database=diversitydatabase(database)
    # refuri = makeReferenceURI('DiversityReferences_TNT', refid)
     references = getReferenceChildsAll('DiversityReferences_TNT', refid)
-    
+
     refidlist = [x['RefID'] for x in references if x and ('RefID' in x)]
+    if len(refidlist) <= 0:
+        return []
     refurilist = map(lambda x: makeReferenceURI('DiversityReferences_TNT', x), refidlist)             
     
     refsqllist = "'" + "','".join(refurilist) + "'"
