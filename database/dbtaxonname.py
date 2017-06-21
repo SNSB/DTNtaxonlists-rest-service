@@ -800,7 +800,9 @@ def getAnalysisInProjectwithSubReferencing(database,projectid, refid):
     all_analysis_with_childs = map(str,all_analysis_with_childs) 
     analysisid_sql_list = ','.join(all_analysis_with_childs)
     
-    query=''' select distinct '%s' as DatabaseName,  b.ProjectID, a.AnalysisID
+    query=''' select distinct '%s' as DatabaseName,  b.ProjectID, a.AnalysisID, a.AnalysisParentID, 
+                   a.DisplayText, a.Description, a.AnalysisURI, 
+                   a.ReferenceTitle, a.ReferenceURI, a.Notes
                 from [%s].[dbo].[TaxonNameListAnalysisCategory] a join [%s].[dbo].[TaxonNameListAnalysis] b on 
                 a.AnalysisID=b.AnalysisID
                 where b.ProjectID=%s and b.AnalysisID in (%s); ''' % (database, database, database, projectid, analysisid_sql_list)

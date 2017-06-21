@@ -170,7 +170,7 @@ api.add_resource(analysis, '/analysis/<string:database>/<int:projectid>/<int:nam
 
 
 api.add_resource(regenrateindex, '/indexneubauen' ) 
-#TODO: References testen
+
 
 api.add_resource(testapi, '/apitest/')
 

@@ -564,6 +564,58 @@
                 }
             }
         },
+        "/lists/{database}/{listid}/analysisfromreference/{referenceid}": {
+            "get": {
+                "summary": "link to the analysis cetegories in this list which indirectly have a reference to the given referenceid",
+                "description": "<p>Returns all analysis categories which (indirectly) have a link to the given referenceid.</p><p>This means that a parent analysis categorie might be pointing to this referenceid or to a child of this referenceid.</p><p>Example: <a href='/lists/DiversityTaxonNames_Insecta/863/analysisfromreference/699074100'>All analysis categories which indirectly refrencing the given Rote Liste publications</a>.</p><p>This indirection over two hierarchies was necessary as normaly only a parent analysis categorie is linked to a referenceid and those referenceids are normaly only books of a series. With this implementation all analysis categories of a complete series of books for this list can be retrieved.</p>",
+                "parameters": [
+                    {
+                        "name": "database",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "listid",
+                        "in": "path",
+                        "description": "database unique id of the list",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    },
+                    {
+                        "name": "referenceid",
+                        "in": "path",
+                        "description": "database unique id of the reference",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "lists"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with analysis category definitions and links to optional parent and child analysis categories and to optional defined nominal analysis values for this analysis category",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/AnalysisCategories"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },        
         "/projects": {
             "get": {
                 "summary": "returns null",
