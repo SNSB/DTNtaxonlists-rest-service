@@ -5,7 +5,7 @@
          xml:lang="en">
 <dataset>
     <title>{{ project.ProjectTitle }}</title>
-    {% for editor in agents -%}
+    {% for editor in agents | selectattr("AgentRole", "equalto", "editor") -%}
     {% if editor.AgentRole == 'editor' -%}
     <creator id="{{ editor.AgentID }}" scope="document">
         <individualName>
@@ -16,6 +16,12 @@
         <!-- <RoleType>{{ editor.AgentRole }}</RoleType> -->
     </creator>
     {% endif -%}
+    {% else %} 
+    <creator id="0" scope="document">
+        <individualName>
+            <surName>Anonymus</surName>
+        </individualName>
+    </creator>        
     {% endfor %}  
     <!-- <pubDate> </pubDate> -->
     <abstract>

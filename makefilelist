@@ -4,6 +4,7 @@ find -L templates >> filelist.tmp
 find -L resources | grep 'py$' >> filelist.tmp
 find -L database | grep 'py$' >> filelist.tmp
 find -L searchengine | grep 'py$' >> filelist.tmp
+find -L config | grep 'py$' >> filelist.tmp
 echo "app.py" >> filelist.tmp
 echo "__init__.py" >> filelist.tmp
 echo "reverseproxy.py" >> filelist.tmp
