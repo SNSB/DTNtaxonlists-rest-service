@@ -2,7 +2,50 @@
     "swagger": "2.0",
     "info": {
         "title": "Regionalised and Domain-specific Taxon Lists",
-        "description": "<p>The DWB REST Webservice for Taxon Lists is part of a Diversity Workbench (DWB) services network. It is delivering basic information on taxon names in use, synonyms, classification and German vernacular names of a number of groups of animals, fungi and plants. </p><p>The current focus is on domain-specific lists (checklists, taxon reference lists, red lists) from Germany under active curation by experts on taxonomy or floristics and faunistics. Each regionalised and domain-specific taxon list has its own history and objectives, is managed completely separately and has its own hierarchical classification. The DiversityTaxonNames (DTN) data resources accessed by the REST API may include additional taxon-related data useful, e. g., for regional nature conservation agencies and environmental projects. This information might be mobilised in a next step.</p><p>For more information please check <a href=\"http://services.snsb.info/DTNtaxonlists/rest/v0.1/\">Overview on Published Lists</a>. For details refer to <a href=\"http://www.diversitymobile.net/wiki/DTN_Taxon_Lists_Services\">DTN_Taxon_Lists_Services</a></p> <h1>Regionalisierte und domän-spezifische Taxonlisten</h1> <p>Der DWB REST Webservice for Taxon Lists ist Teil eines Netzwerkes aus Diversity Workbench (DWB) Diensten. Er liefert Basisinformation zu anerkannten Taxonnamen, Synonymen, Klassifikationen und deutsche Volksnamen für eine Anzahl von Tier-, Pilz- und Pflanzengruppen. </p><p>Der Fokus liegt dabei zur Zeit auf domän-spezifischen Listen (Checklisten, Taxonreferenzlisten und Rote Listen) aus Deutschland, die von taxonomisch oder floristisch bzw. faunistisch arbeitenden Experten aktiv kuratiert werden. Jede regionalisierte und domän-spezifische Taxonliste hat ihre eigene Geschichte und Zielvorstellungen, wird separat gemanagt und hat ihre eine eigenständige hierarchische Klassifikation. Die über die REST API zugänglichen DiversityTaxonNames (DTN) Datenquellen können weitere taxon-bezogene Daten enthalten, die für regionale Naturschutzeinrichtungen und Umweltprojekte von Bedeutung sein können. Diese Information soll in einem nächsten Schritt mobilisiert werden. </p><p>Die derzeit veröffentlichten Listen sind in dieser <a href=\"http://services.snsb.info/DTNtaxonlists/rest/v0.1/\">Übersicht</a> abrufbar. Weitere Information findet sich unter <a href=\"http://www.diversitymobile.net/wiki/DTN_Taxon_Lists_Services\">DTN_Taxon_Lists_Services</a></p> <h1>REST API Documentation</h1>",
+        "description": "<p>The DWB REST Webservice for Taxon Lists is part of a Diversity
+        Workbench (DWB) services network. It is delivering basic
+        information on taxon names in use, synonyms, classification and
+        German vernacular names of a number of groups of animals, fungi
+        and plants. </p>
+        <p>The current focus is on domain-specific lists (checklists, taxon
+        reference lists, red lists) from Germany under active curation by
+        experts on taxonomy or floristics and faunistics. Each
+        regionalised and domain-specific taxon list has its own history
+        and objectives, is managed completely separately and has its own
+        hierarchical classification. The DiversityTaxonNames (DTN) data
+        resources accessed by the REST API may include additional
+        taxon-related data useful, e. g., for regional nature conservation
+        agencies and environmental projects.
+        </p>
+        </br>
+        <p>For more information please check <a
+        href=\"http://services.snsb.info/DTNtaxonlists/rest/v0.1/\">Overview
+        on Published Lists</a>. For details refer to <a
+        href=\"http://www.diversitymobile.net/wiki/DTN_Taxon_Lists_Services\">DTN_Taxon_Lists_Services</a>.</p>
+        <p>
+        <p>Der DWB REST Webservice for Taxon Lists ist Teil eines Netzwerkes
+        aus Diversity Workbench (DWB) Diensten. Er liefert
+        Basisinformation zu anerkannten Taxonnamen, Synonymen,
+        Klassifikationen und deutsche Volksnamen f&uuml;r eine Anzahl von
+        Tier-, Pilz- und Pflanzengruppen. </p>
+        <p>Der Fokus liegt dabei zur Zeit auf dom&aauml;n-spezifischen Listen
+        (Checklisten, Taxonreferenzlisten und Rote Listen) aus
+        Deutschland, die von taxonomisch oder floristisch bzw. faunistisch
+        arbeitenden Experten aktiv kuratiert werden. Jede regionalisierte
+        und dom&aauml;n-spezifische Taxonliste hat ihre eigene Geschichte und
+        Zielvorstellungen, wird separat gemanagt und hat eine
+        eigenst&aauml;ndige hierarchische Klassifikation. Die &uuml;ber die REST API
+        zug&aauml;nglichen DiversityTaxonNames (DTN) Datenquellen k&oouml;nnen weitere
+        taxon-bezogene Daten enthalten, die f&uuml;r regionale
+        Naturschutzeinrichtungen und Umweltprojekte von Bedeutung sein
+        k&oouml;nnen. <br>
+        </p>
+        <p>Die derzeit ver$oouml;ffentlichten Listen sind in dieser <a
+        href=\"http://services.snsb.info/DTNtaxonlists/rest/v0.1/\">&Uuml;bersicht</a>
+        abrufbar. Weitere Information findet sich unter <a
+        href=\"http://www.diversitymobile.net/wiki/DTN_Taxon_Lists_Services\">DTN_Taxon_Lists_Services</a>.<br>
+        </p>
+        <h1>REST API Documentation</h1>",
         "version": "0.1"
     },
     "host": "services.snsb.info",
