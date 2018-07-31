@@ -82,7 +82,17 @@ class  darwin_core_offline( restful.Resource ):
             uri =  url_for('name', database=database, id = row['NameID'], _external=True)
             row['taxonID'] = uri
             if row['HierarchieNameParentID'] is not None and row['HierarchieNameParentID'] != -1:
-                uri_parent = url_for('name', database=database, id = row['HierarchieNameParentID'], _external=True)
+                # remove all parents which are not accepted
+                parentisaccepted = False
+                parentid = row['HierarchieNameParentID']
+                for row2 in taxonnamelist:
+                    if parentid == row2['NameID'] and row2['AcceptedNameProject'] is not None:
+                        parentisaccepted = True
+                        break;
+                if parentisaccepted:
+                    uri_parent = url_for('name', database=database, id = row['HierarchieNameParentID'], _external=True)
+                else:
+                    uri_parent = None 
             else:
                 uri_parent = None
             row['parentNameUsageID'] = uri_parent
