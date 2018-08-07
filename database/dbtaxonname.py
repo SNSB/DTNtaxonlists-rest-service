@@ -156,7 +156,7 @@ def getAllCommonNamesFromListFlat(databasename, listid):
     if not cleanDatabasename(databasename):
         return []
     databasename=diversitydatabase(databasename)
-    query = u'''select distinct '%s' as DatabaseName, a.NameID, c.CommonName, c.CountryCode, c.LanguageCode, b.ProjectID \
+    query = u'''select distinct '%s' as DatabaseName, a.NameID, replace(replace(cast(c.CommonName as nvarchar(max)), char(13), ''), char(10), '') as CommonName, c.CountryCode, c.LanguageCode, b.ProjectID \
                 from [%s].[dbo].[TaxonName] a inner join [%s].[dbo].[TaxonNameList] b on  \
                 a.NameID = b.NameID \
                 inner join [%s].[dbo].[TaxonCommonName] c on a.NameID = c.NameID
