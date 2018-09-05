@@ -336,7 +336,7 @@
         "/names/{database}/{nameid}/externalidentifiers": {
             "get": {
                 "summary": "links to external sources",
-                "description": "Direct references to external sources for the same name. The URIs are the external identiferes.",
+                "description": "Direct references to external sources for the same name. The URIs are the external identifiers.",
                 "parameters": [
                     {
                         "name": "database",
@@ -360,16 +360,16 @@
                     ],
                 "responses": {
                     "200": {
-                        "description": "An array with links to the external identifers or an empty array if no external identifieres are available"
+                        "description": "An array with links to the external identifiers or an empty array if no external identifiers are available",
                         "schema": {
-                            "type": "array"
+                            "type": "array",
                             "items": {
                                 "$ref": "#/definitions/ExternalIdentifiers"
                             }
                         }
                     },
                     "default": {
-                        "description": "Unexpected error"
+                        "description": "Unexpected error",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -2175,13 +2175,13 @@
                     }
                 ],
                 "tags": [
-                    "external sources"
+                    "external-sources"
                 ],
                 "responses": {
                     "200": {
                         "description": "An array with which contains information and links list to external name sources",
                         "schema": {
-                            "type": "array"
+                            "type": "array",
                             "items": {
                                 "$ref": "#/definitions/ExternalNameSource"
                             }
