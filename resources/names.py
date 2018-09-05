@@ -148,6 +148,7 @@ class name(restful.Resource):
             # assumption: a name is in a database only in one list!
             #links.append(makelink('taxonomiclist', 'list', url_for('taxonlist', database=row['DatabaseName'], id=row['ProjectID'], _external=True) )) 
             links.append(makelink('taxonomiclists', 'lists', url_for('namelistprojects', database=row['DatabaseName'], id=row['NameID'], _external=True) ))
+            links.append(makelink('externalIdentifieres','extern', url_for('externalidentifiers', database=row['DatabaseName'], nameid=row['NameID'], _external=True) ))
             row['links'] = links
         return nameinfo
 
@@ -280,5 +281,20 @@ class namewww(restful.Resource):
         return response    
 
 
+class externalidentifiers(restful.Resource):
+    def get(self, database, nameid):
+        externalIds = getAllTaxonNameExternalDatabaseIDs(database, nameid)
+        for row in externalIds:
+            links=[]
+            if row['ExternalDatabaseID']:
+                links.append(makelink('externalNameHost', 'info', url_for('externalnamedatabase', database=database, externaldatabaseid=row['ExternalDatabaseID'], _external=True)))
+            if row['ExternalNameURI']:
+                links.append(makelink('externalName', 'extern', row['ExternalNameURI']))
+            row['links']=links
+        return externalIds
 
-    
+class externalnamedatabase(restful.Resource):
+    def get(self, database, externaldatabaseid):
+        externaldbs = getExternalDatabase(database, externaldatabaseid)
+        return externaldbs
+        

@@ -958,6 +958,57 @@ def getAnalysisfilter(database, projectid, analysisid, taxonnamelistrefid, analy
                 aclist=R2L(tanamelist)        
     return aclist
 
+# ----------------------- external DatabaseName
+
+def getTaxonNameExternalDatabaseIDs(database, nameid, externalDatabaseID):
+    externallinks =[]
+    if not cleanDatabasename(database):
+        return []
+    databasename=diversitydatabase(database)
+    query = u'''select '%s' as DatabaseName, NameID, ExternalDatabaseID, ExternalNameURI
+               from [%s].[dbo].[TaxonNameExternalID] where 
+               NameID = %s and ExternalDatabaseID = '%s'
+               ''' % (databasename, databasename, nameid, externalDatabaseID )
+    current_app.logger.debug("Query %s " % (query))
+    with get_db().connect() as conn:
+        exidslist = conn.execute(query)
+        if exidslist != None:
+            externallinks=R2L(exidslist)
+    return externallinks  
+
+def getAllTaxonNameExternalDatabaseIDs(database, nameid):
+    externallinks =[]
+    if not cleanDatabasename(database):
+        return []
+    databasename=diversitydatabase(database)
+    query = u'''select '%s' as DatabaseName, a.NameID, a.ExternalDatabaseID, a.ExternalNameURI, b.ExternalDatabaseName
+               from [%s].[dbo].[TaxonNameExternalID] a inner join [%s].[dbo].[TaxonNameExternalDatabase] b on a.ExternalDatabaseID=b.ExternalDatabaseID
+               where 
+               NameID = %s
+               ''' % (databasename, databasename, databasename, nameid )
+    current_app.logger.debug("Query %s " % (query))
+    with get_db().connect() as conn:
+        exidslist = conn.execute(query)
+        if exidslist != None:
+            externallinks=R2L(exidslist)
+    return externallinks
+
+def getExternalDatabase(database, externalDatabaseID):
+    externallinks =[]
+    if not cleanDatabasename(database):
+        return []
+    databasename=diversitydatabase(database)
+    query = u'''select '%s' as DatabaseName, ExternalDatabaseID, ExternalDatabaseName, ExternalDatabaseVersion, Rights, ExternalDatabaseAuthors, ExternalDatabaseURI  
+               from [%s].[dbo].[TaxonNameExternalDatabase] where ExternalDatabaseID = %s
+               ''' % (databasename, databasename, externalDatabaseID)
+    current_app.logger.debug("Query %s " % (query))
+    with get_db().connect() as conn:
+        exidslist = conn.execute(query)
+        if exidslist != None:
+            externallinks=R2L(exidslist)
+    return externallinks  
+
+
 
 # ----------------------- Find References --------------------------------
 

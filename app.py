@@ -168,6 +168,10 @@ api.add_resource(analysisinprojectfilter, '/lists/<string:database>/<int:project
 api.add_resource(analysiscategoriesforname, '/analysis/<string:database>/<int:projectid>/<int:nameid>/')
 api.add_resource(analysis, '/analysis/<string:database>/<int:projectid>/<int:nameid>/<int:analysisid>/')
 
+api.add_resource(externalidentifiers, '/names/<string:database>/<int:nameid>/externalIdentifiers/')
+api.add_resource(externalnamedatabase, '/externalnamedatabase/<string:database>/<int:externaldatabaseid>/')
+
+
 
 api.add_resource(regenrateindex, '/indexneubauen' ) 
 
