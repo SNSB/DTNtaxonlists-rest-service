@@ -333,6 +333,51 @@
                 }
             }
         },
+        "/names/{database}/{nameid}/externalidentifiers": {
+            "get": {
+                "summary": "links to external sources",
+                "description": "Direct references to external sources for the same name. The URIs are the external identiferes.",
+                "parameters": [
+                    {
+                        "name": "database",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "nameid",
+                        "in": "path",
+                        "description": "database unique id of the taxonomic name",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "taxonnames"
+                    ],
+                "responses": {
+                    "200": {
+                        "description": "An array with links to the external identifers or an empty array if no external identifieres are available"
+                        "schema": {
+                            "type": "array"
+                            "items": {
+                                "$ref": "#/definitions/ExternalIdentifiers"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error"
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        
         "/lists": {
             "get": {
                 "summary": "Taxonomic name lists",
@@ -2106,7 +2151,52 @@
                     }
                 }
             }
+        },
+        "/externalnameservice/{database}/{externalsourceid}": {
+            "get": {
+                "summary": "links to the external name services",
+                "description": "get a list of links to external name services. These can be webservices or simple websites with the possibility to link directly to taxonomic name information",
+                "parameters": [
+                    {
+                        "name": "database",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "externalsourceid",
+                        "in": "path",
+                        "description": "database unique id of the external source",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "external sources"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with which contains information and links list to external name sources",
+                        "schema": {
+                            "type": "array"
+                            "items": {
+                                "$ref": "#/definitions/ExternalNameSource"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
         }
+
     },
     
     "definitions": {
@@ -3255,6 +3345,70 @@
                     "items": {
                         "$ref": "#/definitions/Link"
                     }
+                }
+            }
+        },
+        "ExternalNameSource": {
+            "properties": {
+                "DatabaseName": {
+                    "type": "string",
+                    "description": "DTN database name"
+                },
+                "ExternalDatabaseID": {
+                    "type": "integer",
+                    "description": "Database wide unique id of the external source"
+                },
+                "ExternalDatabaseName": {
+                    "type": "string",
+                    "description": "Title of the external source"
+                },
+                "ExternalDatabaseVersion": {
+                    "type": "string",
+                    "description": "Used version of the external source/database"
+                },
+                "Rights": {
+                    "type": "string",
+                    "description": "Hints for rights/copyright"
+                },
+                "ExternalDatabaseAuthors": {
+                    "type": "string",
+                    "description": "Authors of the external database/service"
+                },
+                "ExternalDatabaseURI": {
+                    "type": "string",
+                    "description": "Link to the main page of the service/webpage"
+                }
+            }
+        },
+
+        "ExternalIdentifiers": {
+            "properties": {
+                "DatabaseName": {
+                    "type": "string",
+                    "description": "DTN database name"
+                },
+                "NameID": {
+                    "type": "integer",
+                    "description": "Database wide unique name id"
+                },
+                "ExternalDatabaseID": {
+                    "type": "string",
+                    "description": "Database wide unique id of the external source"
+                },
+                "ExternalNameURI": {
+                    "type": "string",
+                    "description": "URI for the name entry in the external source"
+                },
+                "ExternalDatabaseName": {
+                    "type": "string",
+                    "description": "Title of the external source"
+                },
+                "link": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    },
+                    "description": "Links to the description of the external source (externalNameHost) and a direct link to the external name (externalName)   "
                 }
             }
         }
