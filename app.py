@@ -186,6 +186,13 @@ def frontMatter():
     urlroot=request.url_root
     return render_template('show_lists.html', urlroot=urlroot )
 
+
+@app.route('/static/api-doc.html')
+def apidoc():
+    x = datetime.datetime.now()
+    return render_template('api-doc.html', year = x.year)
+
+
 # uwsgi --http 0.0.0.0:5000 --pyhome . --module app --callable app
 # http://flask.pocoo.org/docs/0.10/deploying/mod_wsgi/
 

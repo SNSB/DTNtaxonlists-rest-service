@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DTNtaxonlists REST</title>
+  <link rel="icon" type="image/png" href="images/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="images/favicon-16x16.png" sizes="16x16" />
+  <link href='css/typography.css' media='screen' rel='stylesheet' type='text/css'/>
+  <link href='css/reset.css' media='screen' rel='stylesheet' type='text/css'/>
+  <link href='css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
+  <link href='css/reset.css' media='print' rel='stylesheet' type='text/css'/>
+  <link href='css/print.css' media='print' rel='stylesheet' type='text/css'/>
+  <script src='lib/jquery-1.8.0.min.js' type='text/javascript'></script>
+  <script src='lib/jquery.slideto.min.js' type='text/javascript'></script>
+  <script src='lib/jquery.wiggle.min.js' type='text/javascript'></script>
+  <script src='lib/jquery.ba-bbq.min.js' type='text/javascript'></script>
+  <script src='lib/handlebars-2.0.0.js' type='text/javascript'></script>
+  <script src='lib/underscore-min.js' type='text/javascript'></script>
+  <script src='lib/backbone-min.js' type='text/javascript'></script>
+  <script src='swagger-ui.js' type='text/javascript'></script>
+  <script src='lib/highlight.7.3.pack.js' type='text/javascript'></script>
+  <script src='lib/marked.js' type='text/javascript'></script>
+
+  <script type="text/javascript">
+    $(function () {
+      var url = "http://services.snsb.info/DTNtaxonlists/rest/v0.1/static/swagger.json"; 
+<!--     var url = "http://localhost:5000/static/swagger.json"; 
+-->
+      window.swaggerUi = new SwaggerUi({
+        url: url,
+        dom_id: "swagger-ui-container",
+        supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
+        onComplete: function(swaggerApi, swaggerUi){
+          if(typeof initOAuth == "function") {
+            /*
+            initOAuth({
+              clientId: "your-client-id",
+              realm: "your-realms",
+              appName: "your-app-name"
+            });
+            */
+          }
+          $('pre code').each(function(i, e) {
+            hljs.highlightBlock(e)
+          });
+        },
+        onFailure: function(data) {
+          log("Unable to Load SwaggerUI");
+          log(data)
+        },
+        docExpansion: "none",
+        sorter : "alpha"
+      });
+
+      function addApiKeyAuthorization() {
+        var key = encodeURIComponent($('#input_apiKey')[0].value);
+        log("key: " + key);
+        if(key && key.trim() != "") {
+            var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("api_key", key, "query");
+            window.swaggerUi.api.clientAuthorizations.add("api_key", apiKeyAuth);
+            log("added key " + key);
+        }
+      }
+
+      $('#input_apiKey').change(addApiKeyAuthorization);
+
+      // if you have an apiKey you would like to pre-populate on the page for demonstration purposes...
+      /*
+        var apiKey = "myApiKeyXXXX123456789";
+        $('#input_apiKey').val(apiKey);
+        addApiKeyAuthorization();
+      */
+
+      window.swaggerUi.load();
+
+      function log() {
+        if ('console' in window) {
+          console.log.apply(console, arguments);
+        }
+      }
+  });
+  </script>
+</head>
+
+
+<body class="swagger-section" style="text-align:left; margin-left:10px; margin-right:10px; background-color:#EEEEEE">
+	<!---
+    <div style="position:relative; background-color:#FFFFFF; width:100%; height:60px;">
+       <div style="position:relative; top:20px; color:#9b9d9f; background-color:#FFFFFF; float:right; height:50px"> </div>
+    </div>
+    <div style="position:relative; top:0px; left:0px; background-image:url( http://www.snsb.info/images/NurPixel.jpg ); height:75px; width:100%;"> </div>
+    <div style="position:relative; top:2px; left:0px; background-image:url( http://www.snsb.info/images/Balken.jpg ); height:18px; width:100%;"> </div>
+    <div style="position:absolute; top:30px; left:60px;">
+        <a href="http://www.snsb.info"><img border="0" alt="SNSB" src="http://www.snsb.info/images/logo_snsb-it_90.png"></a>
+    </div>
+	--->
+	
+    <a href="http://diversityworkbench.net/Portal/Main_Page" target="_blank">
+        <img src="http://www.snsb.info/Pictures/Diversity_allein_tr.png" title="Diversity Workbench" alt="to Diversity Workbench" height="60" border="0" align="left" style="float: left; 
+            margin-right: 40px; margin-top: 10px;"/>
+    </a>
+    <a href="http://www.bolgermany.de/" target="_blank">
+        <img src="http://www.snsb.info/Pictures/GBOL_Logo_small.png" title="German Barcode of Life" alt="to German Barcode of Life" border="0" align="right" style="float: right;
+            margin-left: 40px; margin-top: 10px;"/>
+	</a>
+    <a href="http://www.gfbio.org/" target="_blank">
+        <img src="http://www.snsb.info/Pictures/gfbiologo-transparent.png" title="German Federation for Biological data" alt="to GFBio" height="50" border="0" align="right" style="float: right;
+            margin-left: 40px; margin-top: 10px;"/>
+    </a>
+	<br />
+	<br />
+	<br />
+	<br />
+    <div style="position:relative; top:10px; left:0px; background-image:url( http://www.snsb.info/images/Balken2.jpg ); height:28px; width:100%;"> </div>
+	
+	
+    <div id="message-bar" class="swagger-ui-wrap">&nbsp;</div>
+    <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+    <div id="citation" class="swagger-ui-wrap" style="font-size: 0.9em;">
+        <p class="markdown" style="padding: 30px 0 0 0;">Suggested citation:</p>
+        <p class="markdown" style="margin-left: 30px">Seifert, S., Weiss, M., Triebel, D. (2015) onwards. The Diversity Workbench Service Cloud &ndash; Regionalised and Domain-specific Taxon Lists. &ndash; http://services.snsb.info/DTNtaxonlists/rest/v0.1/static/api-doc.html<p>
+        <p class="markdown">&copy; SNSB IT Center 2015 &mdash; {{ year }} All rights reserved.  <a href="http://www.snsb.info/Impressum.html">Imprint</a></p>
+    </div>
+    
+</body>
+</html>
