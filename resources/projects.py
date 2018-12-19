@@ -39,18 +39,21 @@ class projectLicense(restful.Resource):
             if row['IPRHolderAgentURI']:
                 ipragenturi = urlparse(row['IPRHolderAgentURI']).path
                 row['IPRHolderAgentURI']=ipragenturi #remove host
-                agentdb, agentid = ipragenturi.strip(' /').split('/')
-                links.append(makelink('agent', 'IPR', url_for('agenttnt', id=agentid, _external=True)))
+                if ipragenturi:
+                    agentdb, agentid = ipragenturi.strip(' /').split('/')
+                    links.append(makelink('agent', 'IPR', url_for('agenttnt', id=agentid, _external=True)))
             if row['CopyrightHolderAgentUri']:
                 licenceagenturi = urlparse(row['CopyrightHolderAgentUri']).path
                 row['CopyrightHolderAgentUri']=licenceagenturi #remove host
-                agentdb, agentid = licenceagenturi.strip(' /').split('/')
-                links.append(makelink('agent', 'copyright', url_for('agenttnt', id=agentid, _external=True)))
+                if licenceagenturi:
+                    agentdb, agentid = licenceagenturi.strip(' /').split('/')
+                    links.append(makelink('agent', 'copyright', url_for('agenttnt', id=agentid, _external=True)))
             if row['LicenseHolderAgentURI']:
                 licenceagenturi = urlparse(row['LicenseHolderAgentURI']).path
                 row['LicenseHolderAgentURI']=licenceagenturi #remove host
-                agentdb, agentid = licenceagenturi.strip(' /').split('/')
-                links.append(makelink('agent', 'license', url_for('agenttnt', id=agentid, _external=True)))
+                if licenceagenturi:
+                    agentdb, agentid = licenceagenturi.strip(' /').split('/')
+                    links.append(makelink('agent', 'license', url_for('agenttnt', id=agentid, _external=True)))
             row['links'] = links
         return licenselist
     
@@ -61,9 +64,10 @@ class projectAgents(restful.Resource):
             links = []
             agenturi = urlparse(row['AgentURI']).path
             row['AgentURI']=agenturi #remove host
-            agentdb, agentid = agenturi.strip(' /').split('/')
-            links.append(makelink('agent', 'details', url_for('agenttnt', id=agentid, _external=True)))
-            row['links'] = links
+            if agenturi:
+                agentdb, agentid = agenturi.strip(' /').split('/')
+                links.append(makelink('agent', 'details', url_for('agenttnt', id=agentid, _external=True)))
+                row['links'] = links
         return projectagentlist
 
 class projectReferences(restful.Resource):
@@ -73,11 +77,12 @@ class projectReferences(restful.Resource):
             links = []
             referenceuri = urlparse(row['ReferenceURI']).path
             row['ReferenceURI']=referenceuri #remove host
-            referencedb, referenceid = referenceuri.strip(' /').split('/')
-            row['DatabaseName']='DiversityProjects_TNT'
-            row['RefID']=referenceid
-            links.append(makelink('reference', 'details', url_for('reference', database=referencedb, id=referenceid, _external=True)))
-            row['links'] = links
+            if referenceuri:
+                referencedb, referenceid = referenceuri.strip(' /').split('/')
+                row['DatabaseName']='DiversityProjects_TNT'
+                row['RefID']=referenceid
+                links.append(makelink('reference', 'details', url_for('reference', database=referencedb, id=referenceid, _external=True)))
+                row['links'] = links
         return projectreferencelist
 
 class projectLastChange(restful.Resource):
