@@ -1,11 +1,10 @@
 # restnames app
 
 from flask import Flask,g, request, render_template
-from flask.ext import restful
+from flask_restful import Api
 from werkzeug.serving import run_simple
-from flask.ext.cache import Cache 
-from flask.ext.restful.representations import json
-from flask.ext.cors import CORS
+from flask_restful.representations import json
+from flask_cors import CORS
 
 from reverseproxy import ReverseProxied
 
@@ -18,9 +17,8 @@ from config import config
 app = Flask(__name__)
 CORS(app)
 app.wsgi_app = ReverseProxied(app.wsgi_app)
-cache = Cache(app,config={'CACHE_TYPE': 'simple'})
 
-api = restful.Api(app)
+api = Api(app)
 
 app.config["APPLICATION_ROOT"] = "/DTNtaxonlists"
 
@@ -37,6 +35,9 @@ app.config.update(dict(
     DEFAULTDBSERVER='tnt.diversityworkbench.de'
 ))
 
+config.config['RESTFUL_JSON'] = {'sort_keys': True,
+                    'indent': 2}
+
 app.config.update(config.config)
 
 DIVERSITY_TAXON_NAMES='DiveristyTaxonNames'
@@ -44,8 +45,6 @@ DIVERSITY_TAXON_NAMES='DiveristyTaxonNames'
 
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
-json.settings.setdefault('indent', 4)
-json.settings.setdefault('sort_keys', True)
 
 from resources.intro import intro
 from resources.lists import taxonlist, taxonlistproject, taxonlists, taxonlistflat, getTaxonListAnalyisReferencingSUB
@@ -178,7 +177,6 @@ api.add_resource(regenrateindex, '/indexneubauen' )
 
 api.add_resource(testapi, '/apitest/')
 
-@cache.cached(timeout=50)
 @app.route('/www')
 @app.route('/')
 

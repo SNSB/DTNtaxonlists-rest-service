@@ -1,7 +1,7 @@
 # agents
 # REST interface to agents
 
-from flask.ext import restful
+import flask_restful as restful
 from database.reference import getreferences, getreference, getreferencerelations, getreferencerelation
 from database.dbreferences import makeReferenceURI, getReferenceChilds, getReferenceChildsAll
 from flask import url_for

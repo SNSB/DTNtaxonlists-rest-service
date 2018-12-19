@@ -2542,6 +2542,10 @@
                 "projecturi": {
                     "type": "string"
                 },
+                "Projekt": {
+                    "type": "string",
+                    "description": "Internal short name of the list/project"
+                },
                 "links": {
                     "type": "array",
                     "items": {

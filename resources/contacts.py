@@ -1,7 +1,7 @@
 # contacts
 # REST interface to contacts
 
-from flask.ext import restful
+import flask_restful as restful
 
 class contacts(restful.Resource):
     def get(self):

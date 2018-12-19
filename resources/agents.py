@@ -1,7 +1,7 @@
 # agents
 # REST interface to agents
 
-from flask.ext import restful
+import flask_restful as restful
 from database.agent import getagents, getagent, getagentrelations
 from flask import url_for
 #import urllib2

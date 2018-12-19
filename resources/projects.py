@@ -1,7 +1,7 @@
 # projects
 # REST interface to projects
 
-from flask.ext import restful
+import flask_restful as restful
 from flask import url_for
 from database.project import getproject, getprojectagents, getprojectreferences, getprojectlicense, getprojectlastchange
 from urlparse import urlparse

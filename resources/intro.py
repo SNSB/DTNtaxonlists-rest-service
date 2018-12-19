@@ -1,7 +1,7 @@
 # intro
 # gives basic links to the RESTapi (esp. to /lists/)
 
-from flask.ext import restful
+import flask_restful as restful
 from flask import render_template
 from flask import url_for
 

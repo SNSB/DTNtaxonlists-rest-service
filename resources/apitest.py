@@ -1,7 +1,7 @@
 # api tests
 
-from flask.ext import restful
-from flask.ext.restful import Resource
+import flask_restful as restful
+from flask_restful import Resource
 import requests
 
 class testapi(restful.Resource):

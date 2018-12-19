@@ -22,7 +22,7 @@ def get_db(host=None, port=None, user=None, password=None):
         if serverlist.get(server) is None:
             t = dict()
             userpass='''{user}:{password}'''.format(user=user, password=password)
-            connectstring='''mssql+pymssql://{userpass}@{server}/charset=utf8'''.format(userpass=userpass, server=server)
+            connectstring='''mssql+pymssql://{userpass}@{server}/?charset=utf8'''.format(userpass=userpass, server=server)
             current_app.logger.debug("Opening engine to %s" % connectstring)
             t['server']=server
             t['userpass']=userpass

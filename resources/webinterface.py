@@ -13,10 +13,10 @@ from database.list import getList, getAllLists, getListProject
 from resources.names import namecommonnames
 
 
-from flask.ext import restful
+import flask_restful as restful
 from flask import Flask,g, request, render_template
 from flask import url_for
-from flask.ext.restful import Resource, fields, marshal_with
+from flask_restful import Resource, fields, marshal_with
 from flask import url_for, Response
 
 class wwwtaxonlist(restful.Resource):

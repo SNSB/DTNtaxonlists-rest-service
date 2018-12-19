@@ -1,8 +1,8 @@
 # lists
 # REST interface to LISTS
 
-from flask.ext import restful
-from flask.ext.restful import fields, marshal_with
+import flask_restful as restful
+from flask_restful import fields, marshal_with
 from flask import url_for, Response
 from database.list import getList, getAllLists, getListProject
 from database.dbtaxonname import getAllTaxonNamesFromListFlat, getAnalysisInProjectwithSubReferencing

@@ -47,7 +47,7 @@ def getTaxonNameLists(databasename):
     if not cleanDatabasename(databasename):
         return []
     databasename=diversitydatabase(databasename)
-    query = u'''select distinct '%s' as DatabaseName, a.ProjectID, a.ProjectURI, a.DefaultProjectID from [%s].[dbo].[TaxonNameListProjectProxy] a \
+    query = u'''select distinct '%s' as DatabaseName, a.ProjectID, a.ProjectURI, a.DefaultProjectID, a.Project from [%s].[dbo].[TaxonNameListProjectProxy] a \
                 where a.ProjectID in (select distinct c.ProjectID  from [%s].[dbo].[TaxonName] b inner \
                 join [%s].[dbo].[TaxonNameList] c on b.NameID=c.NameID \
                 where (b.RevisionLevel is null or b.RevisionLevel = 'final revision') and \
@@ -61,7 +61,8 @@ def getTaxonNameLists(databasename):
         if projectURI != None:
             for uri in projectURI:
                 if uri['ProjectURI'] != None:
-                    urilist.append({'projectid':uri['ProjectID'], 'projecturi':uri['ProjectURI'], 'DatabaseName': databasename, 'DefaultProjectID':uri['DefaultProjectID']})
+                    urilist.append({'projectid':uri['ProjectID'], 'projecturi':uri['ProjectURI'], 'DatabaseName': databasename, 'DefaultProjectID':uri['DefaultProjectID'],
+                    'Project':uri['Project']})
     return urilist
 
 # get the Project uri for the given list
