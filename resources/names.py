@@ -5,7 +5,7 @@
 import flask_restful as restful
 from flask_restful import Resource, fields, marshal_with
 from flask import url_for, Response
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from database.name import *
 from flask import Flask,g, request, render_template
 from flask_restful import reqparse
@@ -42,9 +42,9 @@ class names(restful.Resource):
             for row in temp:
                 temprow = {}
                 commonnames=getTaxonNameAllCommonNames(row['DatabaseName'], row['NameID'])
-                cn = u" "
+                cn = " "
                 for n in commonnames:
-                    cn += n['CommonName'] + u", "
+                    cn += n['CommonName'] + ", "
                 if len(cn)>1:
                     cn=cn.strip()
                 temprow['commonname'] = cn
@@ -56,9 +56,9 @@ class names(restful.Resource):
             for row in temp:
                 temprow = {}
                 commonnames=getTaxonNameAllCommonNames(row['DatabaseName'], row['NameID'])
-                cn = u" "
+                cn = " "
                 for n in commonnames:
-                    cn += n['CommonName'] + u", "
+                    cn += n['CommonName'] + ", "
                 if len(cn)>1:
                     cn=cn.strip()
                 temprow['commonname'] = cn
@@ -70,9 +70,9 @@ class names(restful.Resource):
             for row in temp:
                 temprow = {}
                 commonnames=getTaxonNameAllCommonNames(row['DatabaseName'], row['NameID'])
-                cn = u" "
+                cn = " "
                 for n in commonnames:
-                    cn += n['CommonName'] + u", "
+                    cn += n['CommonName'] + ", "
                 if len(cn)>1:
                     cn=cn.strip()
                 temprow['commonname'] = cn
@@ -114,7 +114,7 @@ class findexactcommanname(restful.Resource):
         args = parser.parse_args()
         results = findCommonName(args['exactcommonname'])
         for row in results:
-            newid = u"[%s#%s#%s#%s]" % (row['CommonName'], row['LanguageCode'], row['CountryCode'], row['ReferenceTitle'])
+            newid = "[%s#%s#%s#%s]" % (row['CommonName'], row['LanguageCode'], row['CountryCode'], row['ReferenceTitle'])
             url = url_for('commonname', database=row['DatabaseName'], nameid=row['NameID'], cid=newid, _external=True)
             row['url'] = url
         return results
@@ -159,7 +159,7 @@ class namecommonnames(restful.Resource):
             links = []
             
             #print __file__ +" : "+row['CommonName']
-            newid = u"[%s#%s#%s#%s]" % (row['CommonName'], row['LanguageCode'], row['CountryCode'], row['ReferenceTitle'])
+            newid = "[%s#%s#%s#%s]" % (row['CommonName'], row['LanguageCode'], row['CountryCode'], row['ReferenceTitle'])
             #newid = urllib2.quote(newid.encode('utf-8')) # no utf8 but %xx encoding in urls 
             #url = u"http://tnt.diversityworkbench.de/commonnames/%s/%s/%s" % (row['DatabaseName'], row['NameID'], newid )
             url = url_for('commonname', database=row['DatabaseName'], nameid=row['NameID'], cid=newid, _external=True)

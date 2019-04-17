@@ -26,7 +26,7 @@ def getList(listmemberlink):
                 try:
                     hierarchyselection = hierarchyselectionr.json()
                 except:
-                    print hierarchyselectionr.text
+                    print( hierarchyselectionr.text)
                     time.sleep(2)
                     return
                 

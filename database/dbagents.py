@@ -19,7 +19,7 @@ def encoded_dict(in_dict):
     #return out_dict
 
 def toDict(data):
-    d= dict(data.items())
+    d= dict(list(data.items()))
     return encoded_dict(d)
 
 def R2L(data):
@@ -43,7 +43,7 @@ def getAgents(database):
         return []
     database=diversitydatabase(database)
      
-    query = u''' select '%s' as DatabaseName, AgentID
+    query = ''' select '%s' as DatabaseName, AgentID
                  from [%s].[dbo].[Agent] where DataWithholdingReason is Null \
                  ''' % (database, database)
     current_app.logger.debug("Query %s " % (query))
@@ -59,7 +59,7 @@ def getAgent(database, agentid):
         return []
     database=diversitydatabase(database)
      
-    query = u''' select '%s' as DatabaseName, AgentID, AgentParentID, AgentName, Version, AgentTitle, \
+    query = ''' select '%s' as DatabaseName, AgentID, AgentParentID, AgentName, Version, AgentTitle, \
                  GivenName, InheritedName, \
                  Abbreviation, AgentType, AgentGender, Description, \
                  RevisionLevel
@@ -78,7 +78,7 @@ def getAgentRelations(database, agentid):
         return []
     database=diversitydatabase(database)
      
-    query = u''' select '%s' as DatabaseName, AgentID, RelatedAgentID, RelationType
+    query = ''' select '%s' as DatabaseName, AgentID, RelatedAgentID, RelationType
                  from [%s].[dbo].[AgentRelation] \
                  where AgentID=%s ''' % (database, database, agentid)
     current_app.logger.debug("Query %s " % (query))
@@ -93,7 +93,7 @@ def findAgentsWithReference(database, referenceurl):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query=u''' select '%s' as DatabaseName, AgentID from [%s].[dbo].[AgentReference] where [ReferenceURI] = '%s'; ''' % (database, database, referenceurl)
+    query=''' select '%s' as DatabaseName, AgentID from [%s].[dbo].[AgentReference] where [ReferenceURI] = '%s'; ''' % (database, database, referenceurl)
     current_app.logger.debug("Query %s with refuri = '%s'" % (query, referenceurl))
     with get_db().connect() as conn:
         alist = conn.execute(query, refuri=referenceurl)

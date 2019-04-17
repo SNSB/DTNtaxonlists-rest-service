@@ -6,8 +6,8 @@ from flask_restful import reqparse
 from flask import url_for
 import re
 from database.commonname import getcommonname, findCommonName
-import urllib2
-from urlparse import urlparse
+import urllib.request, urllib.error, urllib.parse
+from urllib.parse import urlparse
 
 def makelink(label, name, the_uri):
     link = {}

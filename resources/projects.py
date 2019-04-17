@@ -4,7 +4,7 @@
 import flask_restful as restful
 from flask import url_for
 from database.project import getproject, getprojectagents, getprojectreferences, getprojectlicense, getprojectlastchange
-from urlparse import urlparse
+from urllib.parse import urlparse
 #import urllib2
 
 def makelink(label, name, the_uri):

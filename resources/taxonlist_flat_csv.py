@@ -1,8 +1,8 @@
 # csv...
 
 import requests
-from urlparse import urlparse
-import urllib2
+from urllib.parse import urlparse
+import urllib.request, urllib.error, urllib.parse
 
 from resources.lists import taxonlistflat
 
@@ -63,7 +63,7 @@ def quote_xml(mylist):
            item=quote_xml(item)
         return mylist
     if isinstance(mylist, dict):
-        for k,v in mylist.items():
+        for k,v in list(mylist.items()):
            v=quote_xml(v)
            mylist[k]=v
         return mylist
@@ -176,11 +176,11 @@ class  darwin_core_offline( restful.Resource ):
         
         from flask import Flask, send_file
         from zipfile import ZipFile, ZIP_DEFLATED
-        from StringIO import StringIO
+        from io import BytesIO
 
         timestr = time.strftime("%Y%m%d-%H%M%S")
 
-        inMemoryOutputFile = StringIO()
+        inMemoryOutputFile = BytesIO()
 
         zipFile = ZipFile(inMemoryOutputFile, 'w', ZIP_DEFLATED) 
         zipFile.writestr('eml.xml', taxonlist_eml.encode('utf-8'))

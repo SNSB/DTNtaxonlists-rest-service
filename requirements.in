@@ -1,0 +1,12 @@
+# requirements.in for restnames
+SQLAlchemy
+Flask
+six
+flask_restful
+whoosh
+Werkzeug
+config
+flask_cors
+resources
+requests
+pymssql

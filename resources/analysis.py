@@ -1,6 +1,6 @@
 import flask_restful as restful
 from flask import url_for
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from database.analysis import getAllAnalysisCategories
 from database.dbtaxonname import getAnalysisCategorie, getAnalysisCategorieChilds, getAnalysisValuesAll, getAnalysisValue, getAnalysisCategoriesforName

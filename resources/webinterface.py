@@ -1,8 +1,8 @@
 # webinterface...
 
 import requests
-from urlparse import urlparse
-import urllib2
+from urllib.parse import urlparse
+import urllib.request, urllib.error, urllib.parse
 
 from database.commonname import getcommonname
 from database.agent import getagents, getagent, getagentrelations

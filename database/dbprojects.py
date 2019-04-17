@@ -19,7 +19,7 @@ def encoded_dict(in_dict):
     #return out_dict
 
 def toDict(data):
-    d= dict(data.items())
+    d= dict(list(data.items()))
     return encoded_dict(d)
 
 def R2L(data):
@@ -43,7 +43,7 @@ def getProject(database, projectid):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query = u''' select a.ProjectID, a.ProjectParentID, a.Project, a.ProjectTitle, a.ProjectDescription, \
+    query = ''' select a.ProjectID, a.ProjectParentID, a.Project, a.ProjectTitle, a.ProjectDescription, \
                  a.ProjectEditors, a.ProjectInstitution, a.ProjectNotes, a.ProjectCopyright, a.ProjectURL, \
                  a.ProjectSettings, a.ProjectRights, a.ProjectLicenseURI \
                  from [%s].dbo.[Project] a \
@@ -60,7 +60,7 @@ def getProjectLicense(database, projectid):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query = u''' select b.LicenseID, b.ProjectID, b.DisplayText as LicenseDisplayText, b.LicenseURI, b.LicenseType, b.LicenseHolder, \
+    query = ''' select b.LicenseID, b.ProjectID, b.DisplayText as LicenseDisplayText, b.LicenseURI, b.LicenseType, b.LicenseHolder, \
                  b.LicenseHolderAgentURI, b.LicenseYear, b.Context as LicenseContext, \
                  b.IPR, b.IPRHolder, b.IPRHolderAgentURI, b.CopyrightStatement, b.CopyrightHolder, \
                  b.CopyrightHolderAgentUri, b.Notes as LicenseNotes \
@@ -78,7 +78,7 @@ def getProjectAgents(database, projectid):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query = u''' select ProjectID, AgentName, AgentURI, AgentRole, Notes from [%s].[dbo].[ProjectAgent] \
+    query = ''' select ProjectID, AgentName, AgentURI, AgentRole, Notes from [%s].[dbo].[ProjectAgent] \
                  where ProjectID=%s order by AgentSequence''' % (database, projectid)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
@@ -92,7 +92,7 @@ def getProjectReferences(database, projectid):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query = u''' select ProjectID, ReferenceTitle, ReferenceURI, ReferenceDetails, Notes, ReferenceType from [%s].[dbo].[ProjectReference] \
+    query = ''' select ProjectID, ReferenceTitle, ReferenceURI, ReferenceDetails, Notes, ReferenceType from [%s].[dbo].[ProjectReference] \
                  where ProjectID=%s''' % (database, projectid)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
@@ -106,7 +106,7 @@ def getProjectLastChange(database, projectid):
     if not cleanDatabasename(database):
         return ''
     database=diversitydatabase(database)
-    query=u''' DECLARE @ProjectID int; DECLARE @lastmodification datetime = NULL; set @ProjectID=%s; EXECUTE [%s].[dbo].[procLastProjectModification] @ProjectID,@lastmodification OUTPUT; select @lastmodification;''' % (projectid,database)
+    query=''' DECLARE @ProjectID int; DECLARE @lastmodification datetime = NULL; set @ProjectID=%s; EXECUTE [%s].[dbo].[procLastProjectModification] @ProjectID,@lastmodification OUTPUT; select @lastmodification;''' % (projectid,database)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
         q = conn.execute(query)
@@ -121,7 +121,7 @@ def findProjectsWithReference(database, referenceurl):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query=u''' select '%s' as DatabaseName, ProjectID from [%s].[dbo].[ProjectReference] where [ReferenceURI] = '%s'; ''' % (database, database, referenceurl)
+    query=''' select '%s' as DatabaseName, ProjectID from [%s].[dbo].[ProjectReference] where [ReferenceURI] = '%s'; ''' % (database, database, referenceurl)
     current_app.logger.debug("Query %s with refuri = '%s'" % (query, referenceurl))
     with get_db().connect() as conn:
         plist = conn.execute(query, refuri=referenceurl)

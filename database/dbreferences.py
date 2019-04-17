@@ -26,7 +26,7 @@ def encoded_dict(in_dict):
     #return out_dict
 
 def toDict(data):
-    d= dict(data.items())
+    d= dict(list(data.items()))
     return encoded_dict(d)
 
 def R2L(data):
@@ -49,7 +49,7 @@ def getReferences(database):
     if not cleanDatabasename(database):
         return []
     database = diversitydatabase(database)
-    query = u''' select '%s' as DatabaseName, RefID
+    query = ''' select '%s' as DatabaseName, RefID
                  from [%s].[dbo].[ReferenceTitle] \
                  ''' % (database, database)
     current_app.logger.debug("Query %s " % (query))
@@ -64,7 +64,7 @@ def getReference(database, refid):
     if not cleanDatabasename(database):
         return [] 
     database = diversitydatabase(database)
-    query = u''' select '%s' as DatabaseName, RefID, RefType, RefDescription_Cache, Title, DateYear, \
+    query = ''' select '%s' as DatabaseName, RefID, RefType, RefDescription_Cache, Title, DateYear, \
                  DateMonth, DateDay, DateSuppl, SourceTitle, SeriesTitle, Periodical, Volume, Issue, Pages, Publisher, \
                  PublPlace, Edition, ISSN_ISBN, Miscellaneous1, Miscellaneous2, Miscellaneous3, Weblinks, LinkToPDF, UserDef1, UserDef2, UserDef3, ParentRefID, \
                  Language, [%s].[dbo].RefAutoDescription_2(RefID) as fullref \
@@ -82,7 +82,7 @@ def getReferenceRelations(database, refid):
     if not cleanDatabasename(database):
         return []    
     database = diversitydatabase(database)
-    query = u''' select '%s' as DatabaseName, RefID, Role, Sequence, Name 
+    query = ''' select '%s' as DatabaseName, RefID, Role, Sequence, Name 
                  from [%s].[dbo].[ReferenceRelator] \
                  where RefID=%s ''' % (database, database, refid)
     current_app.logger.debug("Query %s " % (query))
@@ -141,7 +141,7 @@ def getReferenceRelation(database, refid, role, sequence):
     if not cleanDatabasename(database):
         return []    
     database = diversitydatabase(database)
-    query = u''' select '%s' as DatabaseName, RefID, Role, Sequence, Name 
+    query = ''' select '%s' as DatabaseName, RefID, Role, Sequence, Name 
                  from [%s].[dbo].[ReferenceRelator] \
                  where RefID=%s and role = '%s' and sequence = %s''' % (database, database, refid, role, sequence)
     current_app.logger.debug("Query %s " % (query))
@@ -155,7 +155,7 @@ def getReferenceRelation(database, refid, role, sequence):
 
 def makeReferenceURI(database, id):
     if isInt(id):
-        query = u'''select concat([%s].[dbo].BaseURL() COLLATE Latin1_General_CI_AS , cast(%s as nvarchar) COLLATE Latin1_General_CI_AS) as ReferenceURI;''' % (database, id)
+        query = '''select concat([%s].[dbo].BaseURL() COLLATE Latin1_General_CI_AS , cast(%s as nvarchar) COLLATE Latin1_General_CI_AS) as ReferenceURI;''' % (database, id)
         current_app.logger.debug("Query %s " % (query))
         with get_db().connect() as conn:
             treflist = conn.execute(query)

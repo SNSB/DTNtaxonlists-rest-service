@@ -58,7 +58,7 @@ from resources.references import references, reference, referenceTNT, referencer
 from resources.references import referencingitems, namesreferencing, acceptednamesreferencing, synonymsreferencing, hierarchiesreferencing, analysiscategoriesreferencing, commonnamesreferencing, taxonlistsreferencing, projectsreferencing, agentsreferencing
 from resources.references import referencechilds, referencetntchilds, referenceschildsall
 import json
-import urllib2, urlparse
+import urllib.request, urllib.error, urllib.parse, urllib.parse
 
 from resources.analysis import analysiscategories, analysiscategorie, analysiscategoryvalues, analysisvalue, analysiscategoriesinproject, analysiscategoriesforname, analysis
 from resources.analysis import analysisinprojectfilter, analysiscategoriechilds, projectsreferencinganalysis, analysiscategoriechildsall
@@ -73,7 +73,7 @@ from resources.apitest import testapi
 def close_db(error):
     """Closes the database again at the end of the request."""
     serverlist = getattr(g, 'serverlist', dict())
-    for c in serverlist.itervalues():
+    for c in serverlist.values():
         connectstring='''mssql+pymssql://{userpass}@{server}'''.format(userpass=c.get('userpass'), server=c.get('server'))
         app.logger.debug("Closing connetion to %s" % connectstring)
         c.get('engine').dispose()
@@ -112,7 +112,7 @@ api.add_resource(agentRelationsTNT, '/Agents_TNT/<int:id>/relations/' )
 api.add_resource(contact, '/contacts/<int:id>/') # Info on that contacts
 
 api.add_resource(commonnames, '/commonnames/')
-api.add_resource(commonname, u'/commonnames/<string:database>/<int:nameid>/<string:cid>/') # links to all commonnames or info on this common name
+api.add_resource(commonname, '/commonnames/<string:database>/<int:nameid>/<string:cid>/') # links to all commonnames or info on this common name
 
 api.add_resource(acceptedname, '/acceptednames/<string:database>/<int:projectid>/<int:nameid>/')
 

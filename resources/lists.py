@@ -6,7 +6,7 @@ from flask_restful import fields, marshal_with
 from flask import url_for, Response
 from database.list import getList, getAllLists, getListProject
 from database.dbtaxonname import getAllTaxonNamesFromListFlat, getAnalysisInProjectwithSubReferencing
-from urlparse import urlparse
+from urllib.parse import urlparse
 from flask import Flask,g, request, render_template
 
 import requests
