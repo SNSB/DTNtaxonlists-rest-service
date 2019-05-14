@@ -26,9 +26,9 @@ def createindex():
                     database=TEXT, # in which database
                     country=TEXT, # all countries, comma separated
                     tags=KEYWORD)
-    if not os.path.exists("/var/www/localhost/index"):
-       os.mkdir("/var/www/localhost/index")
-    ix = create_in("/var/www/localhost/index", schema)
+    if not os.path.exists("/var/www/restnames/index"):
+       os.mkdir("/var/www/restnames/index")
+    ix = create_in("/var/www/restnames/index", schema)
     writer = ix.writer()
     allnames=getAllNames()
     for item in allnames:
@@ -61,7 +61,7 @@ def indexquery(name,www):
     if name==None:
         return []
     #print("Name: %s" % name)        
-    ix = index.open_dir("/var/www/localhost/index")
+    ix = index.open_dir("/var/www/restnames/index")
     qp = MultifieldParser(["commonname", "database", "tags", "name", "name_part", "country", "project", "url"], schema=ix.schema, termclass=FuzzyTerm)
     qp.add_plugin(qparser.FuzzyTermPlugin())
     q = qp.parse(name)

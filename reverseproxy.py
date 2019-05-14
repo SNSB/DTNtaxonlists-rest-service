@@ -30,7 +30,9 @@ class ReverseProxied(object):
         scheme = environ.get('HTTP_X_SCHEME', '')
         if scheme:
             environ['wsgi.url_scheme'] = scheme
-        server = environ.get('HTTP_X_FORWARDED_SERVER', '') 
-        if server: 
-            environ['HTTP_HOST'] = server
+#        HTTP_X_FORWARDED_SERVER is a list of servers sparated by ', '
+#        ProxyPreserveHost ON in Apache does not modify HTTP_HOST from first server.
+#        server = environ.get('HTTP_X_FORWARDED_SERVER', '') 
+#        if server: 
+#            environ['HTTP_HOST'] = server
         return self.app(environ, start_response)    

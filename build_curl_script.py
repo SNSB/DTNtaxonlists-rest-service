@@ -8,8 +8,8 @@ if resp.status_code == 200:
     print ("Regenerating DWC script ...")
     with open("/root/curlscript.sh", "w") as tf:
         tf.write("#!/bin/bash\n")
-        tf.write("cd /var/www/localhost/static/dwc\n")
-        tf.write("rm -f /var/www/localhost/static/dwc/*.zip\n")
+        tf.write("cd /var/www/restanmes/static/dwc\n")
+        tf.write("rm -f /var/www/restanmes/static/dwc/*.zip\n")
         data = resp.json()
         for listitem in data :
             for link in listitem['links'] :

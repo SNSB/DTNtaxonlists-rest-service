@@ -174,9 +174,10 @@ class  darwin_core_offline( restful.Resource ):
         
         taxonlist_meta = render_template("meta.xml.j2", database=database, id=id, project=project[0], commonnamesexist=(len(taxoncommonnamelist) > 0) )
         
-        from flask import Flask, send_file
+        from flask import Flask, Response
         from zipfile import ZipFile, ZIP_DEFLATED
         from io import BytesIO
+        from werkzeug.wsgi import FileWrapper
 
         timestr = time.strftime("%Y%m%d-%H%M%S")
 
@@ -191,13 +192,12 @@ class  darwin_core_offline( restful.Resource ):
         zipFile.close()
 
         inMemoryOutputFile.seek(0)
+        # uWSGI: https://www.pythonanywhere.com/forums/topic/13570/
+        wrappedFile = FileWrapper(inMemoryOutputFile)
+        attachment_filename="".join(["DTNtaxonlist_",database, "_" , str(id) ,".zip"])
 
-        return send_file(inMemoryOutputFile,
-                     attachment_filename="".join(["DTNtaxonlist_",database, "_" , str(id) ,".zip"]),
-                     mimetype =  'application/zip',
-                     as_attachment=True)    
-    
-        response.headers['content-type'] = 'application/zip'
+        response = Response(wrappedFile, mimetype =  'application/zip',  direct_passthrough=True)
+        response.headers.set('Content-Disposition', 'attachment', filename=attachment_filename)
         return response
 
 class darwin_core_zip( restful.Resource ):
