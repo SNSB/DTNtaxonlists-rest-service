@@ -2,3 +2,5 @@
 *.pyc
 *.tar
 config.py
+*.bak
+venv/
