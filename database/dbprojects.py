@@ -3,6 +3,7 @@
 from flask import current_app
 from database.management import get_db, getDBs, cleanDatabasename, diversitydatabase
 from datetime import datetime
+from sqlalchemy import text
 
 DWB_MODULE='DiversityProjects'
 
@@ -78,7 +79,7 @@ def getProjectAgents(database, projectid):
     if not cleanDatabasename(database):
         return []
     database=diversitydatabase(database)
-    query = ''' select ProjectID, AgentName, AgentURI, AgentRole, Notes from [%s].[dbo].[ProjectAgent] \
+    query = ''' select ProjectID, AgentName, AgentURI, AgentRole, AgentSequence, Notes from [%s].[dbo].[ProjectAgent] \
                  where ProjectID=%s order by AgentSequence''' % (database, projectid)
     current_app.logger.debug("Query %s " % (query))
     with get_db().connect() as conn:
@@ -86,6 +87,19 @@ def getProjectAgents(database, projectid):
         if tagentlist != None:
             agentlist=R2L(tagentlist)
     return agentlist    
+
+def getProjectAgentRoles(database, projectid, agentname, agenturi):
+    agentrolelist = []
+    if not cleanDatabasename(database):
+        return [] 
+    query = text(f"select ProjectID, AgentName, AgentURI, AgentRole from [{database}].[dbo].[ProjectAgentRole] \
+                 where ProjectID = :e1 and AgentName = :e2 and AgentURI = :e3")
+    current_app.logger.debug("Query %s " % (query))
+    with get_db().connect() as conn:
+        tagentrolelist = conn.execute(query, e1=projectid, e2=agentname, e3=agenturi)
+        if tagentrolelist != None:
+            agentrolelist=R2L(tagentrolelist)
+    return agentrolelist     
 
 def getProjectReferences(database, projectid):
     referenceslist=[]

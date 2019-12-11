@@ -34,6 +34,17 @@ def getprojectagents(database, id):
     lists = getProjectAgents(database,id)
     return lists
 
+def getprojectagentroles(database, id, agentname, agenturl):
+    lists=[]
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+#    dbList = getDBs('DiversityProjects')
+#    if not database in dbList:
+#        return None
+    lists = getProjectAgentRoles(database,id, agentname, agenturl)
+    return lists
+
 def getprojectreferences(database, id):
     lists=[]
     if not cleanDatabasename(database):

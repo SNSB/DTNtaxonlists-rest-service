@@ -9,7 +9,7 @@
 <h3>Kurator{% if taxonlistagents|length > 1 %}en{% endif %}</h3>
   <ul class="curatorlist">
   {% for item in taxonlistagents -%}
-     <li>{{ item.AgentRole }}: {{item.AgentName}}</li>
+     <li>{{ item.AgentRoles }}: {{item.AgentName}}</li>
   {% endfor %}
   </ul>
 

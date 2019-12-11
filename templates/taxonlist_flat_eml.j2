@@ -5,24 +5,27 @@
          xml:lang="en">
 <dataset>
     <title>{{ project.ProjectTitle }}</title>
-    {% for editor in agents | selectattr("AgentRole", "equalto", "editor") -%}
-    {% if editor.AgentRole == 'editor' -%}
+    {%- set ns = namespace(editoreditorfound=false) -%}
+    {% for editor in agents -%}
+    {% if  'editor' in editor.AgentRoles -%}
     <creator id="{{ editor.AgentID }}" scope="document">
         <individualName>
             {% if editor.AgentTitel -%}<!-- <Salutation>{{ editor.AgentTitel }}</Salutation> -->{%- endif -%}
             <surName>{{ editor.InheritedNamePrefix | default('', True) }}{{ editor.InheritedName }}{{ editor.InheritedNamePostfix | default('', True) }}</surName>
             <givenName>{{ editor.GivenName }}{{ editor.GivenNamePostfix | default('', True) }}</givenName>
         </individualName>
-        <!-- <RoleType>{{ editor.AgentRole }}</RoleType> -->
+        <!-- <RoleType>{{ editor.AgentRoles }}</RoleType> -->
     </creator>
+    {%- set ns.editoreditorfound = true -%}
     {% endif -%}
-    {% else %} 
+    {% endfor %}  
+    {% if not (ns.editoreditorfound == true) %} 
     <creator id="0" scope="document">
         <individualName>
             <surName>Anonymus</surName>
         </individualName>
     </creator>        
-    {% endfor %}  
+    {% endif -%}
     <!-- <pubDate> </pubDate> -->
     <abstract>
         <!-- <para>The DTN Taxon lists services concept is described under http://www.diversitymobile.net/wiki/DTN_Taxon_Lists_Services. The taxon lists are offered via several open and freely accessible services with a dynamic data flow involving DTN data bases DTN Software and DTN Information model.</para> -->

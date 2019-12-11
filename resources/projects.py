@@ -3,8 +3,8 @@
 
 import flask_restful as restful
 from flask import url_for
-from database.project import getproject, getprojectagents, getprojectreferences, getprojectlicense, getprojectlastchange
-from urllib.parse import urlparse
+from database.project import getproject, getprojectagents, getprojectreferences, getprojectlicense, getprojectlastchange, getprojectagentroles
+from urllib.parse import urlparse, quote_plus, unquote_plus
 #import urllib2
 
 def makelink(label, name, the_uri):
@@ -63,12 +63,22 @@ class projectAgents(restful.Resource):
         for row in projectagentlist:
             links = []
             agenturi = urlparse(row['AgentURI']).path
+            if agenturi and row['AgentName']:
+                links.append(makelink('projectroles', 'roles', url_for('projectagentroles', projectid=id, agentname = quote_plus(row['AgentName']), agenturi = quote_plus(row['AgentURI']), _external=True)))
             row['AgentURI']=agenturi #remove host
             if agenturi:
                 agentdb, agentid = agenturi.strip(' /').split('/')
                 links.append(makelink('agent', 'details', url_for('agenttnt', id=agentid, _external=True)))
-                row['links'] = links
+            row['links'] = links
+            
         return projectagentlist
+    
+
+class projectAgentRoles(restful.Resource):
+    def get(self, projectid, agentname, agenturi):
+        agentprojectroles = getprojectagentroles('DiversityProjects_TNT', projectid, unquote_plus(agentname), unquote_plus(agenturi))
+        return agentprojectroles
+
 
 class projectReferences(restful.Resource):
     def get(self, id):

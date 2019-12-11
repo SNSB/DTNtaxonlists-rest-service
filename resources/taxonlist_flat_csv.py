@@ -7,7 +7,7 @@ import urllib.request, urllib.error, urllib.parse
 from resources.lists import taxonlistflat
 
 from database.dbtaxonname import getAllTaxonNamesFromListFlat, getTaxonNameAllAcceptedNames, getAllCommonNamesFromListFlat
-from database.dbprojects import getProject, getProjectAgents, getProjectLicense, getProjectReferences
+from database.dbprojects import getProject, getProjectAgents, getProjectLicense, getProjectReferences, getProjectAgentRoles
 from database.dbagents import getAgent
 from database.dbreferences import getReference
 import flask_restful as restful
@@ -144,6 +144,11 @@ class  darwin_core_offline( restful.Resource ):
         projectagentlist = getProjectAgents('DiversityProjects_TNT', id)
         for row in projectagentlist:
             agenturi = urlparse(row['AgentURI']).path
+            agentroles = getProjectAgentRoles('DiversityProjects_TNT', id, row['AgentName'], row['AgentURI'])
+            agent_roles = []
+            for agentrole in agentroles:
+                agent_roles.append(agentrole['AgentRole'])
+            row['AgentRoles'] = agent_roles
             agentdb, agentid = agenturi.strip(' /').split('/')
             row['AgentURI']=url_for('agenttnt', id=agentid, _external=True)
             agent = getAgent('DiversityAgents_TNT', agentid)

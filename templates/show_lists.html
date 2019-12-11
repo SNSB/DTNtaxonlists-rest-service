@@ -51,9 +51,19 @@ $.getJSON("{{ url_for('taxonlists', __external=T) }}", function(data) {
             });
             $.getJSON(URI.parse(agentlink).path, function(agents) {
                 $.each(agents, function(agentsindex) {
-                    if (agents[agentsindex].AgentRole == 'editor') {
-                        agentitems.push(agents[agentsindex].AgentName);
-                    };
+                     $.each(agents[agentsindex].links, function (parli) {
+                         if (agents[agentsindex].links[parli].name=='projectroles') {
+                            rolelink = agents[agentsindex].links[parli].uri;
+                            $.getJSON(URI.parse(rolelink).path, function (roles) {
+                                $.each(roles, function (roleindex) {
+                                   if (roles[roleindex].AgentRole == 'editor') {
+                                        agentitems.push(agents[agentsindex].AgentName);
+                                   };
+                                });
+                            });
+                        };
+                    });
+                                
                 });
             });    
         });
