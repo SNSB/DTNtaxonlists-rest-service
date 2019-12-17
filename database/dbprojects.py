@@ -4,6 +4,7 @@ from flask import current_app
 from database.management import get_db, getDBs, cleanDatabasename, diversitydatabase
 from datetime import datetime
 from sqlalchemy import text
+import hashlib # > python 3.6
 
 DWB_MODULE='DiversityProjects'
 
@@ -86,7 +87,25 @@ def getProjectAgents(database, projectid):
         tagentlist = conn.execute(query)
         if tagentlist != None:
             agentlist=R2L(tagentlist)
-    return agentlist    
+    return agentlist  
+
+def getProjectAgentByHash(database, projectid, agenthash):
+    theagent = []
+    if not cleanDatabasename(database):
+        return []
+    if not cleanDatabasename(agenthash):
+        return []
+    agentlist = getProjectAgents(database, projectid)
+    for row in agentlist:
+        agentkey = '-'.join([str(projectid), row['AgentName'], row['AgentURI']]).encode()
+        sh = hashlib.shake_128()
+        sh.update(agentkey)
+        thehash = sh.hexdigest(64)
+        if thehash == agenthash:
+            theagent.append(row)
+            return theagent
+    return theagent
+       
 
 def getProjectAgentRoles(database, projectid, agentname, agenturi):
     agentrolelist = []

@@ -34,7 +34,7 @@ def getprojectagents(database, id):
     lists = getProjectAgents(database,id)
     return lists
 
-def getprojectagentroles(database, id, agentname, agenturl):
+def getprojectagentroles(database, id, agenthash):
     lists=[]
     if not cleanDatabasename(database):
         return []
@@ -42,6 +42,10 @@ def getprojectagentroles(database, id, agentname, agenturl):
 #    dbList = getDBs('DiversityProjects')
 #    if not database in dbList:
 #        return None
+    agent = getProjectAgentByHash(database, id, agenthash)
+    for a in agent:
+       agentname = a['AgentName']
+       agenturl = a['AgentURI']
     lists = getProjectAgentRoles(database,id, agentname, agenturl)
     return lists
 

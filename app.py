@@ -126,7 +126,7 @@ api.add_resource(hierarchynarrowerfull, '/hierarchy/<string:database>/<int:proje
 api.add_resource(projects, '/projects/')
 api.add_resource(project, '/projects/<int:id>/', '/Projects/<int:id>/', '/Projects_TNT/<int:id>/') # links to all projects or info on this project 
 api.add_resource(projectAgents, '/projects/<int:id>/agents/', '/Projects_TNT/<int:id>/agents/')
-api.add_resource(projectAgentRoles, '/projects/<int:projectid>/agents/<string:agentname>/<string:agenturi>')
+api.add_resource(projectAgentRoles, '/projects/<int:projectid>/agents/<string:agenthash>/')
 api.add_resource(projectReferences, '/projects/<int:id>/references/', '/Projects_TNT/<int:id>/references/')
 api.add_resource(projectLicense, '/projects/<int:id>/licenses/', '/Projects_TNT/<int:id>/licenses/')
 api.add_resource(projectLastChange, '/projects/<int:id>/modificationdate/', '/Projects_TNT/<int:id>/modificationdate/')

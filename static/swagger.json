@@ -750,6 +750,50 @@
                 }
             }
         },
+        "/projects/{projectid}/agents/{string:agenthash}": {
+            "get": {
+                "summary": "all rolls for this agent in this project",
+                "description": "An array with all rolls which the given agents has in this project",
+                "parameters": [
+                    {
+                        "name": "projectid",
+                        "in": "path",
+                        "description": "server unique id of the project",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    },
+                    {
+                        "name": "agenthash",
+                        "in": "path",
+                        "description": "an internal identifier of the agent in this project",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    }
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with items which contains the project rolls",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Agentlist"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/projects/{projectid}/references": {
             "get": {
                 "summary": "literature references",
@@ -2672,11 +2716,16 @@
         },        
         "Agentlist": {
             "properties": {
+                "AgentHash": {
+                    "type": "string",
+                    "description": "An internal identifier for this agent"
+                },
                 "AgentName": {
                     "type": "string"
                 },
                 "AgentRole": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Obsolet! Not used any more. Use link to 'projectroles'"
                 },
                 "AgentUri": {
                     "type": "string"
@@ -2685,6 +2734,29 @@
                     "type": "string"
                 },
                 "AgentID": {
+                    "type": "integer"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },
+        "Agentrolls": {
+            "properties": {
+                "AgentName": {
+                    "type": "string"
+                },
+                "AgentRole": {
+                    "type": "string",
+                    "description": "one of the rolls the agent has in this project"
+                },
+                "AgentUri": {
+                    "type": "string"
+                },
+                "ProjectID": {
                     "type": "integer"
                 },
                 "links": {

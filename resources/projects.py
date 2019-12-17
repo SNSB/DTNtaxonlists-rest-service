@@ -5,6 +5,7 @@ import flask_restful as restful
 from flask import url_for
 from database.project import getproject, getprojectagents, getprojectreferences, getprojectlicense, getprojectlastchange, getprojectagentroles
 from urllib.parse import urlparse, quote_plus, unquote_plus
+import hashlib # python 3.6
 #import urllib2
 
 def makelink(label, name, the_uri):
@@ -63,20 +64,36 @@ class projectAgents(restful.Resource):
         for row in projectagentlist:
             links = []
             agenturi = urlparse(row['AgentURI']).path
-            if agenturi and row['AgentName']:
-                links.append(makelink('projectroles', 'roles', url_for('projectagentroles', projectid=id, agentname = quote_plus(row['AgentName']), agenturi = quote_plus(row['AgentURI']), _external=True)))
-            row['AgentURI']=agenturi #remove host
+            agentkey = '-'.join([str(id), row['AgentName'], row['AgentURI']]).encode()
+            sh = hashlib.shake_128()
+            sh.update(agentkey)
+            agenthash = sh.hexdigest(64)
+            row['AgentHash'] = agenthash
             if agenturi:
                 agentdb, agentid = agenturi.strip(' /').split('/')
-                links.append(makelink('agent', 'details', url_for('agenttnt', id=agentid, _external=True)))
-            row['links'] = links
+                if agentdb == 'Agents_TNT':
+                    links.append(makelink('agent', 'details', url_for('agenttnt', id=agentid, _external=True)))
+            links.append(makelink('projectroles', 'roles', url_for('projectagentroles', projectid=id, agenthash=agenthash, _external=True)))
+            row['AgentURI']=agenturi #remove host
+            if links:
+                row['links'] = links
             
         return projectagentlist
     
 
 class projectAgentRoles(restful.Resource):
-    def get(self, projectid, agentname, agenturi):
-        agentprojectroles = getprojectagentroles('DiversityProjects_TNT', projectid, unquote_plus(agentname), unquote_plus(agenturi))
+    def get(self, projectid, agenthash):
+        agentprojectroles = getprojectagentroles('DiversityProjects_TNT', projectid, agenthash)
+        for row in agentprojectroles:
+            links = []
+            agenturi = urlparse(row['AgentURI']).path
+            if agenturi:
+                agentdb, agentid = agenturi.strip(' /').split('/')
+                if agentdb == 'Agents_TNT':
+                     row['AgentURI']=agenturi
+                     links.append(makelink('agent', 'details', url_for('agenttnt', id=agentid, _external=True)))
+            if links:
+                row['links'] = links
         return agentprojectroles
 
 
