@@ -2725,7 +2725,7 @@
                 },
                 "AgentRole": {
                     "type": "string",
-                    "description": "Obsolet! Not used any more. Use link to 'projectroles'"
+                    "description": "Obsolet! Not used any more. Use link to 'projectroles'."
                 },
                 "AgentUri": {
                     "type": "string"
