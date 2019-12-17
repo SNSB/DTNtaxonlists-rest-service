@@ -201,7 +201,7 @@
                 }
             }
         },        
-       "/names/{database}/{nameid}/acceptednameid": {
+        "/names/{database}/{nameid}/acceptednameid": {
             "get": {
                 "summary": "Search of the id of the accepted name",
                 "description": "An database search for the accepted name for this taxonomic name. The default acceptedname-project is used for the search.",
@@ -794,7 +794,7 @@
                 }
             }
         },
-        "/projects/{projectid}/agents/{string:agenthash}": {
+        "/projects/{projectid}/agents/{agenthash}": {
             "get": {
                 "summary": "all rolls for this agent in this project",
                 "description": "An array with all rolls which the given agents has in this project",
