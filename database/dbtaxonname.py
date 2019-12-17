@@ -524,6 +524,24 @@ def getAcceptedName(database, projectid, nameid, ignorebutkeepforreferences):
             anamelist=R2L(tanamelist)
     return anamelist
 
+def getAcceptedNameId(database, nameid, projectid=None):
+    anamelist=[]
+    if not cleanDatabasename(database):
+        return []
+    database=diversitydatabase(database)
+    query = ''' select %s.dbo.AcceptedNameID(%s,null); ''' % (database,nameid)
+    current_app.logger.debug("Query %s " % (query))
+    with get_db().connect() as conn:
+        tanamelist = conn.execute(query)
+        if tanamelist != None:
+            vl = dict()
+            vl['DatabaseName']=database
+            vl['NameID']=nameid
+            vl['AcceptedNameID']=tanamelist.fetchone()[0]
+            anamelist.append(vl);
+            
+    return anamelist
+
 ##############################
 
 def getSynonymy(database, projectid, nameid, synnameid, ignorebutkeepforreferences):
@@ -541,6 +559,7 @@ def getSynonymy(database, projectid, nameid, synnameid, ignorebutkeepforreferenc
         if tanamelist != None:
             anamelist=R2L(tanamelist)
     return anamelist
+
 
 #############################
 

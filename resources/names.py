@@ -195,9 +195,18 @@ class nameSynonyms(restful.Resource):
         slist = getNameAllSynonyms(database, id)
         for row in slist:
             links = []
-            links.append(makelink('synonymy', 'details',  url_for('synonymy', database=row['DatabaseName'], projectid=row['ProjectID'], nameid=row['NameID'], synnameid=row['SynNameID'], _external=True)))
+            links.append(makelink('synonymy', 'details',  url_for('synonymy', database=row['DatabaseName'], projectid=row['ProjectID'], id=row['NameID'], synnameid=row['SynNameID'], _external=True)))
             row['links'] = links
-        return slist        
+        return slist  
+
+class nameAcceptedNameId(restful.Resource):
+    def get(self, database, id):
+        anlist = getAcceptedNameId(database, id);
+        for row in anlist:
+            links=[]
+            links.append(makelink('acceptedname', 'details', url_for('name', database=database, id=row['AcceptedNameID'], _external=True)))
+            row['links'] = links
+        return anlist         
 
 class nameHierarchies(restful.Resource):
     def get(self, database, id):

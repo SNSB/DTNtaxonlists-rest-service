@@ -97,6 +97,7 @@ api.add_resource(namewww, '/names/<string:database>/<int:id>/www/' ) # urls to a
 api.add_resource(namecommonnames, '/names/<string:database>/<int:id>/commonnames/') # urls to the common names
 #api.add_resource(nameProjects, '/names/<string:database>/<int:id>/projects' ) # urls to PROJECTS
 api.add_resource(nameAcceptedNames, '/names/<string:database>/<int:id>/acceptednames/' ) # urls to ACCEPTEDNAMES,
+api.add_resource(nameAcceptedNameId, '/names/<string:database>/<int:id>/acceptednameid/' )
 api.add_resource(nameSynonyms, '/names/<string:database>/<int:id>/synonyms/' ) # urls to SYNONYMS
 api.add_resource(nameHierarchies, '/names/<string:database>/<int:id>/hierarchies/' ) # urls to HIERARCHIES
 api.add_resource(namelistprojects, '/names/<string:database>/<int:id>/lists/' ) # urls to lists containing this name
