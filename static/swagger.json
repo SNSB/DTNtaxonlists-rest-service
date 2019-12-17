@@ -201,6 +201,50 @@
                 }
             }
         },        
+       "/names/{database}/{nameid}/acceptednameId": {
+            "get": {
+                "summary": "Search of the id of the accepted name",
+                "description": "An database search for the accepted name for this taxonomic name. The default acceptedname-project is used for the search.",
+                "parameters": [
+                    {
+                        "name": "database",
+                        "in": "path",
+                        "description": "database name",
+                        "required": true,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "name": "nameid",
+                        "in": "path",
+                        "description": "database unique id of the taxonomic name for which the accepted name is searched",
+                        "required": true,
+                        "type": "integer",
+                        "format": "integer"
+                    }
+                ],
+                "tags": [
+                    "taxonnames"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array with links to the name whichis the accepted name in the context of the default project or an empty array if no accepted names is assigned",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Acceptednameresult"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },        
         "/names/{database}/{nameid}/synonyms": {
             "get": {
                 "summary": "Synonyms",
@@ -2436,6 +2480,28 @@
                 },
                 "ProjectID": {
                     "type": "integer"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },         
+        "Acceptednameresult": {
+            "properties": {
+                "DatabaseName": {
+                    "type": "string",
+                    "description": "The database in which the search was performed"
+                },
+                "NameID": {
+                    "type": "integer",
+                    "description": "The nameid for which the accepted name was searched"
+                },
+                "AcceptedNameID": {
+                    "type": "integer",
+                    "description": "The found nameid of the acceped name, usiing the default project, see link 'acceptedname' for a link to the name"
                 },
                 "links": {
                     "type": "array",
