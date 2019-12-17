@@ -201,7 +201,7 @@
                 }
             }
         },        
-       "/names/{database}/{nameid}/acceptednameId": {
+       "/names/{database}/{nameid}/acceptednameid": {
             "get": {
                 "summary": "Search of the id of the accepted name",
                 "description": "An database search for the accepted name for this taxonomic name. The default acceptedname-project is used for the search.",
@@ -228,7 +228,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An array with links to the name whichis the accepted name in the context of the default project or an empty array if no accepted names is assigned",
+                        "description": "An array with links to the name which is the accepted name in the context of the default project or an empty array if no accepted names is assigned",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -2501,7 +2501,7 @@
                 },
                 "AcceptedNameID": {
                     "type": "integer",
-                    "description": "The found nameid of the acceped name, usiing the default project, see link 'acceptedname' for a link to the name"
+                    "description": "The found nameid of the acceped name, usiing the default project, see link 'acceptedname' for a link to the name. This AcceptedNameID is identical to the NameID if the taxonomic name is the accepted name."
                 },
                 "links": {
                     "type": "array",
